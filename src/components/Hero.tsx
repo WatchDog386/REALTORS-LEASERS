@@ -132,47 +132,8 @@ const LISTINGS_DATA = [
 ];
 
 // ==========================================
-// 2. SUB-COMPONENTS
+// 2. SUB-COMPONENTS (Sidebar REMOVED)
 // ==========================================
-
-const Sidebar = () => (
-  <div className="hidden lg:block w-64 shrink-0 pr-6 border-r border-gray-200">
-    <h3 className="font-black text-sm uppercase mb-3 text-[#333] tracking-wide">
-      Shop by Property Type
-    </h3>
-    <ul className="text-[13px] text-[#333] font-medium space-y-2.5">
-       {[
-         "Apartments & Lofts", 
-         "Single Family Homes", 
-         "Townhouses", 
-         "Condos", 
-         "Vacation Rentals", 
-         "Pet Friendly Units", 
-         "Utilities Included",
-         "New Constructions"
-        ].map(item => (
-         <li key={item} className="cursor-pointer hover:text-[#F96302] hover:underline flex items-center justify-between group">
-           {item}
-           <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 text-[#F96302] transition-opacity" />
-         </li>
-       ))}
-    </ul>
-    
-    <div className="mt-8 bg-[#F5F5F5] p-4 text-center border border-gray-200">
-      <div className="w-16 h-16 bg-[#333] mx-auto mb-3 flex flex-col items-center justify-center text-white rounded-none">
-        <Home size={20} className="mb-1 text-[#F96302]" />
-        <span className="font-black text-[10px] tracking-widest leading-none">REALTOR</span>
-      </div>
-      <h4 className="font-bold text-sm text-[#333]">List Your Property</h4>
-      <p className="text-[11px] text-gray-600 mt-1 mb-3">
-        Reach thousands of renters daily. Post your vacancy in minutes.
-      </p>
-      <button className="w-full border border-[#F96302] text-[#F96302] bg-white text-[11px] font-bold py-2 uppercase hover:bg-[#F96302] hover:text-white transition-colors">
-        Post A Listing
-      </button>
-    </div>
-  </div>
-);
 
 const VacancyCarousel = ({ navigate }: { navigate: any }) => {
   const [[page, direction], setPage] = useState([0, 0]);
@@ -323,74 +284,70 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
           <span className="font-bold text-[#F96302]">Current Listings</span>
         </div>
 
-        <div className="flex gap-8">
-          <Sidebar />
-
-          {/* Main Content Area - Now fully utilizes space */}
-          <div className="flex-1">
-            
-            {/* 1. SLIDING CAROUSEL */}
-            <div className="mb-8">
-              <VacancyCarousel navigate={navigate} />
-            </div>
-
-            {/* 2. Listing Grid - Full Width Population */}
-            <div className="mb-8">
-               <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
-                 <h2 className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight">
-                   Trending Rentals in Your Area 
-                 </h2>
-                 <span className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline">See All 124 Results &gt;</span>
-               </div>
-               
-               {/* Grid configuration updated to fill full horizontal space */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
-                  {LISTINGS_DATA.map((listing) => (
-                    <ListingCard 
-                      key={listing.id} 
-                      data={listing} 
-                      onClick={() => navigate(`/listing/${listing.id}`)}
-                    />
-                  ))}
-               </div>
-            </div>
-
-            {/* 3. Value Prop Banner */}
-            <div className="bg-[#F3F9FC] border border-[#D7E9F3] p-4 flex flex-col md:flex-row items-center gap-4 rounded-none shadow-sm">
-               <div className="bg-[#0066CC] text-white p-2 rounded-sm shrink-0">
-                 <Tag size={24} />
-               </div>
-               <div className="flex-1 text-center md:text-left">
-                 <h4 className="text-sm font-black text-[#0066CC] uppercase">No Application Fees This Week</h4>
-                 <p className="text-xs text-[#333] mt-1 font-medium">Apply to verified "Realtor Pro" listings and we'll waive the processing fees. Save up to Ksh 5,000.</p>
-               </div>
-               <button className="text-[11px] font-bold text-[#0066CC] uppercase border border-[#0066CC] px-6 py-2 hover:bg-[#0066CC] hover:text-white transition-colors bg-white whitespace-nowrap">
-                 Apply Now
-               </button>
-            </div>
-
-            {/* 4. Resources */}
-            <div className="mt-8 pt-8 border-t border-gray-200">
-               <h2 className="text-xl font-bold text-[#333] mb-4 uppercase tracking-tight">Renter Resources</h2>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {[
-                    "How to calculate your rent budget",
-                    "Checklist for your first apartment",
-                    "Understanding your lease agreement"
-                  ].map((topic, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-[#F96302] cursor-pointer group">
-                      <div className="bg-gray-100 p-2 group-hover:bg-orange-100 transition-colors">
-                        <CheckCircle size={16} className="text-gray-500 group-hover:text-[#F96302]"/>
-                      </div>
-                      <span className="text-xs font-bold text-[#333] group-hover:text-[#F96302] underline decoration-gray-300 group-hover:decoration-[#F96302]">
-                        {topic}
-                      </span>
-                    </div>
-                  ))}
-               </div>
-            </div>
-
+        {/* Main Content Area — Now FULL WIDTH (no sidebar) */}
+        <div className="flex-1">
+          
+          {/* 1. SLIDING CAROUSEL */}
+          <div className="mb-8">
+            <VacancyCarousel navigate={navigate} />
           </div>
+
+          {/* 2. Listing Grid — FULL WIDTH, LEFT-ALIGNED (not centered) */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
+              <h2 className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight">
+                Trending Rentals in Your Area 
+              </h2>
+              <span className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline">See All 124 Results &gt;</span>
+            </div>
+            
+            {/* Grid now spans full available width, starts from far left */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 w-full">
+              {LISTINGS_DATA.map((listing) => (
+                <ListingCard 
+                  key={listing.id} 
+                  data={listing} 
+                  onClick={() => navigate(`/listing/${listing.id}`)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* 3. Value Prop Banner */}
+          <div className="bg-[#F3F9FC] border border-[#D7E9F3] p-4 flex flex-col md:flex-row items-center gap-4 rounded-none shadow-sm">
+            <div className="bg-[#0066CC] text-white p-2 rounded-sm shrink-0">
+              <Tag size={24} />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h4 className="text-sm font-black text-[#0066CC] uppercase">No Application Fees This Week</h4>
+              <p className="text-xs text-[#333] mt-1 font-medium">Apply to verified "Realtor Pro" listings and we'll waive the processing fees. Save up to Ksh 5,000.</p>
+            </div>
+            <button className="text-[11px] font-bold text-[#0066CC] uppercase border border-[#0066CC] px-6 py-2 hover:bg-[#0066CC] hover:text-white transition-colors bg-white whitespace-nowrap">
+              Apply Now
+            </button>
+          </div>
+
+          {/* 4. Resources */}
+          <div className="mt-8 pt-8 border-t border-gray-200">
+            <h2 className="text-xl font-bold text-[#333] mb-4 uppercase tracking-tight">Renter Resources</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[
+                "How to calculate your rent budget",
+                "Checklist for your first apartment",
+                "Understanding your lease agreement"
+              ].map((topic, i) => (
+                <div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 hover:border-[#F96302] cursor-pointer group">
+                  <div className="bg-gray-100 p-2 group-hover:bg-orange-100 transition-colors">
+                    <CheckCircle size={16} className="text-gray-500 group-hover:text-[#F96302]"/>
+                  </div>
+                  <span className="text-xs font-bold text-[#333] group-hover:text-[#F96302] underline decoration-gray-300 group-hover:decoration-[#F96302]">
+                    {topic}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </main>
     </div>
