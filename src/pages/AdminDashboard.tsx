@@ -22,8 +22,7 @@ import {
   RegionalPricingDialog,
   EquipmentTypesDialog,
 } from "@/components/AdminConfigDialogs";
-import QuotesTab from "../components/QuotesTab";
-import TiersTab from "../components/TiersTab";
+
 import {
   BarChart,
   Bar,

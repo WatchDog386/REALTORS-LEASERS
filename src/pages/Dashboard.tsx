@@ -38,8 +38,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuotes } from "@/hooks/useQuotes";
 import { useClientReviews } from "@/hooks/useClientReviews";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
-import Calculator from "@/components/Calculator";
-import Reports from "@/components/Reports";
+
+
 import Calendar from "@/components/Calendar";
 import { format } from "date-fns";
 import { useLocation, useNavigate } from "react-router-dom";

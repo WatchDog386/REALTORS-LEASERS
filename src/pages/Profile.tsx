@@ -31,7 +31,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import ProfilePictureUpload from "@/components/ProfilePictureUpload";
+
 import { motion } from "framer-motion";
 
 // RISA Color Palette (from Index.tsx)

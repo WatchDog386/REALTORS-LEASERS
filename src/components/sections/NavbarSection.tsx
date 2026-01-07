@@ -5,309 +5,239 @@ import {
   User,
   Search,
   MapPin,
-  Phone,
   Building2,
   ChevronDown,
-  HelpCircle,
   Hammer,
   Truck,
+  ShoppingCart,
   CreditCard,
-  ShoppingCart
+  HelpCircle,
+  Star,
+  Tag
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 // ==========================================
-// CONFIGURATION
+// CONFIGURATION: Updated to Realtor Theme
 // ==========================================
 const THEME = {
-  ORANGE: "#F96302", // Kept for accents/buttons
-  DARK_NAVY: "#0B2545", // From your logo
-  SLATE_BLUE: "#6A8EAE", // From your logo
-  LIGHT_GRAY: "#F4F4F4",
-  BORDER: "#E5E5E5",
+  BLUE: "#0056b3",      // Professional Blue
+  ORANGE: "#F96302",    // Brand Orange
+  CHARCOAL: "#333333",
+  TEXT_MAIN: "#111111",
 };
 
-const NAV_ITEMS = [
-  { name: "All Rentals", id: "rentals", icon: <Building2 size={18}/> },
-  { name: "Apartments", id: "apartments", icon: <Building2 size={18}/> },
-  { name: "Houses", id: "houses", icon: <Building2 size={18}/> },
-  { name: "New Constructions", id: "new", icon: <Hammer size={18}/> },
-  { name: "Specials & Deals", id: "deals", highlight: true, icon: <CreditCard size={18}/> },
+const SECTIONS = [
+  { name: "How It Works", id: "how-it-works", icon: <Hammer size={16}/> },
+  { name: "Property Features", id: "features", icon: <Building2 size={16}/> },
+  { name: "Rates & Pricing", id: "pricing", icon: <Tag size={16}/>, highlight: true },
+  { name: "Payment Options", id: "payment-options", icon: <CreditCard size={16}/> },
+  { name: "Reviews", id: "testimonials", icon: <Star size={16}/> },
+  { name: "Support & FAQ", id: "faq", icon: <HelpCircle size={16}/> },
 ];
 
 // ==========================================
-// SUB-COMPONENTS
+// COMPONENT: LOGO (Updated to Orange Primary)
 // ==========================================
-
-const RealtorLogo = () => (
-  <div className="flex items-center gap-3 cursor-pointer select-none">
-    {/* LOGO ICON - Recreated from your image */}
-    <div className="w-12 h-12 relative flex-shrink-0">
-      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* The House Roof & Left Wall (Dark Navy) */}
-        <path 
-          d="M10 40 L40 10 L55 25" 
-          stroke={THEME.DARK_NAVY} 
-          strokeWidth="8" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        />
-        <path 
-          d="M15 45 V85 H35" 
-          stroke={THEME.DARK_NAVY} 
-          strokeWidth="8" 
-          strokeLinecap="round"
-        />
-        
-        {/* The Window (Grid) */}
-        <rect x="22" y="55" width="8" height="8" fill={THEME.DARK_NAVY} />
-        <rect x="32" y="55" width="8" height="8" fill={THEME.DARK_NAVY} />
-        <rect x="22" y="65" width="8" height="8" fill={THEME.DARK_NAVY} />
-        <rect x="32" y="65" width="8" height="8" fill={THEME.DARK_NAVY} />
-
-        {/* The "R" Curve (Slate Blue) */}
-        <path 
-          d="M45 25 C70 25 85 35 85 55 C85 70 70 75 60 75 L85 95" 
-          stroke={THEME.SLATE_BLUE} 
-          strokeWidth="10" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        />
-        
-        {/* The Key (Dark Navy - Vertical) */}
-        <circle cx="50" cy="45" r="10" stroke={THEME.DARK_NAVY} strokeWidth="6" fill="white" />
-        <circle cx="50" cy="45" r="3" fill={THEME.DARK_NAVY} />
-        <path d="M50 55 V85" stroke={THEME.DARK_NAVY} strokeWidth="6" strokeLinecap="round" />
-        <path d="M50 70 H58" stroke={THEME.DARK_NAVY} strokeWidth="6" strokeLinecap="round" />
-        <path d="M50 80 H58" stroke={THEME.DARK_NAVY} strokeWidth="6" strokeLinecap="round" />
-      </svg>
+const BrandLogo = () => (
+  <div className="flex items-center gap-2 cursor-pointer group select-none">
+    {/* Orange Box that turns Blue on Group Hover */}
+    <div className="bg-[#F96302] group-hover:bg-[#0056b3] transition-colors duration-300 w-10 h-10 md:w-12 md:h-12 flex flex-col items-center justify-center shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-white/20"></div>
+        <span className="text-white font-black leading-none text-xl md:text-2xl font-sans tracking-tighter">R</span>
+        <span className="text-white/[0.8] font-bold text-[8px] md:text-[10px] uppercase tracking-wider mt-0.5">EST.24</span>
     </div>
 
-    {/* TEXT GROUP */}
     <div className="flex flex-col justify-center">
-      <span 
-        className="text-3xl lg:text-4xl font-extrabold tracking-wide uppercase leading-none"
-        style={{ color: THEME.DARK_NAVY }}
-      >
-        REALTOR
-      </span>
-      <span 
-        className="text-[9px] lg:text-[10px] font-bold uppercase tracking-[0.05em] mt-1"
-        style={{ color: THEME.SLATE_BLUE }}
-      >
-        Apartment Rentals & Residential Sales
+      <h1 className="text-2xl md:text-3xl font-black text-[#111] uppercase leading-none tracking-tighter" style={{ fontFamily: 'Arial Black, sans-serif' }}>
+        REALTOR<span className="text-[#F96302] group-hover:text-[#0056b3]">.</span>DEPOT
+      </h1>
+      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5 ml-0.5">
+        Rentals • Sales • Management
       </span>
     </div>
   </div>
 );
 
-const NavbarSection = ({ scrollTo }) => {
+// ==========================================
+// COMPONENT: NAVBAR
+// ==========================================
+const NavbarSection = ({ scrollTo, setDemoOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // Handle Scroll Effect
+  // --- CART PERSISTENCE LOGIC ---
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("realtor_cart");
+    return savedCart ? JSON.parse(savedCart) : { count: 0, total: 0 };
+  });
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    localStorage.setItem("realtor_cart", JSON.stringify(cart));
+  }, [cart]);
+
+  // Demo function to add to cart
+  const addToCart = () => {
+    setCart(prev => ({
+      count: prev.count + 1,
+      total: prev.total + 8500 
+    }));
+  };
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Smarter Navigation
   const handleNavClick = (id) => {
     setMenuOpen(false);
+    const scrollToElement = () => {
+      const element = document.getElementById(id);
+      if (element) {
+        const headerOffset = 140; 
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      }
+    };
     if (location.pathname !== "/") {
       navigate("/");
-      setTimeout(() => {
-        if (scrollTo) scrollTo(id);
-      }, 300);
+      setTimeout(scrollToElement, 300);
     } else {
-      if (scrollTo) scrollTo(id);
+      scrollToElement();
     }
   };
 
   return (
-    <div className={`fixed top-0 w-full z-50 transition-all duration-200 bg-white ${scrolled ? "shadow-md" : ""}`}>
+    <div className={`fixed top-0 w-full z-50 bg-white transition-shadow duration-300 ${isScrolled ? "shadow-md" : ""}`}>
       
-      {/* 1. TOP UTILITY BAR (Charcoal Strip) */}
-      <div className="bg-[#333333] text-white text-[11px] font-bold py-1.5 px-4 sm:px-6 lg:px-8 hidden md:block">
-        <div className="max-w-[1440px] mx-auto flex justify-between items-center">
-          
-          {/* Left: Location & Contact */}
+      {/* 1. TOP UTILITY STRIP */}
+      <div className="bg-[#333333] text-white text-[11px] font-bold hidden sm:block">
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 h-8 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <button className="flex items-center gap-1.5 cursor-pointer hover:text-[#F96302] transition-colors group">
-              <div className="bg-white/10 p-1 rounded-full group-hover:bg-[#F96302] transition-colors">
-                <MapPin className="w-3 h-3 text-[#F96302] group-hover:text-white" /> 
-              </div>
-              <span className="opacity-90">Location:</span> 
-              <span className="underline decoration-dotted decoration-white/50 group-hover:text-white">Nairobi, KE</span>
-            </button>
-            <span className="hidden lg:flex items-center gap-1.5 cursor-pointer hover:text-[#F96302] transition-colors">
-              <div className="h-3 w-[1px] bg-gray-600 mx-2"></div>
-              <Phone className="w-3 h-3 text-[#F96302]" /> 0700-RENT-NOW
-            </span>
+             <button className="hover:underline text-gray-100 flex items-center gap-1.5 group">
+               <MapPin size={14} className="text-[#F96302] group-hover:text-[#0056b3]" fill="currentColor"/>
+               <span className="opacity-90 font-normal">Location:</span>
+               <span className="uppercase tracking-wide group-hover:text-[#F96302] transition-colors">Nairobi, KE</span>
+               <ChevronDown size={12} className="opacity-70"/>
+             </button>
           </div>
-
-          {/* Right: Utils */}
-          <div className="flex items-center gap-6 tracking-wide uppercase">
-            <button onClick={() => navigate("/auth?mode=owner")} className="hover:text-[#F96302] transition-colors">
-              List A Property
-            </button>
-            <button className="hover:text-[#F96302] transition-colors">
-              Pro Referrals
-            </button>
-            <div className="h-3 w-[1px] bg-gray-600"></div>
-            <button className="hover:text-[#F96302] transition-colors flex items-center gap-1">
-              <HelpCircle className="w-3 h-3" /> Help
-            </button>
+          <div className="flex items-center gap-6">
+            <button onClick={() => handleNavClick('how-it-works')} className="hover:text-[#F96302]">Owner Services</button>
+            <button onClick={() => handleNavClick('pricing')} className="hover:text-[#F96302]">Offers</button>
+            <button onClick={() => handleNavClick('faq')} className="hover:text-[#F96302]">Help</button>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN HEADER (Logo + Search + Actions) */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-[80px] lg:h-[96px] flex items-center justify-between gap-4 lg:gap-8 bg-white">
-        
-        {/* LOGO SECTION */}
-        <div onClick={() => navigate("/")} className="shrink-0 flex items-center">
-          <RealtorLogo />
-        </div>
-
-        {/* SEARCH BAR (Centerpiece - Desktop) */}
-        <div className="hidden md:flex flex-1 max-w-2xl ml-8">
-          <div className="flex w-full h-11 border-2 border-[#E5E5E5] focus-within:border-[#F96302] focus-within:ring-1 focus-within:ring-[#F96302] transition-all bg-white group shadow-sm rounded-sm overflow-hidden">
-            {/* Dept Dropdown */}
-            <div className="bg-[#F4F4F4] px-4 flex items-center border-r border-[#E5E5E5] text-xs font-bold text-[#333] cursor-pointer hover:bg-gray-200 transition-colors whitespace-nowrap">
-               All Departments <ChevronDown className="w-3 h-3 ml-2 text-gray-500" />
-            </div>
-            
-            {/* Input */}
-            <input 
-              type="text" 
-              placeholder="Search by apartment name, location, or price..."
-              className="flex-1 px-4 text-sm font-medium text-[#333] placeholder:text-gray-400 placeholder:font-normal outline-none"
-            />
-            
-            {/* Search Button */}
-            <button className="bg-[#F4F4F4] hover:bg-[#F96302] group-focus-within:bg-[#F96302] text-[#F96302] hover:text-white group-focus-within:text-white px-5 transition-colors h-full flex items-center justify-center">
-              <Search className="w-5 h-5" strokeWidth={3} />
-            </button>
+      {/* 2. MAIN HEADER */}
+      <div className="bg-white border-b border-gray-200 relative z-20">
+        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 h-[80px] lg:h-[96px] flex items-center gap-4 lg:gap-10">
+          
+          <div onClick={() => {navigate("/"); window.scrollTo(0,0)}} className="shrink-0 pt-1">
+            <BrandLogo />
           </div>
-        </div>
 
-        {/* RIGHT ACTIONS */}
-        <div className="flex items-center gap-1 lg:gap-6">
-            
-            {/* Mobile Search Trigger */}
-            <button className="md:hidden p-2 text-[#333]">
-               <Search className="w-6 h-6" />
-            </button>
+          {/* SEARCH BAR (Blue border, Blue/Orange Button) */}
+          <div className="hidden md:flex flex-1 max-w-3xl relative">
+            <div className="flex w-full h-11 border-2 border-[#0056b3] hover:border-[#F96302] rounded-sm overflow-hidden transition-colors">
+              <div className="bg-gray-100 px-3 flex items-center border-r border-gray-300 text-xs font-bold text-gray-600">
+                  All Units <ChevronDown size={12} className="ml-1"/>
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search by neighborhood or price..." 
+                className="flex-1 px-4 text-[15px] outline-none"
+              />
+              <button className="bg-[#0056b3] hover:bg-[#F96302] text-white px-5 transition-colors">
+                <Search className="w-5 h-5" strokeWidth={3} />
+              </button>
+            </div>
+          </div>
 
-            {/* Account */}
-            <button onClick={() => navigate("/auth")} className="hidden lg:flex flex-col items-center group cursor-pointer px-2">
-               <div className="flex items-center gap-1 text-[#333] group-hover:text-[#F96302] transition-colors">
-                  <User className="w-5 h-5 fill-current" />
-                  <span className="text-sm font-bold">Sign In</span>
+          <div className="flex items-center ml-auto gap-1 lg:gap-8">
+            <button onClick={() => navigate("/auth")} className="hidden lg:flex items-center gap-2 group text-left px-2">
+               <div className="border-2 border-transparent group-hover:border-[#F96302] rounded-full p-1 transition-all">
+                  <User size={22} className="text-[#333]" />
                </div>
-               <span className="text-[10px] text-gray-500 font-medium group-hover:text-[#F96302]">Account & Lists</span>
+               <div className="flex flex-col leading-none">
+                 <span className="text-[11px] font-normal">Sign In</span>
+                 <span className="text-[13px] font-bold group-hover:text-[#F96302]">My Account</span>
+               </div>
             </button>
 
-            {/* Cart / Saved */}
-            <button className="flex items-center gap-2 text-[#333] hover:text-[#F96302] relative px-2 group">
-               <div className="relative">
-                 <ShoppingCart className="w-6 h-6 stroke-[2px] group-hover:fill-orange-50" />
-                 <span className="absolute -top-1.5 -right-1.5 bg-[#F96302] text-white text-[9px] font-black w-4 h-4 flex items-center justify-center rounded-full border border-white">
-                   0
+            <button 
+              onClick={addToCart} 
+              className="flex items-center gap-2 group text-left relative pl-2 pr-2"
+            >
+               <div className="relative pt-1">
+                 <ShoppingCart size={26} className="text-[#333] group-hover:text-[#F96302] transition-colors" />
+                 {cart.count > 0 && (
+                   <span className="absolute -top-1 -right-2 bg-[#F96302] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
+                     {cart.count}
+                   </span>
+                 )}
+               </div>
+               <div className="hidden lg:flex flex-col leading-none gap-1">
+                 <span className="text-[11px] font-normal">Cart</span>
+                 <span className="text-[13px] font-bold text-[#333] group-hover:text-[#F96302]">
+                   KSh {cart.total.toLocaleString()}
                  </span>
                </div>
-               <span className="hidden xl:inline text-sm font-bold">Saved</span>
             </button>
 
-            {/* Mobile Menu Trigger */}
             <div className="lg:hidden ml-2">
               <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
                 <SheetTrigger asChild>
-                  <button className="p-2 text-[#333] border-2 border-[#333] rounded-sm hover:border-[#F96302] hover:text-[#F96302] transition-colors">
-                    <Menu className="h-6 w-6" strokeWidth={2.5} />
-                    <span className="sr-only">Menu</span>
+                  <button className="p-2 border-2 border-[#333] rounded-sm hover:border-[#F96302]">
+                    <Menu size={24} strokeWidth={2.5} />
                   </button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-[85vw] sm:w-[350px] p-0 border-r-4 border-[#F96302] flex flex-col gap-0 bg-white">
+                <SheetContent side="left" className="w-[85vw] p-0 bg-white border-r-4 border-[#0056b3]">
                   <SheetHeader className="bg-[#333] p-6 text-left">
-                    <SheetTitle className="text-white">
-                        <span className="text-xs font-bold text-[#F96302] uppercase tracking-wider block mb-1">Welcome Guest</span>
-                        <div className="flex items-center gap-2">
-                             <span className="text-2xl font-black uppercase italic tracking-tighter">MENU</span>
-                        </div>
-                    </SheetTitle>
-                    <div className="flex gap-2 mt-4">
-                        <button onClick={() => {navigate("/auth"); setMenuOpen(false)}} className="flex-1 bg-[#F96302] text-white py-2 px-4 text-xs font-bold uppercase hover:bg-white hover:text-[#F96302] transition-colors text-center">
-                          Sign In
-                        </button>
-                        <button onClick={() => {navigate("/auth"); setMenuOpen(false)}} className="flex-1 border border-white text-white py-2 px-4 text-xs font-bold uppercase hover:bg-white hover:text-[#333] transition-colors text-center">
-                          Register
-                        </button>
-                    </div>
+                    <SheetTitle className="text-white uppercase tracking-widest font-black">Realtor Menu</SheetTitle>
                   </SheetHeader>
-                  
-                  <div className="flex-1 overflow-y-auto py-2">
-                    <div className="px-6 py-3 text-xs font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">
-                        Shop By Department
-                    </div>
-                    {NAV_ITEMS.map((item) => (
-                      <button
-                        key={item.id}
-                        className="w-full text-left px-6 py-4 text-sm font-bold uppercase text-[#333] border-b border-gray-100 hover:bg-orange-50 hover:text-[#F96302] hover:pl-8 transition-all duration-200 flex justify-between items-center group"
-                        onClick={() => handleNavClick(item.id)}
-                      >
-                        <span className="flex items-center gap-3">
-                            <span className="text-gray-400 group-hover:text-[#F96302] transition-colors">{item.icon}</span>
-                            {item.name}
-                        </span>
-                        <ChevronDown className="-rotate-90 w-4 h-4 text-gray-300 group-hover:text-[#F96302]" />
+                  <div className="flex flex-col py-2">
+                    {SECTIONS.map((item) => (
+                      <button key={item.id} onClick={() => handleNavClick(item.id)} className="px-6 py-4 border-b text-sm font-bold uppercase flex items-center gap-3 hover:text-[#0056b3]">
+                        {item.icon} {item.name}
                       </button>
                     ))}
-
-                    <div className="mt-6 px-6">
-                        <div className="bg-[#F5F5F5] p-4 rounded-sm border border-gray-200">
-                             <h4 className="font-bold text-[#333] flex items-center gap-2 text-sm">
-                                <Truck size={16} className="text-[#F96302]"/> Track Applications
-                             </h4>
-                             <p className="text-xs text-gray-500 mt-1">Check the status of your rental approvals.</p>
-                        </div>
-                    </div>
                   </div>
                 </SheetContent>
               </Sheet>
             </div>
+          </div>
         </div>
       </div>
 
-      {/* 3. DEPARTMENT LINKS (Bottom Strip - Desktop Only) */}
-      <div className="hidden lg:flex border-t border-[#E5E5E5] px-4 sm:px-6 lg:px-8 bg-white">
-         <div className="max-w-[1440px] mx-auto w-full flex items-center gap-8 text-[12px] font-bold text-[#333] uppercase tracking-tight h-10">
-            {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`
-                    h-full flex items-center gap-1 border-b-[3px] border-transparent hover:border-[#F96302] hover:text-[#F96302] transition-all
-                    ${item.highlight ? "text-[#F96302]" : ""}
-                  `}
-                >
-                  {item.name}
-                </button>
-            ))}
-            <div className="ml-auto flex items-center gap-4 text-gray-500 font-bold text-[11px] normal-case tracking-wide">
-               <span className="hover:underline cursor-pointer hover:text-[#F96302]">Local Ad</span>
-               <span className="w-px h-3 bg-gray-300"></span>
-               <span className="hover:underline cursor-pointer hover:text-[#F96302] flex items-center gap-1">
-                 <CreditCard size={14} /> Realtor Credit Card
-               </span>
-            </div>
-         </div>
-      </div>
+      {/* 3. CATEGORY STRIP */}
+      <div className="hidden lg:block bg-white border-b border-gray-300">
+        <div className="max-w-[1440px] mx-auto px-8">
+            <div className="flex items-center gap-1 text-[12px] font-bold text-[#333] uppercase h-[42px]">
+               <button className="h-full px-4 flex items-center gap-2 border-r border-gray-300 mr-4 hover:bg-gray-50 transition-colors">
+                 <Truck size={16} className="text-[#0056b3]" />
+                 Inventory List 
+               </button>
 
+               <div className="flex items-center h-full">
+                 {SECTIONS.map((item) => (
+                   <button
+                     key={item.id}
+                     onClick={() => handleNavClick(item.id)}
+                     className="h-full px-5 flex items-center relative group"
+                   >
+                     <span className="group-hover:text-[#0056b3] transition-colors">{item.name}</span>
+                     <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#0056b3] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                   </button>
+                 ))}
+               </div>
+            </div>
+        </div>
+      </div>
     </div>
   );
 };

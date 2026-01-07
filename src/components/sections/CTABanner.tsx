@@ -1,123 +1,140 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
   ArrowRight, 
   Search, 
   Key, 
   Home, 
-  CheckCircle2 
+  CheckCircle2,
+  Heart
 } from "lucide-react";
 
 // ==========================================
-// 1. STYLES (Fonts & Textures)
+// 1. STYLES (Industrial Realtor Branding)
 // ==========================================
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,700;0,900;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,700;0,900;1,900&family=Inter:wght@400;700;900&display=swap');
     
     .font-condensed { font-family: 'Roboto Condensed', sans-serif; }
+    .font-pro { font-family: 'Inter', sans-serif; }
     
-    /* The "Home Depot" Orange Background */
-    .bg-retail-orange {
-      background-color: #F96302;
-    }
+    /* Dynamic Brand Colors */
+    .bg-realtor-blue { background-color: #0056b3; }
+    .hover-realtor-orange:hover { background-color: #F96302 !important; }
     
-    /* Diagonal Stripe Texture (Industrial/Retail feel) */
     .bg-texture-stripes {
       background-image: repeating-linear-gradient(
         -45deg,
         transparent,
-        transparent 10px,
-        rgba(0, 0, 0, 0.05) 10px,
-        rgba(0, 0, 0, 0.05) 20px
+        transparent 8px,
+        rgba(0, 0, 0, 0.04) 8px,
+        rgba(0, 0, 0, 0.04) 16px
       );
     }
   `}</style>
 );
 
 export default function TenantCTABanner() {
+  // Persistence Logic: Save state to LocalStorage
+  const [isSaved, setIsSaved] = useState(() => {
+    const saved = localStorage.getItem("realtor_unit_saved");
+    return saved === "true";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("realtor_unit_saved", isSaved);
+  }, [isSaved]);
+
   return (
     <>
     <GlobalStyles />
-    <section className="w-full bg-white py-12 px-4 border-t border-b border-gray-200">
+    <section className="w-full bg-[#F4F4F4] py-8 px-4">
       <motion.div 
-        initial={{ opacity: 0, y: 15 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.99 }}
+        whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        className="max-w-[1366px] mx-auto relative shadow-xl"
+        className="max-w-6xl mx-auto relative shadow-2xl border border-black/10"
       >
         
-        {/* MAIN CONTAINER */}
-        <div className="bg-retail-orange bg-texture-stripes flex flex-col lg:flex-row items-stretch relative z-10 overflow-hidden">
+        {/* MAIN CONTAINER: Starts Blue, Hovers Orange */}
+        <div className="bg-realtor-blue hover-realtor-orange bg-texture-stripes flex flex-col lg:flex-row items-stretch relative z-10 overflow-hidden transition-colors duration-500 ease-in-out">
           
-          {/* DECORATIVE: "Verified" Yellow Corner Tag */}
-          <div className="absolute top-4 -right-12 bg-[#FCD200] text-black text-[10px] font-condensed font-black uppercase px-12 py-1 rotate-45 shadow-sm z-20 border border-yellow-500">
-             Verified Listings
+          {/* DECORATIVE: High-Visibility Tag */}
+          <div className="absolute top-3 -right-10 bg-[#FCD200] text-black text-[8px] font-black uppercase px-10 py-1 rotate-45 shadow-md z-20 border border-black/10 tracking-tighter">
+              Verified Units
           </div>
 
-          {/* LEFT: VISUAL (Mimics a Product Image) */}
-          <div className="hidden md:flex w-1/4 bg-black/10 items-center justify-center p-8 relative border-r border-white/10">
-             <div className="w-32 h-32 bg-white rounded-sm shadow-2xl flex items-center justify-center border-4 border-white transform -rotate-3">
-                <Home className="w-16 h-16 text-[#F96302]" />
-                <div className="absolute -bottom-3 -right-3 bg-[#333] text-white p-2 rounded-full border-2 border-white">
-                    <Key className="w-5 h-5" />
+          {/* LEFT: VISUAL */}
+          <div className="hidden lg:flex w-48 bg-black/15 items-center justify-center p-4 relative border-r border-white/10">
+             <div className="w-24 h-24 bg-white rounded-sm shadow-xl flex items-center justify-center border-2 border-white transform -rotate-2 relative">
+                <Home className="w-10 h-10 text-[#0056b3]" />
+                <div className="absolute -bottom-2 -right-2 bg-[#111] text-white p-1.5 rounded-sm border border-white">
+                    <Key className="w-3.5 h-3.5" />
                 </div>
              </div>
           </div>
 
           {/* CENTER: TEXT CONTENT */}
-          <div className="flex-1 p-8 md:p-10 flex flex-col justify-center text-center lg:text-left">
+          <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
              
-             {/* Small "Department" Label */}
-             <div className="inline-block bg-[#333] text-white text-[9px] font-black uppercase px-2 py-1 mb-3 tracking-[0.2em] self-center lg:self-start">
-                Residential Rentals
+             <div className="inline-block bg-[#111] text-white text-[8px] font-black uppercase px-1.5 py-0.5 mb-2 tracking-[0.15em] w-fit">
+                Realtor Exclusive
              </div>
 
-             <h2 className="font-condensed font-black text-4xl md:text-5xl text-white uppercase italic leading-[0.9] mb-2 drop-shadow-md">
-                Find <span className="text-[#111]">Affordable</span> & <br/>
-                <span className="underline decoration-4 decoration-white/30">Clean Apartments</span>
+             <h2 className="font-condensed font-black text-3xl md:text-4xl text-white uppercase italic leading-[0.85] mb-1 drop-shadow-sm">
+                Find <span className="text-[#111]">Affordable</span> <br/>
+                <span className="underline decoration-2 decoration-white/40">Clean Apartments</span>
              </h2>
              
-             <p className="text-white font-medium text-lg font-condensed mb-6 max-w-xl">
-                Move-in ready units vetted for quality. Standard finishes, secure locations, and transparent pricing.
+             <p className="text-white font-pro font-bold text-[11px] mb-4 max-w-md uppercase tracking-tight opacity-90 leading-tight">
+                Vetted units with standard finishes and secure access. All listings verified by site inspections.
              </p>
              
-             {/* Checklist (Retail Style) */}
-             <div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-6 text-white/90 text-xs font-bold uppercase tracking-wide">
-                <span className="flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-sm">
-                  <CheckCircle2 className="w-4 h-4 text-[#FCD200]" /> Water & Electricity
+             <div className="flex flex-wrap gap-2 text-white text-[9px] font-black uppercase">
+                <span className="flex items-center gap-1 bg-black/20 px-2 py-0.5 border border-white/10">
+                  <CheckCircle2 className="w-3 h-3 text-[#FCD200]" /> Water & Power
                 </span>
-                <span className="flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-sm">
-                  <CheckCircle2 className="w-4 h-4 text-[#FCD200]" /> Security Guard
-                </span>
-                <span className="flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-sm">
-                  <CheckCircle2 className="w-4 h-4 text-[#FCD200]" /> Tiled Floors
+                <span className="flex items-center gap-1 bg-black/20 px-2 py-0.5 border border-white/10">
+                  <CheckCircle2 className="w-3 h-3 text-[#FCD200]" /> 24/7 Security
                 </span>
              </div>
           </div>
 
           {/* RIGHT: ACTION AREA */}
-          <div className="w-full lg:w-1/4 bg-black/20 p-8 flex flex-col justify-center gap-3 border-l border-white/10">
-             <div className="text-center mb-2">
-                <span className="text-white text-[10px] font-bold uppercase tracking-widest">Rent Starting At</span>
-                <div className="text-[#FCD200] font-black text-3xl font-condensed">KES 8,000<span className="text-sm align-top text-white">/mo</span></div>
+          <div className="w-full lg:w-72 bg-black/25 p-6 flex flex-col justify-center gap-2 border-l border-white/10">
+             <div className="mb-2">
+                <span className="text-white/70 text-[8px] font-black uppercase tracking-widest block leading-none mb-1 text-center lg:text-left">Standard Rate From</span>
+                <div className="text-white font-condensed font-black text-3xl tracking-tighter text-center lg:text-left">
+                  KES <span className="text-white">8,000</span><span className="text-[10px] text-white/60 ml-1">/MO</span>
+                </div>
              </div>
 
-             <button className="bg-white text-[#F96302] hover:bg-[#111] hover:text-white transition-colors w-full py-4 text-sm font-condensed font-black uppercase tracking-[0.15em] shadow-lg flex items-center justify-center gap-2 group">
-                <Search className="w-4 h-4" /> Find A Home
+             <button className="bg-white text-black hover:bg-[#111] hover:text-white transition-all w-full py-2.5 text-[10px] font-black uppercase tracking-widest shadow-md flex items-center justify-center gap-2 group border border-transparent">
+                <Search className="w-3.5 h-3.5" /> Start Search
              </button>
              
-             <button className="border-2 border-white text-white hover:bg-white hover:text-[#F96302] transition-colors w-full py-3 text-xs font-condensed font-black uppercase tracking-[0.15em] flex items-center justify-center gap-2">
-                View Map <ArrowRight className="w-3 h-3" />
+             {/* SAVE TO CART BUTTON: Persistence logic applied here */}
+             <button 
+                onClick={() => setIsSaved(!isSaved)}
+                className={`transition-all w-full py-2 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 border 
+                ${isSaved ? 'bg-[#FCD200] border-[#FCD200] text-black' : 'border-white/40 text-white hover:bg-white/10'}`}
+             >
+                <Heart className={`w-3 h-3 ${isSaved ? 'fill-black' : ''}`} />
+                {isSaved ? 'Saved to Interest List' : 'Save for Later'}
              </button>
           </div>
 
         </div>
 
-        {/* BOTTOM STRIP: Disclaimer */}
-        <div className="bg-[#EAEAEA] py-2 px-4 flex justify-between items-center text-[9px] font-bold text-gray-500 uppercase tracking-widest border-x border-b border-gray-300">
-           <span>*Prices vary by location. Subject to availability.</span>
-           <span className="hidden sm:block">Updated: January 2025</span>
+        {/* BOTTOM STRIP */}
+        <div className="bg-white py-1 px-4 flex justify-between items-center text-[7.5px] font-black text-gray-400 uppercase tracking-[0.2em] border-x border-b border-gray-300">
+           <div className="flex items-center gap-4">
+             <span>* Rates subject to verification</span>
+             <span className="h-2 w-[1px] bg-gray-200"></span>
+             <span>Ref: REALTOR-PRO-04</span>
+           </div>
+           <span className="hidden sm:block">Update Cycle: 24H</span>
         </div>
 
       </motion.div>

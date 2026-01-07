@@ -13,12 +13,11 @@ import Navbar from "@/components/Navbar";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import QuoteBuilder from "./pages/QuoteBuilder";
-import ViewAllQuotes from "./pages/ViewAllQuotes";
+
 import AdminDashboard from "./pages/AdminDashboard";
-import Variables from "./pages/Variables";
+
 import NotFound from "./pages/NotFound";
-import UploadPlan from "./pages/UploadPage";
+
 import Auth from "./pages/Auth";
 const queryClient = new QueryClient();
 const App = () => (
@@ -42,14 +41,8 @@ const App = () => (
                 }
               />
               <Route
-                path="/upload/plan"
-                element={
-                  <ProtectedRoute>
-                    <UploadPlan />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
+    
+             
                 path="/profile"
                 element={
                   <ProtectedRoute>
@@ -57,30 +50,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/quotes/new"
-                element={
-                  <ProtectedRoute>
-                    <QuoteBuilder />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/quotes/all"
-                element={
-                  <ProtectedRoute>
-                    <ViewAllQuotes />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/variables"
-                element={
-                  <ProtectedRoute>
-                    <Variables />
-                  </ProtectedRoute>
-                }
-              />
+              
               <Route
                 path="/admin"
                 element={

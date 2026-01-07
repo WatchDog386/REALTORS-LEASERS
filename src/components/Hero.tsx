@@ -48,7 +48,7 @@ const VACANCY_SLIDES = [
     headline: "Garden Estate \nFamily Home",
     subhead: "Spacious 4-Bedroom Bungalow",
     description: "Located in a secure gated community with a huge backyard. Perfect for families with pets.",
-    img: "https://images.unsplash.com/photo-1600596542815-4055b92748ea?q=80&w=2070&auto=format&fit=crop",
+    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop",
     price: "150,000",
     location: "Garden Estate, Thika Rd",
     specs: "4 Bed • 3 Bath",
@@ -86,7 +86,7 @@ const LISTINGS_DATA = [
     price: "150,000",
     beds: 3, baths: 2, sqft: 1500,
     rating: 4.9, reviews: 12,
-    img: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=400&auto=format&fit=crop",
+    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop",
     badge: null
   },
   {
