@@ -75,10 +75,10 @@ export default function RealtorPricingSection({ tiersLoading, navigate }) {
   };
 
   const realtorTiers = [
-    { id: "sr-101", name: "Single Room", code: "SKU: SR-101", price: "1,500", icon: <Box className="w-4 h-4" />, features: ["Rent Collection", "Condition Logging", "Tenant Ledger", "Basic Repairs"] },
-    { id: "bs-pro", name: "Bed Sitter", code: "SKU: BS-PRO", price: "2,500", icon: <Layout className="w-4 h-4" />, features: ["Utility Splitting", "Inventory Checklist", "24/7 Support", "Vacancy Marketing"], isSpecial: true },
-    { id: "1br-std", name: "One Bedroom", code: "SKU: 1BR-STD", price: "4,000", icon: <Home className="w-4 h-4" />, features: ["Lease Automation", "Digital Twin", "Screening Tools", "Legal Compliance"] },
-    { id: "2br-lux", name: "Two Bedroom", code: "SKU: 2BR-LUX", price: "6,500", icon: <Building2 className="w-4 h-4" />, features: ["Multi-Tenant Billing", "Priority Dispatch", "Detailed Reporting", "Asset Insurance"], isDark: true }
+    { id: "sr-101", name: "Single Room", code: "SKU: SR-101", price: "9,500", icon: <Box className="w-4 h-4" />, features: ["Rent Collection", "Condition Logging", "Tenant Ledger", "Basic Repairs"] },
+    { id: "bs-pro", name: "Bed Sitter", code: "SKU: BS-PRO", price: "10,500", icon: <Layout className="w-4 h-4" />, features: ["Utility Splitting", "Inventory Checklist", "24/7 Support", "Vacancy Marketing"], isSpecial: true },
+    { id: "1br-std", name: "One Bedroom", code: "SKU: 1BR-STD", price: "13,500", icon: <Home className="w-4 h-4" />, features: ["Lease Automation", "Digital Twin", "Screening Tools", "Legal Compliance"] },
+    { id: "2br-lux", name: "Two Bedroom", code: "SKU: 2BR-LUX", price: "15,500", icon: <Building2 className="w-4 h-4" />, features: ["Multi-Tenant Billing", "Priority Dispatch", "Detailed Reporting", "Asset Insurance"], isDark: true }
   ];
 
   if (tiersLoading) {

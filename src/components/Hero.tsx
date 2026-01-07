@@ -108,6 +108,26 @@ const LISTINGS_DATA = [
     rating: 5.0, reviews: 3,
     img: "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=400&auto=format&fit=crop",
     badge: "New"
+  },
+  {
+    id: 105,
+    title: "Riverside Executive Suite",
+    address: "Riverside Dr, Nairobi",
+    price: "120,000",
+    beds: 2, baths: 2, sqft: 1100,
+    rating: 4.7, reviews: 18,
+    img: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=400&auto=format&fit=crop",
+    badge: "Premium"
+  },
+  {
+    id: 106,
+    title: "Lavington Townhouse",
+    address: "James Gichuru, Lavington",
+    price: "280,000",
+    beds: 4, baths: 4, sqft: 3200,
+    rating: 4.9, reviews: 9,
+    img: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=400&auto=format&fit=crop",
+    badge: "Exclusive"
   }
 ];
 
@@ -115,7 +135,6 @@ const LISTINGS_DATA = [
 // 2. SUB-COMPONENTS
 // ==========================================
 
-// A. Sidebar
 const Sidebar = () => (
   <div className="hidden lg:block w-64 shrink-0 pr-6 border-r border-gray-200">
     <h3 className="font-black text-sm uppercase mb-3 text-[#333] tracking-wide">
@@ -155,7 +174,6 @@ const Sidebar = () => (
   </div>
 );
 
-// B. Vacancy Carousel (Unchanged from previous step)
 const VacancyCarousel = ({ navigate }: { navigate: any }) => {
   const [[page, direction], setPage] = useState([0, 0]);
   const slideIndex = Math.abs(page % VACANCY_SLIDES.length);
@@ -186,7 +204,6 @@ const VacancyCarousel = ({ navigate }: { navigate: any }) => {
           transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
           className="absolute inset-0 flex flex-col md:flex-row h-full w-full bg-white"
         >
-          {/* Text Area */}
           <div className="w-full md:w-1/3 p-6 lg:p-10 flex flex-col justify-center relative z-10 bg-white border-r border-gray-100 h-full">
             <div className="flex items-center gap-2 mb-4">
               <span className="inline-block bg-[#F9A100] text-[#333] text-[10px] lg:text-[11px] font-black uppercase px-2 py-1 tracking-wider">{currentSlide.tag}</span>
@@ -209,7 +226,6 @@ const VacancyCarousel = ({ navigate }: { navigate: any }) => {
               </div>
             </div>
           </div>
-          {/* Image Area */}
           <div className="w-full md:w-2/3 h-full relative overflow-hidden bg-gray-100">
             <img src={currentSlide.img} alt="Property" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
@@ -235,51 +251,28 @@ const VacancyCarousel = ({ navigate }: { navigate: any }) => {
   );
 };
 
-// ==========================================
-// C. UPDATED LISTING CARD
-// ==========================================
 const ListingCard = ({ data, onClick }: { data: any, onClick: () => void }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [isCompare, setIsCompare] = useState(false);
 
   return (
-    <div 
-      className="group bg-white border border-gray-200 p-0 flex flex-col cursor-pointer hover:border-[#666] hover:shadow-lg transition-all duration-200 relative"
-    >
-      {/* 1. Image Area with Retail Overlays */}
+    <div className="group bg-white border border-gray-200 p-0 flex flex-col cursor-pointer hover:border-[#666] hover:shadow-lg transition-all duration-200 relative">
       <div className="h-48 overflow-hidden relative border-b border-gray-100 bg-gray-100" onClick={onClick}>
         <img src={data.img} alt={data.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-        
-        {/* Badge */}
         {data.badge && (
           <div className="absolute top-0 left-0 bg-[#F96302] text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wide z-10">
             {data.badge}
           </div>
         )}
-
-        {/* Retail Tools Overlay */}
         <div className="absolute top-2 left-2 z-20 flex items-center gap-1 bg-white/90 px-1.5 py-1 rounded-sm shadow-sm cursor-default" onClick={(e) => e.stopPropagation()}>
-          <input 
-            type="checkbox" 
-            checked={isCompare}
-            onChange={() => setIsCompare(!isCompare)}
-            className="w-3 h-3 accent-[#F96302] cursor-pointer"
-          />
+          <input type="checkbox" checked={isCompare} onChange={() => setIsCompare(!isCompare)} className="w-3 h-3 accent-[#F96302] cursor-pointer" />
           <span className="text-[9px] font-bold text-gray-700 uppercase">Compare</span>
         </div>
-
-        <div 
-          className="absolute top-2 right-2 z-20 bg-white/90 p-1.5 rounded-full shadow-sm hover:bg-white transition-colors"
-          onClick={(e) => { e.stopPropagation(); setIsSaved(!isSaved); }}
-        >
+        <div className="absolute top-2 right-2 z-20 bg-white/90 p-1.5 rounded-full shadow-sm hover:bg-white transition-colors" onClick={(e) => { e.stopPropagation(); setIsSaved(!isSaved); }}>
           <Heart size={14} className={isSaved ? "fill-[#F96302] text-[#F96302]" : "text-gray-400 hover:text-[#F96302]"} />
         </div>
       </div>
-
-      {/* 2. Card Content */}
       <div className="p-4 flex flex-col flex-1" onClick={onClick}>
-        
-        {/* Price - Top Visual Hierarchy */}
         <div className="mb-1">
           <div className="flex items-baseline gap-1">
             <span className="text-xs font-bold text-[#333]">Ksh</span>
@@ -287,23 +280,11 @@ const ListingCard = ({ data, onClick }: { data: any, onClick: () => void }) => {
             <span className="text-[10px] font-bold text-gray-500">/ mo</span>
           </div>
         </div>
-
-        {/* Title */}
-        <h3 className="font-bold text-[#333] text-[13px] leading-tight mb-1 group-hover:underline group-hover:text-[#F96302] line-clamp-1">
-          {data.title}
-        </h3>
-
-        {/* Rating */}
+        <h3 className="font-bold text-[#333] text-[13px] leading-tight mb-1 group-hover:underline group-hover:text-[#F96302] line-clamp-1">{data.title}</h3>
         <div className="flex items-center gap-1 mb-3">
-          <div className="flex">
-             {[...Array(5)].map((_,i) => (
-                <Star key={i} size={10} className={i < Math.floor(data.rating) ? "fill-[#F96302] text-[#F96302]" : "text-gray-300"} />
-             ))}
-          </div>
+          <div className="flex">{[...Array(5)].map((_,i) => (<Star key={i} size={10} className={i < Math.floor(data.rating) ? "fill-[#F96302] text-[#F96302]" : "text-gray-300"} />))}</div>
           <span className="text-[10px] text-gray-500 font-medium">({data.reviews})</span>
         </div>
-
-        {/* Specs - Bullet Style */}
         <div className="flex items-center flex-wrap gap-2 text-[11px] text-gray-600 font-medium mb-4 border-t border-gray-100 pt-2">
            <span className="flex items-center gap-1"><Bed size={12} className="text-gray-400"/> {data.beds} Bed</span>
            <span className="w-px h-3 bg-gray-300"></span>
@@ -311,32 +292,15 @@ const ListingCard = ({ data, onClick }: { data: any, onClick: () => void }) => {
            <span className="w-px h-3 bg-gray-300"></span>
            <span className="flex items-center gap-1"><Maximize size={12} className="text-gray-400"/> {data.sqft} sqft</span>
         </div>
-        
-        <p className="text-[10px] text-gray-400 flex items-center gap-1 mb-4 mt-auto">
-          <MapPin size={10} /> {data.address}
-        </p>
-
-        {/* Actions */}
+        <p className="text-[10px] text-gray-400 flex items-center gap-1 mb-4 mt-auto"><MapPin size={10} /> {data.address}</p>
         <div className="flex gap-2 mt-auto">
-           <button 
-             className="flex-1 bg-white border border-[#F96302] text-[#F96302] text-[11px] font-bold py-2 uppercase hover:bg-[#F96302] hover:text-white transition-colors rounded-sm"
-             onClick={(e) => { e.stopPropagation(); /* Add to cart logic */ }}
-           >
-             Check Availability
-           </button>
-           <button 
-             className="px-3 border border-gray-300 text-gray-500 hover:border-gray-400 hover:text-[#333] rounded-sm flex items-center justify-center transition-colors"
-             onClick={(e) => { e.stopPropagation(); /* Quick view logic */ }}
-             title="Quick View"
-           >
-             <Eye size={14} />
-           </button>
+           <button className="flex-1 bg-white border border-[#F96302] text-[#F96302] text-[11px] font-bold py-2 uppercase hover:bg-[#F96302] hover:text-white transition-colors rounded-sm" onClick={(e) => e.stopPropagation()}>Check Availability</button>
+           <button className="px-3 border border-gray-300 text-gray-500 hover:border-gray-400 hover:text-[#333] rounded-sm flex items-center justify-center transition-colors" onClick={(e) => e.stopPropagation()} title="Quick View"><Eye size={14} /></button>
         </div>
       </div>
     </div>
   );
 };
-
 
 // ==========================================
 // 3. MAIN COMPONENT
@@ -345,10 +309,7 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
   const navigate = useNavigate();
 
   return (
-    <div 
-      className="antialiased min-h-screen bg-white"
-      style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
-    >
+    <div className="antialiased min-h-screen bg-white" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       <NavbarSection scrollTo={scrollTo} setDemoOpen={setDemoOpen} />
 
       <main className="max-w-[1440px] mx-auto px-4 lg:px-8 py-6 pt-[160px] lg:pt-[190px]">
@@ -363,10 +324,9 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
         </div>
 
         <div className="flex gap-8">
-          {/* Left Sidebar */}
           <Sidebar />
 
-          {/* Main Content Area */}
+          {/* Main Content Area - Now fully utilizes space */}
           <div className="flex-1">
             
             {/* 1. SLIDING CAROUSEL */}
@@ -374,7 +334,7 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
               <VacancyCarousel navigate={navigate} />
             </div>
 
-            {/* 2. Listing Grid */}
+            {/* 2. Listing Grid - Full Width Population */}
             <div className="mb-8">
                <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
                  <h2 className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight">
@@ -383,8 +343,8 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
                  <span className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline">See All 124 Results &gt;</span>
                </div>
                
-               {/* GRID MAPPED FROM DATA */}
-               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+               {/* Grid configuration updated to fill full horizontal space */}
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4">
                   {LISTINGS_DATA.map((listing) => (
                     <ListingCard 
                       key={listing.id} 
