@@ -1,72 +1,192 @@
-<!-- © 2025 Jeff. All rights reserved.
-Unauthorized copying, distribution, or modification of this file is strictly prohibited. -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
-    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 36"><path d="M19.28 11.25H12.85V15.75H19.28V11.25Z" fill="%23001226"/><path d="M19.28 20.25H12.85V24.75H19.28V20.25Z" fill="%23001226"/><path d="M9.64 6.75H25.71V2.25H9.64V6.75Z" fill="%23001226"/><path d="M9.64 29.25H25.71V24.75H9.64V29.25Z" fill="%23001226"/><path d="M6.42 11.25H0V24.75H6.42V11.25Z" fill="%23001226"/><path d="M32.14 11.25H25.71V24.75H32.14V11.25Z" fill="%23001226"/><path d="M38.57 15.75H32.14V20.25H38.57V15.75Z" fill="%23001226"/><circle cx="22.5" cy="13.5" r="2.25" fill="%230077B6"/><circle cx="22.5" cy="22.5" r="2.25" fill="%230077B6"/><path d="M22.5 15.75V20.25" stroke="%230077B6" stroke-width="1.5"/></svg>' type="image/svg+xml" />
-
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 24 L32 6 L52 24 V58 H12 V24 Z" fill="%231E3A5F"/><circle cx="32" cy="30" r="5" fill="white"/><rect x="29" y="30" width="6" height="18" fill="white"/></svg>' type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JTech AI - Professional Construction Management SaaS</title>
-    <meta name="description" content="Kenya's leading construction management platform. Create professional quotes, manage projects, and grow your construction business with JTech AI." />
-    <meta name="author" content="Jeffrey" />
-    <meta property="og:title" content="JTech AI - Professional Construction Management SaaS" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="AI-powered construction management platform. Generate accurate quotes, manage projects, and grow your business with Jtech AI." />
-    <meta property="og:image" content="/icon.ico" />
-    <meta property="og:url" content="https://jtechai.com" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@jtech_ke" />
-    <meta name="twitter:image" content="/logo.png" />
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>REALTOR | Premium Residential Sales & Leasing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
-      /* Critical CSS for the Loading Screen */
-      body { margin: 0; background-color: #F5F7FA; font-family: 'Inter', sans-serif; }
+      :root {
+        --navy: #1E3A5F;
+        --slate: #5B7C99;
+        --orange: #F96302;
+        --bg: #ffffff;
+      }
+
+      body { 
+        margin: 0; 
+        background-color: var(--bg); 
+        font-family: 'Montserrat', sans-serif; 
+      }
+
       .app-loader {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        inset: 0;
         display: flex;
         justify-content: center;
         align-items: center;
         z-index: 9999;
-        background-color: #F5F7FA;
-        transition: opacity 0.5s ease-out;
+        background: radial-gradient(circle at center, #ffffff 0%, #F5F7FA 100%);
+        transition: opacity 0.6s ease-out;
       }
-      .logo-pulse {
-        animation: pulse-opacity 2s infinite ease-in-out;
+
+      .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
       }
-      @keyframes pulse-opacity {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.8; transform: scale(1.02); }
+
+      /* --- SVG OPTIMIZATION --- */
+      .logo-svg {
+        width: 150px;
+        height: 150px;
+        overflow: visible;
+        will-change: transform; /* GPU Optimization */
+      }
+
+      /* --- 1. KEY ANIMATION --- */
+      .key-group {
+        transform-origin: 50px 45px;
+        will-change: transform;
+        /* The key rotation: Smooth start, snappy turn, soft stop */
+        animation: keyTurn 2.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      .key-path {
+        fill: none;
+        stroke: var(--slate);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1000; /* Huge buffer to prevent gaps */
+        stroke-dashoffset: 1000;
+        animation: drawLine 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+
+      /* --- 2. RIPPLE EFFECT --- */
+      .click-ripple {
+        stroke: var(--orange);
+        stroke-width: 2;
+        fill: none;
+        opacity: 0;
+        transform-origin: 50px 45px;
+        will-change: transform, opacity;
+        animation: rippleFlow 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.9s forwards;
+      }
+
+      /* --- 3. HOUSE ANIMATION --- */
+      .house-path {
+        fill: transparent; 
+        stroke: var(--navy);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 1000; /* Huge buffer */
+        stroke-dashoffset: 1000;
+        will-change: stroke-dashoffset, fill;
+        /* Overlaps slightly with ripple for continuity */
+        animation: 
+          drawLine 1.2s cubic-bezier(0.4, 0, 0.2, 1) 1.1s forwards,
+          fillHouse 0.8s ease-out 2s forwards;
+      }
+
+      /* --- 4. TEXT REVEAL --- */
+      .text-mask {
+        overflow: hidden;
+        margin-top: -10px;
+      }
+
+      .brand-name {
+        font-size: 60px;
+        font-weight: 900;
+        color: var(--navy);
+        letter-spacing: -2px;
+        transform: translateY(110%);
+        will-change: transform;
+        /* Elegant rise */
+        animation: slideUp 1.2s cubic-bezier(0.25, 1, 0.5, 1) 1.4s forwards;
+      }
+
+      .tagline {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--slate);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        opacity: 0;
+        transform: translateY(5px);
+        margin-top: 5px;
+        animation: fadeUp 1s ease-out 2s forwards;
+      }
+
+      /* --- SMOOTH KEYFRAMES --- */
+      
+      @keyframes drawLine {
+        to { stroke-dashoffset: 0; }
+      }
+
+      @keyframes keyTurn {
+        0%, 35% { transform: rotate(0deg); } 
+        /* The overshoot (1.56 in bezier) creates a subtle bounce */
+        100% { transform: rotate(90deg); } 
+      }
+
+      @keyframes rippleFlow {
+        0% { opacity: 0; transform: scale(0.4); border-width: 4px; }
+        40% { opacity: 1; }
+        100% { opacity: 0; transform: scale(2.2); stroke-width: 0; }
+      }
+
+      @keyframes fillHouse {
+        to { fill: rgba(30, 58, 95, 0.03); /* Subtle tint fill */ }
+      }
+
+      @keyframes slideUp {
+        from { transform: translateY(110%); }
+        to { transform: translateY(0); }
+      }
+
+      @keyframes fadeUp {
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @media (max-width: 600px) {
+        .logo-svg { width: 110px; height: 110px; }
+        .brand-name { font-size: 38px; letter-spacing: -1px; }
+        .tagline { font-size: 10px; letter-spacing: 2px; }
       }
     </style>
   </head>
 
-  <body class="transition-colors duration-500">
+  <body>
     <div id="root">
       <div class="app-loader">
-        <div class="logo-pulse">
-          <svg width="180" height="48" viewBox="0 0 135 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.2857 11.25H12.8571V15.75H19.2857V11.25Z" fill="#001226"/>
-            <path d="M19.2857 20.25H12.8571V24.75H19.2857V20.25Z" fill="#001226"/>
-            <path d="M9.64286 6.75H25.7143V2.25H9.64286V6.75Z" fill="#001226"/>
-            <path d="M9.64286 29.25H25.7143V24.75H9.64286V29.25Z" fill="#001226"/>
-            <path d="M6.42857 11.25H0V24.75H6.42857V11.25Z" fill="#001226"/>
-            <path d="M32.1429 11.25H25.7143V24.75H32.1429V11.25Z" fill="#001226"/>
-            <path d="M38.5714 15.75H32.1429V20.25H38.5714V15.75Z" fill="#001226"/>
-            <circle cx="22.5" cy="13.5" r="2.25" fill="#0077B6"/>
-            <circle cx="22.5" cy="22.5" r="2.25" fill="#0077B6"/>
-            <path d="M22.5 15.75V20.25" stroke="#0077B6" stroke-width="1.5"/>
-            <text x="45" y="24" font-family="Inter, sans-serif" font-weight="bold" font-size="22" fill="#001226">JTech</text>
-            <text x="108" y="24" font-family="Inter, sans-serif" font-weight="bold" font-size="22" fill="#0077B6">AI</text>
+        <div class="content-wrapper">
+          
+          <svg class="logo-svg" viewBox="0 0 100 100">
+             <circle class="click-ripple" cx="50" cy="45" r="22" />
+
+             <path class="house-path" d="M15 45 L50 10 L85 45 V90 H50" />
+             <path class="house-path" d="M15 90 H40" />
+             
+             <g class="key-group">
+               <circle class="key-path" cx="50" cy="45" r="10" />
+               <path class="key-path" d="M50 55 V85" />
+               <path class="key-path" d="M50 65 H62" />
+               <path class="key-path" d="M50 75 H58" />
+               <circle cx="50" cy="45" r="1" fill="transparent"/>
+             </g>
           </svg>
+
+          <div class="text-mask">
+            <div class="brand-name">REALTOR</div>
+          </div>
+          
+          <div class="tagline">Welcome Home</div>
+
         </div>
       </div>
     </div>

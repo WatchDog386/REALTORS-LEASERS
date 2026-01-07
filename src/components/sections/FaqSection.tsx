@@ -1,343 +1,388 @@
-// src/components/sections/FaqSection.tsx
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 import { 
-  ChevronDown, 
-  ChevronUp, 
-  Search, 
-  Plus, 
-  Minus, 
-  Target,
-  FileCode,
-  ShieldCheck,
-  HelpCircle,
-  Play
+    Star, 
+    CheckCircle2, 
+    Printer, 
+    Share2, 
+    Hammer, 
+    ArrowRight,
+    Info,
+    CheckSquare,
+    Square,
+    Truck,
+    Search,
+    ShoppingCart,
+    MapPin,
+    ChevronDown
 } from "lucide-react";
 
-// --- GLOBAL STYLES ---
+// --- STYLES FOR HD AESTHETIC ---
 const GlobalStyles = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    .font-inter { font-family: 'Inter', sans-serif; }
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-  `}</style>
-);
-
-// --- THEME COLORS ---
-const THEME = {
-  headerBackground: "#001021",
-  brandBlue: "#005F9E",
-  bgLight: "#F5F7FA",
-  textDark: "#1a1a1a",
-};
-
-// --- MOCK DATA ---
-const faqCategories = [
-  { name: "General", checked: true },
-  { name: "Account", checked: false },
-  { name: "Upload", checked: false },
-  { name: "AI Takeoff", checked: false },
-  { name: "Estimation", checked: false },
-  { name: "Pricing", checked: false },
-  { name: "QS", checked: false },
-  { name: "Files", checked: false },
-  { name: "Security", checked: false },
-  { name: "Billing", checked: false },
-];
-
-const mockFaqResults = [
-  {
-    id: "JT001",
-    icon: Target,
-    tags: ["AI", "Accuracy"],
-    title: "How accurate is J-Tech AI?",
-    question: "Precision level of automated measurements?",
-    answer: "**99.9% accuracy** on clear, scaled plans. AI cross-validates with structural logic. Review & adjust before finalizing.",
-    historyText: "How does J-Tech verify results?",
-    historyAnswer: "Dual-validation: geometric checks + material logic rules. You retain final control."
-  },
-  {
-    id: "JT002",
-    icon: FileCode,
-    tags: ["Upload", "Files"],
-    title: "Supported file types?",
-    question: "Scanned PDFs or hand-drawn plans?",
-    answer: "**PDF, DWG, DXF, JPG, PNG**, including scanned/hand-drawn. Include scale reference for best results.",
-    historyText: "Upload tips",
-    historyAnswer: "High contrast, properly oriented. Built-in rotation & crop tools available."
-  },
-  {
-    id: "JT003",
-    icon: ShieldCheck,
-    tags: ["Security", "Data"],
-    title: "Is my data secure?",
-    question: "Storage & access controls?",
-    answer: "**AES-256 encryption** on AWS. GDPR compliant. Only you & authorized team members.",
-    historyText: "AI training on my plans?",
-    historyAnswer: "Never without explicit consent. Your IP remains yours."
-  },
-];
-
-// --- COMPONENTS ---
-
-const VideoCardMockup = ({ opacity = 1, scale = 1, offset = 0 }) => (
-  <div 
-    className="absolute top-1/2 -translate-y-1/2 w-[240px] h-[140px] rounded-lg border border-white/20 bg-white/5 backdrop-blur-sm overflow-hidden flex flex-col justify-between shadow-xl"
-    style={{ 
-      right: `${offset}px`, 
-      opacity: opacity, 
-      transform: `translateY(-50%) scale(${scale})`,
-      zIndex: Math.floor(opacity * 10)
-    }}
-  >
-    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
-    
-    <div className="absolute inset-0 flex items-center justify-center">
-      <div className="w-10 h-10 rounded-full border-2 border-white/50 flex items-center justify-center bg-black/20 backdrop-blur-md">
-        <Play className="w-4 h-4 text-white fill-current ml-0.5" />
-      </div>
-    </div>
-
-    <div className="mt-auto p-2.5">
-       <div className="flex justify-between items-center mb-1 px-1">
-         <div className="h-1 w-1 bg-red-500 rounded-full"></div>
-         <div className="h-1 w-1 bg-white/30 rounded-full"></div>
-       </div>
-       <div className="w-full h-[1.5px] bg-white/20 rounded-full overflow-hidden">
-          <div className="h-full bg-red-600 w-[70%]"></div>
-       </div>
-    </div>
-  </div>
-);
-
-const CategorySidebar = () => (
-  <aside className="w-full max-w-[220px] hidden md:block flex-shrink-0">
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-6 sticky top-24">
-      <div className="p-3.5 bg-[#F5F7FA] border-b border-gray-200 flex justify-between items-center">
-        <span className="text-xs font-bold text-[#001021] uppercase tracking-wider">
-          Categories
-        </span>
-        <ChevronUp className="w-3.5 h-3.5 text-gray-500" />
-      </div>
-      <div className="p-3.5 space-y-2.5 max-h-[500px] overflow-y-auto custom-scrollbar">
-        {faqCategories.map((category, index) => (
-          <label key={index} className="flex items-center text-sm text-gray-600 hover:text-[#005F9E] cursor-pointer transition-colors group">
-            <input
-              type="checkbox"
-              className="h-3.5 w-3.5 text-[#005F9E] border-gray-300 rounded focus:ring-[#005F9E] mr-2.5 cursor-pointer"
-              defaultChecked={category.checked}
-            />
-            <span className="group-hover:translate-x-0.5 transition-transform duration-200 text-sm">
-              {category.name}
-            </span>
-          </label>
-        ))}
-      </div>
-    </div>
-  </aside>
-);
-
-const FaqItem = ({ faq, index }) => {
-  const [isOpenMain, setIsOpenMain] = useState(index === 0); 
-  const [isOpenSub, setIsOpenSub] = useState(false);
-  const IconComponent = faq.icon || HelpCircle;
-
-  return (
-    <motion.div
-      className="flex flex-col md:flex-row gap-5 mb-6"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-    >
-      <div className="hidden md:flex flex-col items-center pt-1.5 w-10 flex-shrink-0">
-         <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center border border-gray-200 text-[#005F9E] shadow-sm">
-            <IconComponent className="w-5 h-5" />
-         </div>
-         <div className="h-full w-px bg-gray-200 mt-3 border-l border-dashed border-gray-300"></div>
-      </div>
-
-      <div className="flex-grow bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow transition-shadow overflow-hidden">
-        <div className="p-5 md:p-6">
-          <div className="flex flex-wrap items-center gap-1.5 mb-3">
-            <span className="text-gray-400 text-[9px] font-mono border border-gray-100 px-1.5 py-0.5 rounded">
-              {faq.id}
-            </span>
-            {faq.tags.map((tag) => (
-              <span key={tag} className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-blue-50 text-[#005F9E]">
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <h3 className="text-lg font-bold text-[#001021] mb-4">
-            {faq.title}
-          </h3>
-
-          <div className="border border-gray-200 rounded-lg overflow-hidden mb-2">
-            <div 
-              onClick={() => setIsOpenMain(!isOpenMain)}
-              className={`flex items-center justify-between p-3.5 cursor-pointer transition-colors ${isOpenMain ? 'bg-gray-50' : 'bg-white hover:bg-gray-50'}`}
-            >
-              <div className="flex items-center gap-2">
-                <span className={`font-semibold text-sm ${isOpenMain ? 'text-[#005F9E]' : 'text-gray-700'}`}>
-                  {faq.question}
-                </span>
-              </div>
-              {isOpenMain ? <ChevronUp className="w-3.5 h-3.5 text-gray-500" /> : <ChevronDown className="w-3.5 h-3.5 text-gray-500" />}
-            </div>
-            <AnimatePresence>
-              {isOpenMain && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="p-3.5 pt-0 bg-gray-50 border-t border-gray-200 text-sm text-gray-600 leading-relaxed">
-                     <p dangerouslySetInnerHTML={{ __html: faq.answer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          
-          {faq.historyText && (
-            <div className="border border-gray-200 rounded-lg overflow-hidden">
-              <div 
-                onClick={() => setIsOpenSub(!isOpenSub)}
-                className={`flex items-center justify-between p-3.5 cursor-pointer transition-colors ${isOpenSub ? 'bg-gray-50' : 'bg-white hover:bg-gray-50'}`}
-              >
-                 <div className="flex items-center gap-2">
-                    <span className={`font-semibold text-sm ${isOpenSub ? 'text-[#005F9E]' : 'text-gray-700'}`}>
-                      {faq.historyText}
-                    </span>
-                 </div>
-                 {isOpenSub ? <Minus className="w-3.5 h-3.5 text-gray-400" /> : <Plus className="w-3.5 h-3.5 text-gray-400" />}
-              </div>
-              <AnimatePresence>
-                {isOpenSub && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-3.5 pt-0 bg-gray-50 border-t border-gray-200 text-sm text-gray-600 leading-relaxed">
-                      <p dangerouslySetInnerHTML={{ __html: faq.historyAnswer?.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-// --- MAIN PAGE COMPONENT ---
-const FaqSection = () => {
-  return (
-    <>
-      <GlobalStyles />
-      <div id="faq" className="w-full font-inter bg-white min-h-screen">
+    <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700;900&display=swap');
         
-        {/* HERO SECTION */}
-        <div
-          className="w-full relative overflow-hidden h-[400px]"
-          style={{ backgroundColor: THEME.headerBackground }}
-        >
-          <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-blue-900/20 to-transparent pointer-events-none"></div>
+        :root {
+            --hd-orange: #F96302;
+            --hd-dark: #333333;
+            --hd-light-gray: #f5f5f5;
+        }
 
-          <div className="max-w-[1200px] mx-auto px-5 h-full flex items-center relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 w-full gap-10 items-center">
-              
-              <div className="w-full max-w-md">
-                <motion.h1
-                  className="text-3xl lg:text-4xl font-extrabold text-white mb-4"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  J-Tech AI FAQs
-                </motion.h1>
+        body { 
+            background-color: #fff; 
+            color: #333; 
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .font-condensed { font-family: 'Roboto Condensed', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ccc; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--hd-orange); }
 
-                <p className="text-gray-300 text-sm leading-relaxed mb-6 pr-6">
-                  Instant communication between AI assistant & participants. Reliable internet required.
-                </p>
+        @media print {
+            .no-print { display: none !important; }
+            .card { break-inside: avoid; border: 1px solid #ccc; }
+        }
+    `}</style>
+);
 
-                <div className="flex bg-white rounded-sm overflow-hidden h-12 w-full max-w-md shadow-lg">
-                  <div className="flex-1 flex items-center px-3.5">
-                    <input
-                      type="text"
-                      placeholder="Search FAQs"
-                      className="w-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none bg-transparent font-medium"
-                    />
-                  </div>
-                  <button
-                    className="h-full px-6 font-bold text-white text-xs uppercase tracking-wide transition-colors hover:bg-opacity-90"
-                    style={{ backgroundColor: THEME.headerBackground }}
-                  >
-                    Search
-                  </button>
+const Index = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  // --- STATE ---
+  const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>({});
+  const [progress, setProgress] = useState(0);
+  
+  // Keep existing data fetching in case you want to map DB data to cards later
+  const [tiers, setTiers] = useState([]);
+  const [tiersLoading, setTiersLoading] = useState(true);
+
+  // --- AUTH REDIRECT ---
+  useEffect(() => {
+    if (user) navigate("/dashboard");
+  }, [user, navigate]);
+
+  // --- DATA FETCHING (Preserved) ---
+  useEffect(() => {
+    let cancelled = false;
+    const fetchTiers = async () => {
+      setTiersLoading(true);
+      const { data, error } = await supabase
+        .from("tiers")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (!cancelled && !error) {
+        setTiers(Array.isArray(data) ? data : []);
+      }
+      setTiersLoading(false);
+    };
+
+    fetchTiers();
+    return () => { cancelled = true; };
+  }, []);
+
+  // --- LOGIC: CHECKLIST & PROGRESS ---
+  const toggleTask = (taskId: string) => {
+      setCompletedTasks(prev => ({ ...prev, [taskId]: !prev[taskId] }));
+  };
+
+  const steps = [
+    {
+        id: "1",
+        title: "Search & Discovery",
+        sku: "SKU #1000-1",
+        time: "1-2 Hours",
+        img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop",
+        desc: "Locate your ideal unit specifications.",
+        tasks: [
+            { id: "t1-1", text: "Create Tenant Portal Account" },
+            { id: "t1-2", text: "Filter by Price & Location" },
+            { id: "t1-3", text: "Save 3 Favorite Units" }
+        ]
+    },
+    {
+        id: "2",
+        title: "Verification & Viewing",
+        sku: "SKU #1000-2",
+        time: "30 Mins",
+        img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=600&auto=format&fit=crop",
+        desc: "Mandatory identity checks before touring.",
+        tasks: [
+            { id: "t2-1", text: "Upload National ID / Passport" },
+            { id: "t2-2", text: "Schedule Physical or Virtual Tour" },
+            { id: "t2-3", text: "Confirm 'Free Visit' Voucher" }
+        ]
+    },
+    {
+        id: "3",
+        title: "Lease & Documentation",
+        sku: "SKU #1000-3",
+        time: "15 Mins",
+        img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=600&auto=format&fit=crop",
+        desc: "Digital signing process. No paperwork needed.",
+        tasks: [
+            { id: "t3-1", text: "Submit KRA PIN Certificate" },
+            { id: "t3-2", text: "Verify Email for DocuSign" },
+            { id: "t3-3", text: "Sign Lease via OTP" }
+        ]
+    },
+    {
+        id: "4",
+        title: "Payment & Move-In",
+        sku: "SKU #1000-4",
+        time: "24 Hours",
+        img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop",
+        desc: "Secure the unit and receive access keys.",
+        tasks: [
+            { id: "t4-1", text: "Link Active M-Pesa or Bank Card" },
+            { id: "t4-2", text: "Pay 1 Month Deposit + Rent" },
+            { id: "t4-3", text: "Download Access Code App" }
+        ]
+    }
+  ];
+
+  useEffect(() => {
+    const totalTasks = steps.reduce((acc, step) => acc + step.tasks.length, 0);
+    const completedCount = Object.values(completedTasks).filter(Boolean).length;
+    setProgress(Math.round((completedCount / totalTasks) * 100));
+  }, [completedTasks]);
+
+  const handlePrint = () => window.print();
+
+  return (
+    <div className="min-h-screen bg-white text-[#333]">
+      <GlobalStyles />
+      
+      {/* --- HEADER: HD STYLE MOCKUP --- */}
+      <div className="border-b border-gray-200 no-print">
+            {/* Top Strip */}
+            <div className="bg-white px-4 py-1 text-[11px] font-bold text-[#333] border-b border-gray-200 flex justify-between container max-w-7xl mx-auto">
+                <div className="flex gap-4">
+                    <span className="hover:underline cursor-pointer">Store Finder</span>
+                    <span className="hover:underline cursor-pointer">Truck & Tool Rental</span>
+                    <span className="hover:underline cursor-pointer">For the Pro</span>
                 </div>
-              </div>
-
-              <div className="hidden lg:block relative h-56 w-full rounded-lg overflow-hidden shadow-xl">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover rounded-lg"
-                >
-                  <source src="/demo.mp4" type="video/mp4" />
-                </video>
-                <div className="absolute inset-0 bg-blue-900/10 mix-blend-overlay pointer-events-none rounded-lg"></div>
-              </div>
-
+                <div>
+                    <span className="text-[#F96302] font-bold">Ayden Leasing: <span className="underline text-[#333]">Open 24/7 Online</span></span>
+                </div>
             </div>
-          </div>
+
+            {/* Main Nav Bar */}
+            <div className="bg-white px-4 py-4 shadow-sm relative z-20 container max-w-7xl mx-auto">
+                <div className="flex flex-col md:flex-row items-center gap-6">
+                    {/* Logo Area */}
+                    <div 
+                        onClick={() => navigate('/')}
+                        className="text-[#F96302] text-3xl font-condensed font-black tracking-tighter leading-none border-2 border-[#F96302] p-1 px-2 cursor-pointer select-none"
+                    >
+                        AYDEN<br/><span className="text-lg text-[#333]">DEPOT</span>
+                    </div>
+                    
+                    {/* Search Bar */}
+                    <div className="flex-grow flex items-center relative w-full">
+                        <input 
+                            type="text" 
+                            placeholder="What can we help you rent today?" 
+                            className="w-full border border-[#333] rounded-sm py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#F96302]"
+                        />
+                        <button className="bg-[#F96302] p-2 absolute right-0 top-0 bottom-0 hover:bg-[#d15200] transition-colors">
+                            <Search className="text-white w-5 h-5" />
+                        </button>
+                    </div>
+
+                    {/* Nav Links */}
+                    <div className="flex items-center gap-6 text-sm font-bold text-[#333] whitespace-nowrap">
+                        <div className="flex flex-col leading-tight cursor-pointer hover:text-[#F96302]">
+                            <span className="text-[10px] font-normal text-gray-500">My Account</span>
+                            <span onClick={() => navigate('/auth')}>Sign In / Register</span>
+                        </div>
+                        <div className="flex items-center gap-2 cursor-pointer hover:text-[#F96302]">
+                            <ShoppingCart className="w-6 h-6 text-[#F96302]" />
+                            <span className="hidden md:inline">Cart (0)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+      </div>
+
+      <div className="container max-w-7xl mx-auto px-4 py-6">
+        
+        {/* --- PROJECT STATUS BAR (Replaces Hero) --- */}
+        <div className="bg-[#333] text-white p-4 mb-8 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+                <div className="bg-[#F96302] p-2">
+                    <Hammer size={24} className="text-white" />
+                </div>
+                <div>
+                    <h1 className="text-xl font-condensed font-bold leading-none uppercase tracking-wide">
+                        Project: Renting Your Apartment
+                    </h1>
+                    <div className="text-xs text-gray-400 mt-1 flex gap-3 font-mono">
+                        <span>Model #RENT-101</span>
+                        <span>|</span>
+                        <span>DIY Level: Beginner</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="flex-1 w-full md:max-w-md mx-4">
+                <div className="flex justify-between text-xs font-bold uppercase mb-1">
+                    <span>Project Status</span>
+                    <span className="text-[#F96302]">{progress}% Complete</span>
+                </div>
+                <div className="w-full bg-gray-600 h-3 rounded-sm overflow-hidden">
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        className="bg-[#F96302] h-full"
+                    />
+                </div>
+            </div>
+
+            <div className="flex gap-2 no-print">
+                <button onClick={handlePrint} className="text-xs font-bold uppercase border border-white px-3 py-2 hover:bg-white hover:text-[#333] transition-colors flex gap-2">
+                    <Printer size={14} /> Print
+                </button>
+                <button className="text-xs font-bold uppercase bg-[#F96302] border border-[#F96302] px-3 py-2 hover:bg-white hover:text-[#F96302] transition-colors flex gap-2">
+                    <Share2 size={14} /> Share
+                </button>
+            </div>
         </div>
 
-        {/* MAIN CONTENT */}
-        <main className="max-w-[1100px] mx-auto flex py-12 px-5 gap-6 bg-white">
-          <CategorySidebar />
-          <div className="w-full md:flex-1"> 
-            <div className="flex flex-col sm:flex-row items-center justify-between text-sm text-gray-600 mb-6 pb-3 border-b border-gray-100">
-              <span className="font-semibold text-[#001021]">
-                Showing <span className="text-[#005F9E]">3</span> of 142
-              </span>
-              <div className="flex items-center gap-3 mt-3 sm:mt-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-gray-500">Sort:</span>
-                  <select className="bg-transparent font-semibold text-[#001021] focus:outline-none cursor-pointer text-sm">
-                    <option>Relevance</option>
-                    <option>Latest</option>
-                    <option>Most Viewed</option>
-                  </select>
+        {/* --- MAIN CONTENT: GRID CARDS --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+            {steps.map((step, index) => {
+                const isStepComplete = step.tasks.every(t => completedTasks[t.id]);
+                return (
+                    <motion.div 
+                        key={step.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.1 }}
+                        className={`card group flex flex-col border bg-white transition-all duration-200 h-full ${isStepComplete ? 'border-green-600 ring-1 ring-green-600' : 'border-gray-300 hover:shadow-lg hover:border-[#F96302]'}`}
+                    >
+                        {/* Step Image & Header */}
+                        <div className="relative h-40 bg-gray-100 shrink-0 border-b border-gray-200">
+                            <img 
+                                src={step.img} 
+                                alt={step.title}
+                                className={`w-full h-full object-cover mix-blend-multiply ${isStepComplete ? 'opacity-50 grayscale' : ''}`} 
+                            />
+                            <div className="absolute top-0 left-0 bg-[#333] text-white text-xs font-bold px-3 py-1 z-10">
+                                STEP {step.id}
+                            </div>
+                            {isStepComplete && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-[1px]">
+                                    <div className="bg-green-600 text-white px-4 py-1 font-bold text-sm uppercase flex items-center gap-2 shadow-sm transform -rotate-12 border-2 border-white">
+                                        <CheckCircle2 size={16} /> Complete
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Card Body */}
+                        <div className="p-4 flex flex-col flex-grow">
+                            <h3 className="font-bold text-[#154279] text-lg leading-tight mb-1 group-hover:underline cursor-pointer font-condensed">
+                                {step.title}
+                            </h3>
+                            <p className="text-[10px] text-gray-500 font-mono mb-3">{step.sku}</p>
+
+                            <div className="flex items-center gap-1 mb-4">
+                                <div className="flex">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star key={i} size={12} fill="#F96302" stroke="none" />
+                                    ))}
+                                </div>
+                                <span className="text-xs text-gray-400 font-semibold">(Verified)</span>
+                            </div>
+
+                            <p className="text-sm text-gray-700 leading-snug mb-4 min-h-[40px]">
+                                {step.desc}
+                            </p>
+
+                            {/* Checklist Area */}
+                            <div className="mt-auto bg-gray-50 border border-gray-200 p-3 mb-4">
+                                <div className="text-[10px] font-bold text-gray-500 uppercase mb-2 tracking-wider flex items-center justify-between">
+                                    Requirements ({step.tasks.filter(t => completedTasks[t.id]).length}/{step.tasks.length})
+                                </div>
+                                <div className="space-y-2">
+                                    {step.tasks.map((task) => (
+                                        <div 
+                                            key={task.id}
+                                            onClick={() => toggleTask(task.id)}
+                                            className="flex items-start gap-2 cursor-pointer group/item select-none"
+                                        >
+                                            <div className={`mt-0.5 shrink-0 transition-colors ${completedTasks[task.id] ? 'text-[#F96302]' : 'text-gray-300 group-hover/item:text-gray-400'}`}>
+                                                {completedTasks[task.id] ? <CheckSquare size={16} /> : <Square size={16} />}
+                                            </div>
+                                            <span className={`text-xs leading-tight transition-all ${completedTasks[task.id] ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'}`}>
+                                                {task.text}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Action Button */}
+                            <button 
+                                onClick={() => !isStepComplete && navigate('/auth')}
+                                disabled={isStepComplete}
+                                className={`w-full py-3 text-xs font-bold uppercase flex items-center justify-center gap-2 transition-colors ${
+                                    isStepComplete 
+                                    ? 'bg-green-600 text-white cursor-default'
+                                    : 'bg-[#333] text-white hover:bg-[#F96302]'
+                                }`}
+                            >
+                                {isStepComplete ? 'Step Done' : `Start Step ${step.id}`} 
+                                {!isStepComplete && <ArrowRight size={14} />}
+                            </button>
+                        </div>
+                    </motion.div>
+                );
+            })}
+        </div>
+
+        {/* --- BOTTOM PROMO --- */}
+        <div className="mt-8 p-4 bg-[#E6F0FA] border border-[#154279] flex flex-col md:flex-row items-center justify-between gap-4 no-print">
+            <div className="flex items-start gap-3">
+                <Info className="text-[#154279] shrink-0" size={24} />
+                <div className="text-xs text-[#154279]">
+                    <strong>Pro Tip:</strong> Completing the verification step (Step 2) unlocks "Instant Key Access" for Step 4. 
+                    Ensure your documents are clear and legible.
                 </div>
-              </div>
             </div>
-            <div className="space-y-1">
-              {mockFaqResults.map((faq, index) => (
-                <FaqItem key={faq.id} faq={faq} index={index} />
-              ))}
+            <div className="flex items-center gap-2 text-xs font-bold text-[#154279] uppercase">
+                <Truck size={18} />
+                <span>Need Moving Help? Get 10% Off Truck Rental</span>
             </div>
-            <div className="mt-10 text-center">
-               <button className="px-5 py-2.5 border border-gray-200 text-[#001021] font-bold text-xs uppercase tracking-widest rounded hover:border-[#001021] transition-colors">
-                  Load More
-               </button>
+        </div>
+
+        {/* --- INDUSTRIAL FOOTER --- */}
+        <footer className="mt-12 border-t border-gray-200 pt-8 pb-12 text-center no-print">
+            <div className="flex justify-center gap-6 mb-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                <span className="hover:text-[#F96302] cursor-pointer">About Us</span>
+                <span className="hover:text-[#F96302] cursor-pointer">Careers</span>
+                <span className="hover:text-[#F96302] cursor-pointer">Corporate Responsibility</span>
+                <span className="hover:text-[#F96302] cursor-pointer">Digital Newsroom</span>
             </div>
-          </div>
-        </main>
+            <p className="text-[10px] text-gray-400">
+                © 2024 Ayden Depot. All Rights Reserved. Use of this site is subject to certain Terms Of Use.
+            </p>
+        </footer>
+
       </div>
-    </>
+    </div>
   );
 };
 
-export default FaqSection;
+export default Index;

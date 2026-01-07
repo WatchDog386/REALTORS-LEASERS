@@ -1,5 +1,5 @@
 // src/components/PageSections.tsx
-import WhoItsForSection from "./sections/WhoItsForSection";
+
 import HowItWorks from "./sections/HowItWorks";
 import FeaturesSection from "./sections/FeaturesSection";
 import PricingSection from "./sections/PricingSection";
@@ -23,7 +23,7 @@ export const PageSections = ({
 }: PageSectionsProps) => {
   return (
     <>
-      <WhoItsForSection />
+      
       <HowItWorks />
       <FeaturesSection />
       <PricingSection

@@ -27,6 +27,14 @@ const RISA_LIGHT_GRAY = "#F5F7FA";
 const RISA_MEDIUM_GRAY = "#E2E8F0";
 const KCA_GOLD = "#D4AF37";
 const KCA_GOLD_DARK = "#B8860B";
+const ICON_COLORS = [
+  RISA_BLUE,
+  RISA_LIGHT_BLUE,
+  RISA_BLUE,
+  RISA_LIGHT_BLUE,
+  RISA_BLUE,
+  RISA_LIGHT_BLUE,
+];
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -42,6 +50,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
   const { user, profile, signIn, signUp, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,6 +58,7 @@ const Auth = () => {
     setError("");
     setSuccess("");
     setLoading(true);
+
     try {
       if (mode === "signup") {
         if (formData.password !== formData.confirmPassword) {
@@ -57,17 +67,20 @@ const Auth = () => {
         if (formData.password.length < 6) {
           throw new Error("Password must be at least 6 characters");
         }
+
         await signUp(formData.email, formData.password, formData.name);
         setSuccess(
           "Account created successfully! Please check your email to verify your account."
         );
       }
+
       if (mode === "signin") {
         await signIn(formData.email, formData.password);
       }
     } catch (err: any) {
       let friendlyMessage = "Something went wrong. Please try again.";
       const msg = err.message.toLowerCase();
+
       if (msg.includes("passwords do not match")) {
         friendlyMessage = "Your passwords do not match.";
       } else if (msg.includes("at least 6 characters")) {
@@ -85,11 +98,13 @@ const Auth = () => {
         friendlyMessage =
           "Network error. Please check your internet connection.";
       }
+
       toast({
         title: "Authentication Error",
         description: friendlyMessage,
         variant: "destructive",
       });
+
       setError(friendlyMessage);
     } finally {
       setLoading(false);
@@ -112,6 +127,7 @@ const Auth = () => {
       <div className="fixed top-4 right-4 z-50">
         <ThemeToggle />
       </div>
+
       <motion.div
         className="w-full max-w-md"
         initial={{ opacity: 0, y: 30 }}
@@ -120,6 +136,7 @@ const Auth = () => {
       >
         {/* Header */}
         <div className="text-center mb-8">
+          {/* Animated Back Button */}
           <motion.button
             onClick={() => navigate("/")}
             initial={{ opacity: 0, y: -10 }}
@@ -140,6 +157,7 @@ const Auth = () => {
               <span className="block">Back to Home</span>
             </span>
           </motion.button>
+
           <div className="flex items-center justify-center mb-4 group">
             <motion.div
               whileHover={{ rotate: 15, scale: 1.1 }}
@@ -156,6 +174,7 @@ const Auth = () => {
               JTech AI
             </motion.span>
           </div>
+
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -164,6 +183,7 @@ const Auth = () => {
           >
             {mode === "signin" ? "Welcome Back" : "Get Started"}
           </motion.h1>
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -414,55 +434,55 @@ const Auth = () => {
             </CardContent>
           </Card>
         </motion.div>
-
-        {/* Global Styles */}
-        <style>{`
-          .auth-input {
-            border-radius: 50px;
-            border: 1px solid ${RISA_MEDIUM_GRAY};
-            padding: 0.75rem 1rem;
-            transition: all 0.3s ease;
-          }
-          .auth-input:focus {
-            border-color: ${RISA_BLUE};
-            box-shadow: 0 0 0 2px rgba(1, 91, 151, 0.2);
-            outline: none;
-          }
-          .auth-card {
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: none;
-          }
-          .risa-btn-primary {
-            background-color: ${RISA_BLUE};
-            color: ${RISA_WHITE};
-            padding: 0.5rem 2rem;
-            border-radius: 50px;
-            border: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-          }
-          .risa-btn-primary:hover {
-            background-color: ${RISA_WHITE};
-            color: ${RISA_BLUE};
-            border: 1px solid ${RISA_BLUE};
-          }
-          .risa-btn-outline {
-            background-color: ${RISA_WHITE};
-            color: ${RISA_BLUE};
-            padding: 0.5rem 2rem;
-            border-radius: 50px;
-            border: 1px solid ${RISA_BLUE};
-            font-weight: bold;
-            transition: all 0.3s ease;
-          }
-          .risa-btn-outline:hover {
-            background-color: ${RISA_BLUE};
-            color: ${RISA_WHITE};
-            border: 1px solid ${RISA_BLUE};
-          }
-        `}</style>
       </motion.div>
+
+      {/* Global Styles */}
+      <style>{`
+        .auth-input {
+          border-radius: 50px;
+          border: 1px solid ${RISA_MEDIUM_GRAY};
+          padding: 0.75rem 1rem;
+          transition: all 0.3s ease;
+        }
+        .auth-input:focus {
+          border-color: ${RISA_BLUE};
+          box-shadow: 0 0 0 2px rgba(1, 91, 151, 0.2);
+          outline: none;
+        }
+        .auth-card {
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+          border: none;
+        }
+        .risa-btn-primary {
+          background-color: ${RISA_BLUE};
+          color: ${RISA_WHITE};
+          padding: 0.5rem 2rem;
+          border-radius: 50px;
+          border: none;
+          font-weight: bold;
+          transition: all 0.3s ease;
+        }
+        .risa-btn-primary:hover {
+          background-color: ${RISA_WHITE};
+          color: ${RISA_BLUE};
+          border: 1px solid ${RISA_BLUE};
+        }
+        .risa-btn-outline {
+          background-color: ${RISA_WHITE};
+          color: ${RISA_BLUE};
+          padding: 0.5rem 2rem;
+          border-radius: 50px;
+          border: 1px solid ${RISA_BLUE};
+          font-weight: bold;
+          transition: all 0.3s ease;
+        }
+        .risa-btn-outline:hover {
+          background-color: ${RISA_BLUE};
+          color: ${RISA_WHITE};
+          border: 1px solid ${RISA_BLUE};
+        }
+      `}</style>
     </div>
   );
 };
