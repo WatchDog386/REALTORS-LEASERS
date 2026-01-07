@@ -28,8 +28,8 @@ const THEME = {
 };
 
 const SECTIONS = [
-  { name: "How It Works", id: "how-it-works", icon: <Hammer size={16}/> },
-  { name: "Property Features", id: "features", icon: <Building2 size={16}/> },
+  { name: "Get Started", id: "how-it-works", icon: <Hammer size={16}/> },
+  { name: "Apartment Features", id: "features", icon: <Building2 size={16}/> },
   { name: "Rates & Pricing", id: "pricing", icon: <Tag size={16}/>, highlight: true },
   { name: "Payment Options", id: "payment-options", icon: <CreditCard size={16}/> },
   { name: "Reviews", id: "testimonials", icon: <Star size={16}/> },
