@@ -13,62 +13,51 @@ import {
   CreditCard,
   HelpCircle,
   Star,
-  Tag
+  Tag,
+  Store,
+  ArrowRight
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 // ==========================================
-// CONFIGURATION: Updated to Realtor Theme
+// UPDATED COLOR PALETTE: Red, White & Blue Theme
 // ==========================================
-const THEME = {
-  BLUE: "#0056b3",      // Professional Blue
-  ORANGE: "#F96302",    // Brand Orange
-  CHARCOAL: "#333333",
-  TEXT_MAIN: "#111111",
+const COLORS = {
+  AMERICAN_RED: "#F96302",      // Keep the orange-red
+  AMERICAN_BLUE: "#0056A6",     // Deep blue accent
+  NAVY_BLUE: "#003A75",         // Dark blue for contrast
+  CHARCOAL: "#222222",          // Charcoal black
+  WHITE: "#FFFFFF",
+  LIGHT_GRAY: "#F8F9FA",
+  MEDIUM_GRAY: "#E9ECEF"
 };
 
 const SECTIONS = [
-  { name: "Get Started", id: "how-it-works", icon: <Hammer size={16}/> },
-  { name: "Apartment Features", id: "features", icon: <Building2 size={16}/> },
-  { name: "Rates & Pricing", id: "pricing", icon: <Tag size={16}/>, highlight: true },
-  { name: "Payment Options", id: "payment-options", icon: <CreditCard size={16}/> },
-  { name: "Reviews", id: "testimonials", icon: <Star size={16}/> },
-  { name: "Support & FAQ", id: "faq", icon: <HelpCircle size={16}/> },
+  { name: "DIY Project Guides", id: "how-it-works", icon: <Hammer size={16} /> },
+  { name: "Property Features", id: "features", icon: <Building2 size={16} /> },
+  { name: "Local Ad & Specials", id: "pricing", icon: <Tag size={16} />, highlight: true },
+  { name: "Financing", id: "payment-options", icon: <CreditCard size={16} /> },
+  { name: "Pro Reviews", id: "testimonials", icon: <Star size={16} /> },
+  { name: "Customer Service", id: "faq", icon: <HelpCircle size={16} /> },
 ];
 
-// ==========================================
-// COMPONENT: LOGO (Updated to Orange Primary)
-// ==========================================
 const BrandLogo = () => (
-  <div className="flex items-center gap-2 cursor-pointer group select-none">
-    {/* Orange Box that turns Blue on Group Hover */}
-    <div className="bg-[#F96302] group-hover:bg-[#0056b3] transition-colors duration-300 w-10 h-10 md:w-12 md:h-12 flex flex-col items-center justify-center shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-white/20"></div>
-        <span className="text-white font-black leading-none text-xl md:text-2xl font-sans tracking-tighter">R</span>
-        <span className="text-white/[0.8] font-bold text-[8px] md:text-[10px] uppercase tracking-wider mt-0.5">EST.24</span>
-    </div>
-
-    <div className="flex flex-col justify-center">
-      <h1 className="text-2xl md:text-3xl font-black text-[#111] uppercase leading-none tracking-tighter" style={{ fontFamily: 'Arial Black, sans-serif' }}>
-        REALTOR<span className="text-[#F96302] group-hover:text-[#0056b3]">.</span>DEPOT
-      </h1>
-      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5 ml-0.5">
-        Rentals • Sales • Management
-      </span>
+  <div className="flex items-center gap-0 cursor-pointer group select-none">
+    {/* Keep orange logo but add blue accent */}
+    <div className="bg-[#F96302] w-14 h-14 md:w-16 md:h-16 flex flex-col items-center justify-center relative p-1 shadow-md border-b-2 border-[#0056A6]">
+        <span className="text-white font-black leading-none text-2xl md:text-3xl font-sans tracking-tighter">R</span>
+        <div className="w-full border-t border-white/40 my-0.5"></div>
+        <span className="text-white font-bold text-[7px] md:text-[9px] uppercase text-center leading-tight">THE<br/>REALTOR<br/>DEPOT</span>
     </div>
   </div>
 );
 
-// ==========================================
-// COMPONENT: NAVBAR
-// ==========================================
-const NavbarSection = ({ scrollTo, setDemoOpen }) => {
+const NavbarSection = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // --- CART PERSISTENCE LOGIC ---
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("realtor_cart");
     return savedCart ? JSON.parse(savedCart) : { count: 0, total: 0 };
@@ -78,14 +67,6 @@ const NavbarSection = ({ scrollTo, setDemoOpen }) => {
     localStorage.setItem("realtor_cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Demo function to add to cart
-  const addToCart = () => {
-    setCart(prev => ({
-      count: prev.count + 1,
-      total: prev.total + 8500 
-    }));
-  };
-
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
@@ -94,150 +75,159 @@ const NavbarSection = ({ scrollTo, setDemoOpen }) => {
 
   const handleNavClick = (id) => {
     setMenuOpen(false);
-    const scrollToElement = () => {
-      const element = document.getElementById(id);
-      if (element) {
-        const headerOffset = 140; 
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-      }
-    };
-    if (location.pathname !== "/") {
-      navigate("/");
-      setTimeout(scrollToElement, 300);
-    } else {
-      scrollToElement();
+    const element = document.getElementById(id);
+    if (element) {
+      const headerOffset = 160;
+      const elementPosition = element.getBoundingClientRect().top;
+      window.scrollTo({ top: elementPosition + window.pageYOffset - headerOffset, behavior: "smooth" });
     }
   };
 
   return (
-    <div className={`fixed top-0 w-full z-50 bg-white transition-shadow duration-300 ${isScrolled ? "shadow-md" : ""}`}>
+    <div className={`fixed top-0 w-full z-50 bg-white transition-all ${isScrolled ? "shadow-lg" : ""}`}>
       
-      {/* 1. TOP UTILITY STRIP */}
-      <div className="bg-[#333333] text-white text-[11px] font-bold hidden sm:block">
-        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 h-8 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-             <button className="hover:underline text-gray-100 flex items-center gap-1.5 group">
-               <MapPin size={14} className="text-[#F96302] group-hover:text-[#0056b3]" fill="currentColor"/>
-               <span className="opacity-90 font-normal">Location:</span>
-               <span className="uppercase tracking-wide group-hover:text-[#F96302] transition-colors">Nairobi, KE</span>
-               <ChevronDown size={12} className="opacity-70"/>
+      {/* 1. TOP UTILITY STRIP (Red & Blue Stripe Theme) */}
+      <div className="bg-gradient-to-r from-[#222222] via-[#003A75] to-[#222222] text-white text-[12px] hidden sm:block">
+        <div className="max-w-[1440px] mx-auto px-4 flex items-center justify-between h-9">
+          <div className="flex items-center gap-5">
+             <button className="flex items-center gap-1.5 hover:text-[#F96302] transition-colors duration-200">
+               <Store size={14} className="text-[#F96302]" />
+               <span className="font-semibold">You're shopping at:</span>
+               <span className="font-normal underline hover:no-underline">Nairobi West</span>
+               <ChevronDown size={12} />
+             </button>
+             <div className="h-4 w-[1px] bg-gray-600"></div>
+             <button className="flex items-center gap-1.5 hover:text-[#F96302]">
+               <Truck size={14} className="text-[#F96302]" />
+               <span className="font-semibold">Scheduled Delivery:</span>
+               <span className="font-normal">Jan 08</span>
              </button>
           </div>
-          <div className="flex items-center gap-6">
-            <button onClick={() => handleNavClick('how-it-works')} className="hover:text-[#F96302]">Owner Services</button>
-            <button onClick={() => handleNavClick('pricing')} className="hover:text-[#F96302]">Offers</button>
-            <button onClick={() => handleNavClick('faq')} className="hover:text-[#F96302]">Help</button>
+          <div className="flex items-center gap-5 font-medium">
+            <button className="hover:text-[#0056A6] transition-colors">Lists</button>
+            <button className="hover:text-[#0056A6] transition-colors">Favorites</button>
+            <button className="hover:text-[#0056A6] transition-colors">Track Order</button>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN HEADER */}
-      <div className="bg-white border-b border-gray-200 relative z-20">
-        <div className="max-w-[1440px] mx-auto px-4 lg:px-8 h-[80px] lg:h-[96px] flex items-center gap-4 lg:gap-10">
+      {/* 2. MAIN NAV (White with Red & Blue Accents) */}
+      <div className="bg-white border-b border-gray-200 py-3">
+        <div className="max-w-[1440px] mx-auto px-4 flex items-center gap-6">
           
-          <div onClick={() => {navigate("/"); window.scrollTo(0,0)}} className="shrink-0 pt-1">
+          <div onClick={() => navigate("/")} className="shrink-0">
             <BrandLogo />
           </div>
 
-          {/* SEARCH BAR (Blue border, Blue/Orange Button) */}
-          <div className="hidden md:flex flex-1 max-w-3xl relative">
-            <div className="flex w-full h-11 border-2 border-[#0056b3] hover:border-[#F96302] rounded-sm overflow-hidden transition-colors">
-              <div className="bg-gray-100 px-3 flex items-center border-r border-gray-300 text-xs font-bold text-gray-600">
-                  All Units <ChevronDown size={12} className="ml-1"/>
-              </div>
+          {/* Department Button - Red & Blue Theme */}
+          <button 
+            onClick={() => setMenuOpen(true)}
+            className="hidden lg:flex flex-col items-start justify-center px-4 h-12 border border-gray-300 hover:border-[#F96302] hover:shadow-[0_0_0_1px_#0056A6] transition-all group bg-gray-50"
+          >
+            <span className="text-[10px] text-gray-600 font-bold uppercase leading-none">All</span>
+            <span className="text-[15px] font-black text-[#222] flex items-center gap-2">
+              Departments <ChevronDown size={16} className="text-[#0056A6]" />
+            </span>
+          </button>
+
+          {/* SEARCH BAR - Red & Blue Theme */}
+          <div className="flex-1 flex group">
+            <div className="relative flex-1">
               <input 
                 type="text" 
-                placeholder="Search by neighborhood or price..." 
-                className="flex-1 px-4 text-[15px] outline-none"
+                placeholder="What can we help you find today?" 
+                className="w-full h-12 px-4 border-2 border-r-0 border-gray-300 group-focus-within:border-[#F96302] group-focus-within:border-r-0 group-focus-within:shadow-[0_0_0_1px_#0056A6] outline-none text-[16px]"
               />
-              <button className="bg-[#0056b3] hover:bg-[#F96302] text-white px-5 transition-colors">
-                <Search className="w-5 h-5" strokeWidth={3} />
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#0056A6]">
+                 <Search size={22} strokeWidth={2.5} />
               </button>
             </div>
+            <button className="bg-gradient-to-r from-[#F96302] to-[#E55300] hover:from-[#0056A6] hover:to-[#003A75] text-white px-8 h-12 font-black uppercase tracking-tighter transition-all duration-300 shadow-md">
+              Search
+            </button>
           </div>
 
-          <div className="flex items-center ml-auto gap-1 lg:gap-8">
-            <button onClick={() => navigate("/auth")} className="hidden lg:flex items-center gap-2 group text-left px-2">
-               <div className="border-2 border-transparent group-hover:border-[#F96302] rounded-full p-1 transition-all">
-                  <User size={22} className="text-[#333]" />
-               </div>
-               <div className="flex flex-col leading-none">
-                 <span className="text-[11px] font-normal">Sign In</span>
-                 <span className="text-[13px] font-bold group-hover:text-[#F96302]">My Account</span>
-               </div>
+          {/* ACCOUNT & CART - Red & Blue Theme */}
+          <div className="flex items-center gap-6">
+            <button className="hidden xl:flex flex-col items-start group">
+              <span className="text-[11px] text-gray-500 font-bold">My Account</span>
+              <span className="text-[14px] font-black group-hover:text-[#0056A6] flex items-center transition-colors">
+                Sign In <ChevronDown size={14} className="ml-1 text-[#F96302]" />
+              </span>
             </button>
 
-            <button 
-              onClick={addToCart} 
-              className="flex items-center gap-2 group text-left relative pl-2 pr-2"
-            >
-               <div className="relative pt-1">
-                 <ShoppingCart size={26} className="text-[#333] group-hover:text-[#F96302] transition-colors" />
-                 {cart.count > 0 && (
-                   <span className="absolute -top-1 -right-2 bg-[#F96302] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">
-                     {cart.count}
-                   </span>
-                 )}
-               </div>
-               <div className="hidden lg:flex flex-col leading-none gap-1">
-                 <span className="text-[11px] font-normal">Cart</span>
-                 <span className="text-[13px] font-bold text-[#333] group-hover:text-[#F96302]">
-                   KSh {cart.total.toLocaleString()}
-                 </span>
-               </div>
+            <button className="flex flex-col items-center group relative pt-1">
+              <div className="relative">
+                <ShoppingCart size={32} strokeWidth={1.5} className="text-gray-700 group-hover:text-[#F96302]" />
+                <span className="absolute -top-1 -right-2 bg-gradient-to-br from-[#F96302] to-[#0056A6] text-white text-[11px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-md">
+                  {cart.count}
+                </span>
+              </div>
+              <span className="text-[10px] font-black uppercase mt-0.5 text-gray-600">Cart</span>
             </button>
-
-            <div className="lg:hidden ml-2">
-              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-                <SheetTrigger asChild>
-                  <button className="p-2 border-2 border-[#333] rounded-sm hover:border-[#F96302]">
-                    <Menu size={24} strokeWidth={2.5} />
-                  </button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-[85vw] p-0 bg-white border-r-4 border-[#0056b3]">
-                  <SheetHeader className="bg-[#333] p-6 text-left">
-                    <SheetTitle className="text-white uppercase tracking-widest font-black">Realtor Menu</SheetTitle>
-                  </SheetHeader>
-                  <div className="flex flex-col py-2">
-                    {SECTIONS.map((item) => (
-                      <button key={item.id} onClick={() => handleNavClick(item.id)} className="px-6 py-4 border-b text-sm font-bold uppercase flex items-center gap-3 hover:text-[#0056b3]">
-                        {item.icon} {item.name}
-                      </button>
-                    ))}
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* 3. CATEGORY STRIP */}
-      <div className="hidden lg:block bg-white border-b border-gray-300">
-        <div className="max-w-[1440px] mx-auto px-8">
-            <div className="flex items-center gap-1 text-[12px] font-bold text-[#333] uppercase h-[42px]">
-               <button className="h-full px-4 flex items-center gap-2 border-r border-gray-300 mr-4 hover:bg-gray-50 transition-colors">
-                 <Truck size={16} className="text-[#0056b3]" />
-                 Inventory List 
-               </button>
-
-               <div className="flex items-center h-full">
-                 {SECTIONS.map((item) => (
-                   <button
-                     key={item.id}
-                     onClick={() => handleNavClick(item.id)}
-                     className="h-full px-5 flex items-center relative group"
-                   >
-                     <span className="group-hover:text-[#0056b3] transition-colors">{item.name}</span>
-                     <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#0056b3] scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-                   </button>
-                 ))}
-               </div>
-            </div>
+      {/* 3. SUB-NAV / CATEGORIES (Red & Blue Theme - No orange bottom border) */}
+      <div className="hidden lg:block bg-white border-b-2 border-gray-200 shadow-sm">
+        <div className="max-w-[1440px] mx-auto px-4 flex items-center h-10 relative">
+          {/* Blue accent line on top */}
+          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#0056A6] to-[#003A75]"></div>
+          
+          <div className="flex items-center gap-8 text-[13px] font-bold text-gray-700">
+            {SECTIONS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`hover:text-[#F96302] flex items-center gap-2 transition-colors duration-200 relative group ${item.highlight ? 'text-[#0056A6] font-black' : ''}`}
+              >
+                <span className={`${item.highlight ? 'text-[#F96302]' : 'text-gray-500'}`}>
+                  {item.icon}
+                </span>
+                {item.name}
+                {item.highlight && <ArrowRight size={14} className="text-[#F96302]" />}
+                <span className="absolute bottom-0 left-0 w-0 group-hover:w-full h-0.5 bg-[#0056A6] transition-all duration-300"></span>
+              </button>
+            ))}
+          </div>
+          
+          <div className="ml-auto flex items-center gap-6">
+             <button className="text-[13px] font-bold text-[#0056A6] hover:text-[#F96302] transition-colors duration-200 flex items-center gap-1">
+               Professional Services
+             </button>
+             <button className="text-[13px] font-bold text-[#0056A6] hover:text-[#F96302] transition-colors duration-200 flex items-center gap-1">
+               Credit Services
+             </button>
+          </div>
         </div>
       </div>
+
+      {/* MOBILE MENU SHEET - Red & Blue Theme */}
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+        <SheetContent side="left" className="w-[300px] p-0 border-r-4 border-[#F96302]">
+          <SheetHeader className="bg-gradient-to-r from-[#222222] to-[#003A75] p-6 border-b-2 border-[#F96302]">
+            <SheetTitle className="text-white text-left font-black uppercase tracking-tighter">Shop Departments</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col">
+            {SECTIONS.map((item) => (
+              <button 
+                key={item.id} 
+                onClick={() => handleNavClick(item.id)} 
+                className="px-6 py-4 border-b border-gray-100 text-left font-bold flex items-center justify-between hover:bg-blue-50 group transition-all duration-200"
+              >
+                <span className="flex items-center gap-3 text-gray-700 group-hover:text-[#F96302]">
+                  <span className={`${item.highlight ? 'text-[#0056A6]' : 'text-gray-500'}`}>
+                    {item.icon}
+                  </span>
+                  {item.name}
+                </span>
+                <ArrowRight size={16} className="text-[#0056A6] opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

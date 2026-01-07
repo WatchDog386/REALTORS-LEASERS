@@ -1,415 +1,735 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-    MapPin, 
-    BedDouble, 
-    Bath, 
-    X,
-    Star, 
-    Search,
-    ShoppingCart,
-    Menu,
-    ChevronRight,
-    ChevronDown,
-    CheckCircle2,
-    Calendar,
-    Truck,
-    Share2,
-    Printer,
-    Camera,
-    Info,
-    ArrowRight
+    MapPin, BedDouble, Bath, X, Search, ShoppingCart, Menu,
+    ChevronRight, CheckCircle2, Maximize, User, Phone, 
+    ArrowRight, PlayCircle, Home, Shield, Zap, Wifi
 } from "lucide-react";
 
-// --- 1. GLOBAL STYLES & THEME ---
+// --- 1. THEME & STYLES ---
 const THEME = {
     orange: "#F96302",
-    orangeHover: "#d85502",
     blue: "#154279",
-    text: "#333333",
-    grayBorder: "#e5e7eb",
-    bgLight: "#f9fafb"
+    text: "#484848",
+    heading: "#222222",
+    bgLight: "#f7f7f7",
+    border: "#ebebeb"
 };
 
 const GlobalStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@300;400;500;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap');
     
-    body { font-family: 'Roboto', sans-serif; color: ${THEME.text}; }
-    .font-condensed { font-family: 'Roboto Condensed', sans-serif; }
+    body { font-family: 'Nunito', sans-serif; color: ${THEME.text}; background-color: ${THEME.bgLight}; }
+    h1, h2, h3, h4, h5, h6 { color: ${THEME.heading}; }
     
-    .custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
-    .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar { width: 8px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #fff; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: ${THEME.orange}; }
 
     .hd-checkbox { accent-color: ${THEME.orange}; width: 18px; height: 18px; cursor: pointer; }
+    
+    .shadow-hover { transition: all 0.3s ease; }
+    .shadow-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    
+    /* Animation */
+    .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Mosaic Grid for Detail Page */
+    .gallery-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; height: 400px; }
+    .gallery-main { grid-row: span 2; height: 100%; }
+    .gallery-sub { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+    .gallery-img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; cursor: pointer; }
+
+    @media (max-width: 768px) {
+        .gallery-grid { display: flex; flex-direction: column; height: auto; }
+        .gallery-main { height: 250px; }
+        .gallery-sub { display: none; }
+    }
   `}</style>
 );
 
-// --- 2. DATA ---
-const LISTINGS = [
+// --- 2. DATA (AYDEN HOME TOWERS) ---
+const INITIAL_LISTINGS = [
     {
-        id: "100522",
-        title: "2-Bedroom Modern Apartment - Kilimani Premium Suite",
-        sku: "KIL-2B-04",
-        price: 65000,
+        id: "AHT-304",
+        title: "Luxury 3-Bedroom Panorama Suite",
+        type: "3 Bedroom",
+        price: 85000,
+        floor: "12th Floor",
+        rating: 5.0,
+        location: "Ayden Home Towers, Wing A",
+        beds: 3,
+        baths: 3,
+        sqft: 1850,
+        featured: true,
+        amenities: ["Ocean View", "Gym Access", "Swimming Pool", "High Speed Wifi", "Smart Home"],
+        description: "Experience the pinnacle of luxury in this 12th-floor masterpiece. Featuring panoramic views of the city, a master suite with a jacuzzi, and a chef's kitchen.",
+        gallery: [
+            "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200",
+            "https://images.unsplash.com/photo-1512918760383-eda2723ad6e1?q=80&w=800",
+            "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-202",
+        title: "Modern 2-Bedroom Executive",
+        type: "2 Bedroom",
+        price: 55000,
+        floor: "8th Floor",
         rating: 4.8,
-        reviews: 42,
-        location: "Kilimani",
+        location: "Ayden Home Towers, Wing B",
         beds: 2,
         baths: 2,
-        status: "In Stock", 
-        deliveryDate: "Tomorrow",
+        sqft: 1200,
+        featured: true,
+        amenities: ["Balcony", "Parking", "Security", "Laundry"],
+        description: "Perfect for young families or professionals. This unit comes fully furnished with modern aesthetics, ample natural light, and dedicated parking.",
         gallery: [
-            { url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800", label: "Living Area" },
-            { url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800", label: "Master Bedroom" },
-            { url: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800", label: "Kitchen" },
-            { url: "https://images.unsplash.com/photo-1584622050111-993a426fbf0a?q=80&w=800", label: "Bathroom" }
+            "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+            "https://images.unsplash.com/photo-1484154218962-a1c002085d2f?q=80&w=800",
+            "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800"
         ]
     },
     {
-        id: "882192",
-        title: "Executive Studio - Westlands Highrise",
-        sku: "WST-ST-99",
+        id: "AHT-105",
+        title: "Spacious 1-Bedroom Apartment",
+        type: "1 Bedroom",
         price: 35000,
+        floor: "3rd Floor",
         rating: 4.5,
-        reviews: 128,
-        location: "Westlands",
+        location: "Ayden Home Towers, Wing B",
         beds: 1,
         baths: 1,
-        status: "Limited Qty",
-        deliveryDate: "Today",
+        sqft: 800,
+        featured: false,
+        amenities: ["Wifi", "Gym Access", "Security"],
+        description: "A cozy yet spacious one-bedroom unit ideal for singles. Includes a dedicated workspace area and access to the tower's rooftop gym.",
         gallery: [
-            { url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=800", label: "Main Room" },
-            { url: "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=800", label: "Living Space" },
-            { url: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=800", label: "View" }
+            "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?q=80&w=1200",
+            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800",
+            "https://images.unsplash.com/photo-1631679706909-1844bbd07221?q=80&w=800"
         ]
     },
     {
-        id: "772110",
-        title: "Standard Bedsitter - Roysambu",
-        sku: "ROY-BS-22",
-        price: 12500,
+        id: "AHT-001",
+        title: "Standard Single Room / Bedsitter",
+        type: "Bedsitter",
+        price: 18000,
+        floor: "Ground Floor",
         rating: 4.2,
-        reviews: 310,
-        location: "Roysambu",
+        location: "Ayden Home Towers, Wing C",
         beds: 0,
         baths: 1,
-        status: "In Stock",
-        deliveryDate: "Next Week",
+        sqft: 350,
+        featured: false,
+        amenities: ["Water 24/7", "Security", "Tiled Floors"],
+        description: "Affordable luxury. Our bedsitters are larger than average, featuring a separate kitchenette area, instant shower, and pre-installed fiber internet.",
         gallery: [
-            { url: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?q=80&w=800", label: "Room View" },
-            { url: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=800", label: "Kitchenette" }
+            "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?q=80&w=1200",
+            "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=800",
+            "https://images.unsplash.com/photo-1584622050111-993a426fbf0a?q=80&w=800"
         ]
     },
     {
-        id: "992110",
-        title: "Luxury 4-Bed Villa - Karen",
-        sku: "KAR-VL-01",
-        price: 150000,
-        rating: 5.0,
-        reviews: 12,
-        location: "Karen",
-        beds: 4,
-        baths: 4,
-        status: "Special Order",
-        deliveryDate: "Sat, Nov 12",
+        id: "AHT-205",
+        title: "Premium 2-Bedroom with Balcony",
+        type: "2 Bedroom",
+        price: 60000,
+        floor: "9th Floor",
+        rating: 4.9,
+        location: "Ayden Home Towers, Wing A",
+        beds: 2,
+        baths: 2,
+        sqft: 1300,
+        featured: false,
+        amenities: ["Balcony", "Pool View", "Ensuite"],
+        description: "Enjoy sunset views from your private balcony. This premium 2-bedroom unit features mahogany finishings and a spacious open-plan living area.",
         gallery: [
-            { url: "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=800", label: "Exterior" },
-            { url: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=800", label: "Pool" }
+            "https://images.unsplash.com/photo-1493809842364-78817add7ffb?q=80&w=1200",
+            "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800",
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-108",
+        title: "Economy 1-Bedroom",
+        type: "1 Bedroom",
+        price: 28000,
+        floor: "1st Floor",
+        rating: 4.0,
+        location: "Ayden Home Towers, Wing C",
+        beds: 1,
+        baths: 1,
+        sqft: 650,
+        featured: false,
+        amenities: ["CCTV", "Water", "Tokens"],
+        description: "A budget-friendly option without compromising quality. Perfect for students or young professionals starting out.",
+        gallery: [
+            "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1200",
+            "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?q=80&w=800",
+            "https://images.unsplash.com/photo-1556912173-3db9963f6bee?q=80&w=800"
         ]
     }
 ];
 
 // --- 3. SUB-COMPONENTS ---
 
-const Header = ({ cartCount }: { cartCount: number }) => (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
-        <div className="bg-[#154279] text-white text-[11px] font-bold py-1 px-4 flex justify-between items-center">
-            <div className="flex gap-4">
-                <span className="cursor-pointer hover:underline">Store Finder</span>
-                <span className="cursor-pointer hover:underline">Truck & Tool Rental</span>
-                <span className="cursor-pointer hover:underline">For the Pro</span>
-                <span className="cursor-pointer hover:underline">Gift Cards</span>
-            </div>
-            <div className="flex gap-4">
-                <span className="cursor-pointer hover:underline">Credit Services</span>
-                <span className="cursor-pointer hover:underline">Track Order</span>
-                <span className="cursor-pointer hover:underline">Help</span>
-            </div>
-        </div>
-
-        <div className="py-4 px-4 flex items-center gap-4 lg:gap-8 max-w-[1440px] mx-auto">
-            <div className="text-3xl font-condensed font-black text-[#F96302] leading-none border-2 border-[#F96302] p-1 flex-shrink-0 cursor-pointer">
-                AYDEN<span className="text-lg block text-[#154279]">RENTALS</span>
-            </div>
-
-            <div className="hidden lg:flex flex-col text-[#333] leading-tight cursor-pointer">
-                <span className="text-[10px] uppercase font-bold text-gray-500">You're Shopping</span>
-                <div className="text-sm font-bold flex items-center gap-1">
-                    Nairobi West <ChevronDown size={14} />
+const Navbar = ({ cartCount }: { cartCount: number }) => (
+    <header className="bg-white shadow-sm sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
+            <div className="flex items-center gap-2">
+                <div className="bg-[#154279] text-white p-2 rounded">
+                    <MapPin size={20} />
                 </div>
-                <span className="text-[10px] text-green-700 font-bold">OPEN until 10 PM</span>
+                <div>
+                    <h1 className="text-2xl font-extrabold text-[#154279] leading-none">AYDEN<span className="text-[#F96302]">HOMES</span></h1>
+                    <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Towers & Residencies</p>
+                </div>
             </div>
+            
+            <nav className="hidden lg:flex gap-8 font-bold text-sm text-[#484848]">
+                <span className="text-[#F96302]">Home</span>
+                <span className="hover:text-[#F96302] cursor-pointer">Apartments</span>
+                <span className="hover:text-[#F96302] cursor-pointer">Amenities</span>
+                <span className="hover:text-[#F96302] cursor-pointer">About Us</span>
+                <span className="hover:text-[#F96302] cursor-pointer">Contact</span>
+            </nav>
 
-            <div className="flex-grow relative">
-                <input 
-                    type="text" 
-                    placeholder="What can we help you find today?" 
-                    className="w-full border border-[#154279] rounded-sm py-2 px-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#F96302]"
-                />
-                <button className="absolute right-0 top-0 h-full bg-[#F96302] text-white px-3 hover:bg-[#d85502]">
-                    <Search size={20} />
+            <div className="flex items-center gap-4">
+                <button className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-[#F96302] hover:bg-[#d85502] text-white rounded font-bold transition-all shadow-lg shadow-orange-500/20">
+                    <User size={18}/> Tenant Portal
                 </button>
-            </div>
-
-            <div className="flex items-center gap-6 text-[#154279]">
-                <div className="hidden md:flex flex-col items-center cursor-pointer group">
-                    <span className="text-sm font-bold group-hover:text-[#F96302]">Account</span>
-                    <span className="text-[10px] font-bold uppercase group-hover:text-[#F96302]">Sign In</span>
+                <div className="relative p-2 cursor-pointer">
+                    <ShoppingCart className="text-[#154279]" size={24}/>
+                    {cartCount > 0 && <span className="absolute top-0 right-0 bg-[#F96302] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">{cartCount}</span>}
                 </div>
-                <div className="flex items-center gap-1 cursor-pointer group relative">
-                    <ShoppingCart size={28} className="group-hover:text-[#F96302]" />
-                    {cartCount > 0 && (
-                        <span className="absolute -top-2 -right-2 bg-[#F96302] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
-                            {cartCount}
-                        </span>
-                    )}
-                    <span className="hidden md:block text-sm font-bold group-hover:text-[#F96302] mt-1">Cart</span>
-                </div>
-            </div>
-        </div>
-
-        <div className="border-t border-b border-gray-200 py-2 px-4 bg-white hidden lg:block">
-            <div className="max-w-[1440px] mx-auto flex gap-6 text-sm text-[#333] font-bold">
-                <span className="cursor-pointer hover:text-[#F96302]">All Departments</span>
-                <span className="cursor-pointer hover:text-[#F96302]">Home Decor</span>
-                <span className="cursor-pointer hover:text-[#F96302]">Furniture</span>
-                <span className="cursor-pointer hover:text-[#F96302]">Kitchenware</span>
-                <span className="cursor-pointer hover:text-[#F96302]">DIY Projects</span>
-                <span className="cursor-pointer hover:text-[#F96302] text-[#F96302]">Specials & Offers</span>
+                <Menu className="lg:hidden text-[#154279]" size={28}/>
             </div>
         </div>
     </header>
 );
 
-const SidebarFilter = () => (
-    <div className="hidden md:block w-64 pr-6 flex-shrink-0">
-        <h3 className="font-condensed font-bold text-lg mb-4 uppercase">Refine By</h3>
-        
-        <div className="border-b border-gray-200 pb-4 mb-4">
-            <div className="flex justify-between items-center mb-2 cursor-pointer font-bold text-sm">
-                <span>Price</span>
-                <ChevronDown size={14} />
-            </div>
-            <div className="space-y-2 text-sm">
-                {["Under KES 20k", "KES 20k - 50k", "KES 50k - 100k", "KES 100k+"].map(range => (
-                    <label key={range} className="flex items-center gap-2 hover:text-[#F96302]">
-                        <input type="checkbox" className="hd-checkbox" /> {range}
-                    </label>
-                ))}
+const FilterSidebar = ({ filters, setFilters }: any) => {
+    const handleChange = (e: any) => {
+        const { name, value } = e.target;
+        setFilters((prev: any) => ({ ...prev, [name]: value }));
+    };
+
+    return (
+        <div className="bg-white p-6 rounded-none shadow-sm border border-gray-100">
+            <h3 className="font-bold text-lg mb-6 text-[#154279] flex items-center gap-2">
+                <Search size={18} className="text-[#F96302]" /> Find Your Unit
+            </h3>
+            
+            <div className="space-y-5">
+                <div>
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Search</label>
+                    <input 
+                        type="text" 
+                        name="keyword"
+                        placeholder="Keyword (e.g. Balcony)" 
+                        value={filters.keyword}
+                        onChange={handleChange}
+                        className="w-full bg-[#f9f9f9] border border-gray-200 p-3 rounded-none text-sm focus:border-[#F96302] focus:ring-1 focus:ring-[#F96302] outline-none"
+                    />
+                </div>
+
+                <div>
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Apartment Type</label>
+                    <select 
+                        name="type" 
+                        value={filters.type}
+                        onChange={handleChange}
+                        className="w-full bg-[#f9f9f9] border border-gray-200 p-3 rounded-none text-sm focus:border-[#F96302] outline-none cursor-pointer"
+                    >
+                        <option value="All">All Types</option>
+                        <option value="3 Bedroom">3 Bedrooms</option>
+                        <option value="2 Bedroom">2 Bedrooms</option>
+                        <option value="1 Bedroom">1 Bedrooms</option>
+                        <option value="Bedsitter">Bedsitters</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Max Price: KES {Number(filters.maxPrice).toLocaleString()}</label>
+                    <input 
+                        type="range" 
+                        name="maxPrice"
+                        min="10000" 
+                        max="100000" 
+                        step="5000"
+                        value={filters.maxPrice}
+                        onChange={handleChange}
+                        className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#F96302]"
+                    />
+                    <div className="flex justify-between text-[10px] text-gray-500 mt-1 font-bold">
+                        <span>10k</span>
+                        <span>100k+</span>
+                    </div>
+                </div>
+
+                <div className="pt-2">
+                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Tower Wing</label>
+                    <div className="space-y-2">
+                        {["Wing A (Executive)", "Wing B (Standard)", "Wing C (Economy)"].map((wing, i) => (
+                            <label key={i} className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-[#F96302]">
+                                <input type="checkbox" className="hd-checkbox rounded-sm" /> {wing}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                <button className="w-full bg-[#154279] text-white font-bold py-3 rounded-none shadow hover:bg-[#0f325e] transition-colors uppercase text-sm tracking-wide">
+                    Search Availability
+                </button>
             </div>
         </div>
+    );
+};
 
-        <div className="border-b border-gray-200 pb-4 mb-4">
-            <div className="flex justify-between items-center mb-2 cursor-pointer font-bold text-sm">
-                <span>Neighborhood</span>
-                <ChevronDown size={14} />
-            </div>
-            <div className="space-y-2 text-sm">
-                {["Kilimani", "Westlands", "Roysambu", "Karen", "Lavington"].map(loc => (
-                    <label key={loc} className="flex items-center gap-2 hover:text-[#F96302]">
-                        <input type="checkbox" className="hd-checkbox" /> {loc}
-                    </label>
-                ))}
-            </div>
-        </div>
-
-        <div className="bg-gray-100 p-4 text-center border border-gray-200">
-            <h4 className="font-condensed font-bold text-[#F96302] text-xl mb-1">PRO XTRA</h4>
-            <p className="text-xs mb-3">Join to earn perks on every shilling spent.</p>
-            <button className="text-xs font-bold border border-[#333] px-3 py-1 uppercase hover:bg-[#333] hover:text-white transition-colors">Join Now</button>
-        </div>
-    </div>
-);
-
-const PropertyModal = ({ item, onClose, onAddToCart }: { item: any, onClose: () => void, onAddToCart: () => void }) => {
-    const [activeImage, setActiveImage] = useState(0);
+const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
+    if (!item) return null;
 
     return (
         <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-0 md:p-4 font-roboto"
-            onClick={(e) => e.target === e.currentTarget && onClose()}
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto custom-scroll"
         >
-            <motion.div 
-                initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                className="bg-white w-full max-w-6xl h-full md:h-[90vh] md:rounded-sm overflow-hidden shadow-2xl flex flex-col md:flex-row relative"
-            >
-                <button onClick={onClose} className="absolute top-2 right-2 z-20 p-2 bg-white/80 rounded-full hover:bg-gray-200 transition-colors">
-                    <X className="w-6 h-6 text-gray-600" />
+            {/* Header / Nav inside Modal */}
+            <div className="sticky top-0 bg-white shadow-md z-50 px-4 md:px-8 h-16 flex items-center justify-between">
+                <div className="font-bold text-xl text-[#154279]">AYDEN<span className="text-[#F96302]">HOMES</span></div>
+                <button 
+                    onClick={onClose}
+                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-[#F96302] hover:text-white flex items-center justify-center transition-all"
+                >
+                    <X size={18} />
                 </button>
+            </div>
 
-                <div className="md:w-7/12 p-4 md:p-6 bg-white overflow-y-auto custom-scroll">
-                    <div className="text-[10px] text-gray-500 mb-4 uppercase tracking-wide flex items-center gap-1">
-                        Rentals <ChevronRight size={10}/> {item.location} <ChevronRight size={10}/> <span className="text-[#333] font-bold">{item.sku}</span>
+            <div className="max-w-7xl mx-auto bg-white min-h-screen pb-20">
+                {/* 1. Title Header Section */}
+                <div className="p-6 md:p-10 pb-4 flex flex-col md:flex-row justify-between items-start border-b border-gray-100">
+                    <div>
+                        <div className="flex gap-2 mb-3">
+                            <span className="bg-[#F96302] text-white text-xs font-bold px-3 py-1 rounded uppercase">For Rent</span>
+                            {item.featured && <span className="bg-[#154279] text-white text-xs font-bold px-3 py-1 rounded uppercase">Featured</span>}
+                        </div>
+                        <h1 className="text-3xl md:text-4xl font-bold text-[#222] mb-2">{item.title}</h1>
+                        <p className="text-gray-500 flex items-center gap-2 text-sm md:text-base">
+                            <MapPin size={18} className="text-[#F96302]"/> {item.location} - {item.floor}
+                        </p>
                     </div>
+                    <div className="mt-4 md:mt-0 text-right">
+                        <div className="text-3xl font-extrabold text-[#F96302]">KES {item.price.toLocaleString()}</div>
+                        <p className="text-gray-400 font-bold text-sm">/ Month</p>
+                    </div>
+                </div>
 
-                    <div className="relative aspect-video bg-gray-100 border border-gray-200 mb-4">
-                        <img src={item.gallery[activeImage].url} alt={item.gallery[activeImage].label} className="w-full h-full object-cover"/>
-                        <div className="absolute bottom-4 left-4 bg-white/90 px-3 py-1 text-xs font-bold shadow-sm">
-                            {item.gallery[activeImage].label}
+                {/* 2. Gallery Section */}
+                <div className="p-6 md:p-10 pt-6">
+                    <div className="gallery-grid">
+                        <div className="gallery-main relative group overflow-hidden">
+                            <img src={item.gallery[0]} alt="Main" className="gallery-img transition-transform duration-700 group-hover:scale-110" />
+                            <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded text-xs font-bold shadow flex items-center gap-2 cursor-pointer hover:bg-[#F96302] hover:text-white transition-colors">
+                                <Maximize size={14}/> View Photos
+                            </div>
+                        </div>
+                        <div className="gallery-sub">
+                            <img src={item.gallery[1]} alt="Sub 1" className="gallery-img h-1/2" />
+                            <img src={item.gallery[2]} alt="Sub 2" className="gallery-img h-1/2" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* 3. Main Content & Sidebar */}
+                <div className="p-6 md:p-10 pt-0 grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    
+                    {/* LEFT COLUMN: Details */}
+                    <div className="lg:col-span-2">
+                        {/* Quick Overview Badges */}
+                        <div className="bg-[#f7f7f7] p-6 rounded-lg flex flex-wrap gap-6 md:gap-12 mb-8 border border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <BedDouble size={24} className="text-[#F96302]"/>
+                                <div>
+                                    <span className="block font-bold text-lg text-[#222]">{item.beds}</span>
+                                    <span className="text-xs text-gray-500 font-bold uppercase">Bedrooms</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Bath size={24} className="text-[#F96302]"/>
+                                <div>
+                                    <span className="block font-bold text-lg text-[#222]">{item.baths}</span>
+                                    <span className="text-xs text-gray-500 font-bold uppercase">Bathrooms</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Maximize size={24} className="text-[#F96302]"/>
+                                <div>
+                                    <span className="block font-bold text-lg text-[#222]">{item.sqft}</span>
+                                    <span className="text-xs text-gray-500 font-bold uppercase">Sq Ft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="mb-8">
+                            <h3 className="text-xl font-bold text-[#222] mb-4 border-b pb-2">Description</h3>
+                            <p className="text-gray-600 leading-relaxed text-[15px]">
+                                {item.description}
+                                <br/><br/>
+                                Living at Ayden Home Towers offers a unique blend of community and privacy. 
+                                Enjoy dedicated maintenance teams, secure biometric access, and a community app for all your utility payments.
+                            </p>
+                        </div>
+
+                        {/* Amenities */}
+                        <div className="mb-8">
+                            <h3 className="text-xl font-bold text-[#222] mb-4 border-b pb-2">Amenities</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {item.amenities.map((am:string, i:number) => (
+                                    <div key={i} className="flex items-center gap-2 text-gray-600 text-sm">
+                                        <CheckCircle2 size={16} className="text-[#F96302]"/> {am}
+                                    </div>
+                                ))}
+                                <div className="flex items-center gap-2 text-gray-600 text-sm"><CheckCircle2 size={16} className="text-[#F96302]"/> CCTV Security</div>
+                                <div className="flex items-center gap-2 text-gray-600 text-sm"><CheckCircle2 size={16} className="text-[#F96302]"/> Borehole Water</div>
+                                <div className="flex items-center gap-2 text-gray-600 text-sm"><CheckCircle2 size={16} className="text-[#F96302]"/> Backup Generator</div>
+                            </div>
+                        </div>
+
+                        {/* Property Details Table */}
+                        <div className="bg-[#f9f9f9] p-6 rounded-lg mb-8">
+                            <h3 className="text-lg font-bold text-[#222] mb-4">Property Details</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 text-sm">
+                                <div className="flex justify-between border-b border-gray-200 pb-2">
+                                    <span className="font-bold text-[#555]">Property ID:</span>
+                                    <span className="text-gray-500">{item.id}</span>
+                                </div>
+                                <div className="flex justify-between border-b border-gray-200 pb-2">
+                                    <span className="font-bold text-[#555]">Price:</span>
+                                    <span className="text-gray-500">KES {item.price.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between border-b border-gray-200 pb-2">
+                                    <span className="font-bold text-[#555]">Property Size:</span>
+                                    <span className="text-gray-500">{item.sqft} Sq Ft</span>
+                                </div>
+                                <div className="flex justify-between border-b border-gray-200 pb-2">
+                                    <span className="font-bold text-[#555]">Bedrooms:</span>
+                                    <span className="text-gray-500">{item.beds}</span>
+                                </div>
+                                <div className="flex justify-between border-b border-gray-200 pb-2">
+                                    <span className="font-bold text-[#555]">Year Built:</span>
+                                    <span className="text-gray-500">2024</span>
+                                </div>
+                                <div className="flex justify-between border-b border-gray-200 pb-2">
+                                    <span className="font-bold text-[#555]">Property Type:</span>
+                                    <span className="text-gray-500">{item.type}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-2 overflow-x-auto custom-scroll pb-4">
-                        {item.gallery.map((img:any, idx:number) => (
-                            <button 
-                                key={idx}
-                                onClick={() => setActiveImage(idx)}
-                                className={`flex-shrink-0 w-20 h-20 border-2 ${activeImage === idx ? 'border-[#F96302]' : 'border-gray-200'} p-0.5`}
-                            >
-                                <img src={img.url} alt="thumb" className="w-full h-full object-cover" />
-                            </button>
-                        ))}
+                    {/* RIGHT COLUMN: Contact Form */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-lg sticky top-24">
+                            <h4 className="text-lg font-bold text-[#154279] mb-4">Schedule a Tour</h4>
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                                    <img src="https://i.pravatar.cc/150?u=ayden" alt="Agent" />
+                                </div>
+                                <div>
+                                    <div className="font-bold text-[#333]">Ayden Office</div>
+                                    <div className="text-xs text-[#F96302] font-bold">Property Manager</div>
+                                </div>
+                            </div>
+
+                            <form className="space-y-3">
+                                <input type="text" placeholder="Your Name" className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                                <input type="email" placeholder="Your Email" className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                                <input type="tel" placeholder="Your Phone" className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                                <textarea rows={3} placeholder="I am interested in this property..." className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"></textarea>
+                                
+                                <button className="w-full bg-[#F96302] hover:bg-[#d85502] text-white font-bold py-3 rounded transition-all">
+                                    Submit Request
+                                </button>
+                                <button className="w-full border-2 border-[#154279] text-[#154279] font-bold py-3 rounded hover:bg-[#154279] hover:text-white transition-all flex items-center justify-center gap-2">
+                                    <Phone size={18}/> Call Us
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
-                    <div className="mt-8 border-t border-gray-200 pt-6">
-                        <h3 className="font-condensed font-bold text-xl mb-4">Product Overview</h3>
-                        <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                            Premium living in the heart of {item.location}. High-end finishes and 24/7 security.
-                        </p>
-                    </div>
                 </div>
-
-                <div className="md:w-5/12 p-6 bg-gray-50 md:border-l border-gray-200 flex flex-col overflow-y-auto custom-scroll">
-                    <h1 className="text-2xl font-condensed font-bold text-[#333] leading-tight mb-2">{item.title}</h1>
-                    <div className="mb-6 bg-white p-4 border border-gray-200 shadow-sm">
-                        <span className="text-4xl font-condensed font-bold tracking-tight text-[#333]">{item.price.toLocaleString()}</span>
-                        <span className="text-sm font-bold">/mo</span>
-                    </div>
-                    <button 
-                        onClick={() => { onAddToCart(); onClose(); }}
-                        className="w-full bg-[#F96302] hover:bg-[#d85502] text-white py-3 text-sm font-bold uppercase tracking-wider rounded-[2px] shadow-sm transition-colors"
-                    >
-                        Add to Cart
-                    </button>
-                </div>
-            </motion.div>
+            </div>
         </motion.div>
     );
 };
 
-// --- 4. MAIN LAYOUT (HERO REMOVED) ---
-export default function HomeDepotRentals() {
+// --- 4. MAIN PAGE COMPONENT ---
+export default function AydenTowersListing() {
     const [selectedItem, setSelectedItem] = useState<any>(null);
-    const [cartCount, setCartCount] = useState(0);
-
-    const handleAddToCart = () => {
-        setCartCount(prev => prev + 1);
-    };
+    const [filters, setFilters] = useState({
+        keyword: "",
+        type: "All",
+        maxPrice: 100000
+    });
+    
+    // Derived State for Filtering
+    const filteredListings = useMemo(() => {
+        return INITIAL_LISTINGS.filter(item => {
+            const matchesKeyword = item.title.toLowerCase().includes(filters.keyword.toLowerCase()) || 
+                                   item.amenities.some(am => am.toLowerCase().includes(filters.keyword.toLowerCase()));
+            const matchesType = filters.type === "All" || item.type === filters.type;
+            const matchesPrice = item.price <= filters.maxPrice;
+            
+            return matchesKeyword && matchesType && matchesPrice;
+        });
+    }, [filters]);
 
     return (
         <>
         <GlobalStyles />
-        <div className="bg-white min-h-screen pb-20">
-            <Header cartCount={cartCount} />
+        <div className="min-h-screen bg-[#f7f7f7] text-[#484848] font-sans">
+            <Navbar cartCount={0} />
 
-            <div className="max-w-[1440px] mx-auto p-4 flex gap-6 pt-8">
-                {/* Sidebar */}
-                <SidebarFilter />
+            {/* --- IMPROVED HERO SECTION --- */}
+            <section className="bg-gradient-to-br from-white to-gray-50 pt-8 pb-12 lg:pt-10 lg:pb-16 border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+                    
+                    {/* Main Image (7 Cols) - Made more compact */}
+                    <div className="lg:col-span-7 h-[320px] lg:h-[400px] w-full rounded-xl overflow-hidden shadow-md relative group">
+                        <div className="absolute top-4 left-4 z-20 bg-gradient-to-r from-[#F96302] to-[#ff7b2e] text-white text-xs font-bold px-4 py-2 rounded-lg uppercase tracking-wider shadow-lg">
+                            Now Leasing
+                        </div>
+                        <img
+                            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1600"
+                            alt="Ayden Home Towers Exterior"
+                            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        />
+                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 via-black/40 to-transparent h-2/3 pointer-events-none"></div>
+                        <div className="absolute bottom-6 left-6 text-white z-20">
+                            <div className="text-xs font-bold opacity-90 uppercase tracking-widest mb-1">Premium Living</div>
+                            <div className="text-2xl lg:text-3xl font-extrabold leading-tight">Ayden Home Towers</div>
+                            <div className="text-sm opacity-90 mt-1">Nairobi West</div>
+                        </div>
+                    </div>
 
-                {/* Main Content */}
+                    {/* Content Side (5 Cols) - Improved text hierarchy */}
+                    <div className="lg:col-span-5 space-y-6">
+                        <div className="fade-in-up">
+                            <div className="mb-4">
+                                <h2 className="text-sm font-bold text-[#F96302] uppercase tracking-widest mb-2">Welcome to</h2>
+                                <h1 className="text-3xl lg:text-4xl font-extrabold text-[#154279] leading-tight mb-4">
+                                    Modern Living<br/>
+                                    <span className="text-[#F96302]">Perfected.</span>
+                                </h1>
+                            </div>
+                            
+                            <p className="text-gray-600 text-sm lg:text-base leading-relaxed mb-6 font-normal tracking-tight">
+                                Discover <strong className="font-bold text-[#154279]">Ayden Home Towers</strong> — a sanctuary in the city featuring luxury 1, 2, and 3-bedroom apartments. 
+                                Secure, stylish, and built for community living.
+                            </p>
+                            
+                            {/* Features Grid */}
+                            <div className="grid grid-cols-2 gap-4 mb-6">
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Shield size={16} className="text-[#F96302]" />
+                                    <span className="font-medium">24/7 Security</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Wifi size={16} className="text-[#F96302]" />
+                                    <span className="font-medium">Fiber Internet</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Home size={16} className="text-[#F96302]" />
+                                    <span className="font-medium">Modern Design</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Zap size={16} className="text-[#F96302]" />
+                                    <span className="font-medium">Backup Power</span>
+                                </div>
+                            </div>
+                            
+                            <div className="flex gap-3 mb-6">
+                                <button className="flex-1 bg-gradient-to-r from-[#154279] to-[#1a56b4] text-white py-3 px-4 rounded-lg font-bold text-sm shadow hover:shadow-md transition-all flex items-center justify-center gap-2 hover:from-[#0f325e]">
+                                    View All Units <ArrowRight size={16} />
+                                </button>
+                                <button className="flex-1 border-2 border-[#154279] text-[#154279] py-3 px-4 rounded-lg font-bold text-sm hover:bg-[#154279] hover:text-white transition-all flex items-center justify-center gap-2">
+                                    <PlayCircle size={16} /> Virtual Tour
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Thumbnails Row - Made smaller */}
+                        <div className="mt-4">
+                            <div className="flex justify-between items-end mb-2">
+                                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Gallery</p>
+                                <p className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline flex items-center gap-1">
+                                    View All <ChevronRight size={12} />
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-3 gap-2 h-20">
+                                <div className="relative rounded-lg overflow-hidden cursor-pointer group border border-gray-200">
+                                    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w-400" 
+                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                                             alt="Lobby" />
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-all"></div>
+                                </div>
+                                <div className="relative rounded-lg overflow-hidden cursor-pointer group border border-gray-200">
+                                    <img src="https://images.unsplash.com/photo-1512918760383-eda2723ad6e1?q=80&w-400" 
+                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                                             alt="Pool" />
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-all"></div>
+                                </div>
+                                <div className="relative rounded-lg overflow-hidden cursor-pointer group border border-gray-200">
+                                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w-400" 
+                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                                             alt="Room" />
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-all"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {/* --- END HERO SECTION --- */}
+
+            {/* MAIN CONTENT AREA */}
+            <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8 relative z-30 mt-6">
+                
+                {/* SIDEBAR FILTER */}
+                <div className="w-full md:w-[300px] flex-shrink-0">
+                    <FilterSidebar filters={filters} setFilters={setFilters} />
+                    
+                    {/* Promo Banner */}
+                    <div className="mt-6 bg-gradient-to-r from-[#F96302] to-[#ff7b2e] rounded-none p-5 text-white text-center shadow-lg hidden md:block">
+                        <h4 className="font-bold text-lg mb-2">Move In Special!</h4>
+                        <p className="text-xs opacity-90 mb-3">Get 50% OFF your first month's rent when you sign a lease for Wing A units.</p>
+                        <button className="bg-white text-[#F96302] px-4 py-2 rounded-none font-bold text-xs hover:bg-gray-100 transition-colors">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                {/* LISTINGS GRID */}
                 <div className="flex-1">
-                    {/* Compact Filter/Sort Strip */}
-                    <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
-                        <span className="text-sm font-bold uppercase text-gray-500 tracking-wider">
-                            Showing {LISTINGS.length} Results
-                        </span>
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-gray-500 uppercase">Sort:</span>
-                            <select className="border border-gray-300 text-sm py-1 px-2 font-bold text-[#333] rounded-sm">
-                                <option>Top Sellers</option>
-                                <option>Price Low to High</option>
-                                <option>Price High to Low</option>
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 className="font-bold text-2xl text-[#154279]">
+                                Available Units
+                            </h3>
+                            <p className="text-gray-500 text-sm mt-1">
+                                {filteredListings.length} units matching your criteria
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <select className="border border-gray-200 rounded-none px-3 py-2 text-sm focus:outline-none focus:border-[#F96302] bg-white">
+                                <option>Sort by: Newest</option>
+                                <option>Sort by: Price (Low to High)</option>
+                                <option>Sort by: Price (High to Low)</option>
                             </select>
                         </div>
                     </div>
 
-                    {/* Products Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {LISTINGS.map((item) => (
-                            <div 
-                                key={item.id} 
-                                className="group border border-gray-200 hover:border-[#F96302] hover:shadow-lg transition-all bg-white flex flex-col relative"
+                    {filteredListings.length === 0 ? (
+                        <div className="bg-white p-10 text-center rounded-none shadow-sm border border-gray-100">
+                            <h3 className="text-lg font-bold text-gray-400 mb-2">No units match your criteria.</h3>
+                            <button 
+                                onClick={()=>setFilters({keyword:"", type:"All", maxPrice:100000})} 
+                                className="text-[#F96302] font-bold hover:underline text-sm"
                             >
-                                <div className="absolute top-2 left-2 z-20">
-                                    <label className="flex items-center gap-1 bg-white/90 px-1 py-0.5 cursor-pointer shadow-sm">
-                                        <input type="checkbox" className="hd-checkbox" />
-                                        <span className="text-[10px] font-bold uppercase text-gray-600">Compare</span>
-                                    </label>
-                                </div>
-
+                                Reset Filters
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {filteredListings.map((item) => (
                                 <div 
-                                    className="relative aspect-[4/3] bg-gray-100 cursor-pointer overflow-hidden"
-                                    onClick={() => setSelectedItem(item)}
+                                    key={item.id} 
+                                    className="bg-white rounded-none overflow-hidden border border-gray-100 shadow-sm hover:shadow-md shadow-hover group flex flex-col transition-all duration-300"
                                 >
-                                    <img src={item.gallery[0].url} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute bottom-0 left-0 right-0 bg-white/95 py-3 text-center translate-y-full group-hover:translate-y-0 transition-transform duration-200 border-t-2 border-[#F96302]">
-                                        <span className="text-xs font-bold uppercase text-[#333]">Quick View</span>
+                                    <div className="relative h-48 overflow-hidden cursor-pointer" onClick={() => setSelectedItem(item)}>
+                                        <img src={item.gallery[0]} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        <div className="absolute top-4 left-4 bg-gradient-to-r from-[#154279] to-[#1a56b4] text-white text-[10px] font-bold px-3 py-1 rounded-none uppercase tracking-wide shadow">
+                                            {item.type}
+                                        </div>
+                                        {item.featured && (
+                                            <div className="absolute top-4 right-4 bg-gradient-to-r from-[#F96302] to-[#ff7b2e] text-white text-[10px] font-bold px-2 py-1 rounded-none uppercase">
+                                                FEATURED
+                                            </div>
+                                        )}
+                                        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded-none text-xs font-bold flex items-center gap-1 shadow-sm">
+                                            <Maximize size={12}/> {item.gallery.length}
+                                        </div>
+                                        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-3 pt-8">
+                                            <div className="text-white font-bold text-lg">KES {item.price.toLocaleString()}</div>
+                                            <div className="text-white/80 text-xs">{item.floor}</div>
+                                        </div>
                                     </div>
-                                    <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-1.5 py-0.5 flex items-center gap-1 rounded-sm group-hover:opacity-0 transition-opacity">
-                                        <Camera size={10} /> {item.gallery.length}
-                                    </div>
-                                </div>
-
-                                <div className="p-3 flex flex-col flex-grow">
-                                    <h3 
-                                        className="text-sm font-bold text-[#154279] hover:underline cursor-pointer leading-tight mb-2"
-                                        onClick={() => setSelectedItem(item)}
-                                    >
-                                        {item.title}
-                                    </h3>
                                     
-                                    <div className="flex items-center gap-1 mb-3">
-                                        <div className="flex">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star key={i} size={10} fill={i < Math.floor(item.rating) ? "#F96302" : "#e5e7eb"} stroke="none" />
-                                            ))}
-                                        </div>
-                                        <span className="text-[10px] text-gray-500">({item.reviews})</span>
-                                    </div>
-
-                                    <div className="mt-auto">
-                                        <div className="mb-3">
-                                            <span className="text-[10px] font-bold align-top">KES</span>
-                                            <span className="text-xl font-condensed font-bold text-[#333]">{item.price.toLocaleString()}</span>
-                                            <span className="text-[10px] text-gray-500 font-bold ml-1">/mo</span>
-                                        </div>
-
-                                        <button 
-                                            className="w-full bg-[#F96302] text-white text-[11px] font-bold uppercase py-2.5 rounded-[2px] hover:bg-[#d85502] transition-colors"
-                                            onClick={handleAddToCart}
+                                    <div className="p-4 flex-1 flex flex-col">
+                                        <h4 
+                                            className="font-bold text-base text-[#222] mb-2 cursor-pointer hover:text-[#F96302] transition-colors leading-tight line-clamp-1"
+                                            onClick={() => setSelectedItem(item)}
                                         >
-                                            Add to Cart
-                                        </button>
+                                            {item.title}
+                                        </h4>
+                                        <div className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+                                            <MapPin size={12} className="text-gray-400"/> {item.location}
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-1 mb-3">
+                                            {item.amenities.slice(0, 2).map((am:string, i:number) => (
+                                                <span key={i} className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-none">
+                                                    {am}
+                                                </span>
+                                            ))}
+                                            {item.amenities.length > 2 && (
+                                                <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-none">
+                                                    +{item.amenities.length - 2}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="flex justify-between items-center border-t border-gray-100 pt-3 mt-auto">
+                                            <div className="flex gap-4 text-xs font-medium text-gray-500">
+                                                <span className="flex items-center gap-1"><BedDouble size={13}/> {item.beds}</span>
+                                                <span className="flex items-center gap-1"><Bath size={13}/> {item.baths}</span>
+                                                <span className="flex items-center gap-1"><Maximize size={13}/> {item.sqft}</span>
+                                            </div>
+                                            <button 
+                                                onClick={() => setSelectedItem(item)}
+                                                className="text-[#F96302] text-xs font-bold uppercase hover:text-[#d85502] transition-colors"
+                                            >
+                                                Details →
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
+                    
+                    {/* Pagination */}
+                    {filteredListings.length > 0 && (
+                        <div className="mt-10 flex justify-center gap-2">
+                            <button className="w-10 h-10 rounded-none bg-[#154279] text-white font-bold hover:bg-[#0f325e]">1</button>
+                            <button className="w-10 h-10 rounded-none bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50">2</button>
+                            <button className="w-10 h-10 rounded-none bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 flex items-center justify-center">
+                                <ChevronRight size={16}/>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* MODAL */}
+            {/* FULL SCREEN DETAILS MODAL */}
             <AnimatePresence>
                 {selectedItem && (
-                    <PropertyModal 
-                        item={selectedItem} 
-                        onClose={() => setSelectedItem(null)} 
-                        onAddToCart={handleAddToCart}
-                    />
+                    <DetailModal item={selectedItem} onClose={() => setSelectedItem(null)} />
                 )}
             </AnimatePresence>
         </div>

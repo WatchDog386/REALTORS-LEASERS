@@ -1,300 +1,305 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { 
-    Star, 
     CheckCircle2, 
     Truck, 
     Printer, 
     Share2, 
-    Download, 
     Hammer, 
-    ArrowRight,
-    Info,
-    ShieldCheck
+    ArrowRight, 
+    ShieldCheck, 
+    Clock, 
+    Star, 
+    AlertCircle, 
+    ChevronRight,
+    Lock,
+    MapPin,
+    FileText
 } from "lucide-react";
 
 // --- GLOBAL STYLES ---
 const GlobalStyles = () => (
     <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap');
+        .font-nunito { font-family: 'Nunito', sans-serif; }
         
-        body { background-color: #fff; color: #333; }
-        .font-condensed { font-family: 'Roboto Condensed', sans-serif; }
-        .font-roboto { font-family: 'Roboto', sans-serif; }
-        
-        /* HD Brand Colors */
-        :root {
-            --hd-orange: #F96302;
-            --hd-dark: #333333;
-            --hd-light-gray: #f5f5f5;
-        }
-
-        /* Print Optimization */
-        @media print {
-            .no-print { display: none !important; }
-            button { display: none !important; }
-            body { padding: 0; margin: 0; }
-            .container { max-width: 100% !important; padding: 0 !important; }
-        }
+        /* Custom scrollbar for consistency */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #ccc; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #F96302; }
     `}</style>
 );
 
-export default function LeasingProjectGuide() {
-    const [checkedItems, setCheckedItems] = useState<Record<number, boolean>>({});
+export default function PolishedLeasingModule() {
+    const [checkedItems, setCheckedItems] = useState<Record<number, boolean>>({ 0: true });
+    const [progress, setProgress] = useState(0);
 
     const toggleCheck = (index: number) => {
         setCheckedItems(prev => ({ ...prev, [index]: !prev[index] }));
     };
 
-    const handlePrint = () => window.print();
+    useEffect(() => {
+        const total = 5;
+        const checkedCount = Object.values(checkedItems).filter(Boolean).length;
+        setProgress(Math.round((checkedCount / total) * 100));
+    }, [checkedItems]);
 
     const checklistData = [
         "Valid National ID / Passport",
         "KRA PIN Certificate",
         "Active M-Pesa or Bank Card",
-        "Email Address (Lease Signing)",
+        "Email Address (Signatures)",
         "Deposit Funds Ready"
     ];
 
     const steps = [
-        {
-            id: "1",
-            title: "Unit Discovery & Search",
-            sku: "SKU #1000-1",
-            rating: 4.8,
-            reviews: 1240,
-            status: "In Stock",
-            time: "1-2 Hours",
-            desc: "Browse inventory by floor, orientation, and price. Save favorites to compare specs.",
-            badge: "Best Seller",
-            img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format&fit=crop"
+        { 
+            id: "01", 
+            title: "Discovery & Search", 
+            meta: "Inventory Selection", 
+            time: "1h", 
+            status: "Completed", 
+            state: "done",
+            icon: MapPin,
+            img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=150&fit=crop" 
         },
-        {
-            id: "2",
-            title: "Verification & Viewing",
-            sku: "SKU #1000-2",
-            rating: 4.9,
-            reviews: 856,
-            status: "Available Today",
-            time: "30 Mins",
-            desc: "Book a physical tour or use the 3D 'Measure' tool. Identity verification required.",
-            badge: "Free Visit",
-            img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=600&auto=format&fit=crop"
+        { 
+            id: "02", 
+            title: "Verification Tour", 
+            meta: "Physical/Virtual View", 
+            time: "30m", 
+            status: "In Progress", 
+            state: "active",
+            icon: ShieldCheck,
+            img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=200&h=150&fit=crop" 
         },
-        {
-            id: "3",
-            title: "Lease & Payment",
-            sku: "SKU #1000-3",
-            rating: 5.0,
-            reviews: 2100,
-            status: "Instant Download",
-            time: "5 Mins",
-            desc: "Sign digital lease via OTP. Secure M-Pesa integration with zero transaction fees.",
-            badge: "Secure",
-            img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=600&auto=format&fit=crop"
+        { 
+            id: "03", 
+            title: "Lease Execution", 
+            meta: "Digital Contract", 
+            time: "15m", 
+            status: "Locked", 
+            state: "locked",
+            icon: FileText,
+            img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=200&h=150&fit=crop" 
         },
-        {
-            id: "4",
-            title: "Move-In Logistics",
-            sku: "SKU #1000-4",
-            rating: 4.7,
-            reviews: 930,
-            status: "Next Day Delivery",
-            time: "24 Hours",
-            desc: "Receive digital access codes, elevator passes, and WiFi credentials via app.",
-            badge: "Fast Track",
-            img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop"
+        { 
+            id: "04", 
+            title: "Move-In Logistics", 
+            meta: "Access & Handover", 
+            time: "24h", 
+            status: "Locked", 
+            state: "locked",
+            icon: Truck,
+            img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&h=150&fit=crop" 
         }
     ];
 
     return (
         <>
-        <GlobalStyles />
-        <div className="font-roboto min-h-screen container max-w-7xl mx-auto px-4 py-8">
-            
-            {/* --- HEADER: Simple Project Title (No Nav) --- */}
-            <div className="border-b border-gray-300 pb-6 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                <div>
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#F96302] uppercase tracking-wider mb-1">
-                        <Hammer size={14} /> Project Guide
-                    </div>
-                    <h1 className="text-3xl md:text-4xl font-condensed font-bold text-[#333] leading-none">
-                        RENTING YOUR APARTMENT
-                    </h1>
-                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                        <span>Model #RENT-101</span>
-                        <span className="border-l border-gray-300 pl-4">Difficulty: Beginner</span>
-                        <span className="border-l border-gray-300 pl-4">Time: 24 Hours</span>
-                    </div>
-                </div>
+            <GlobalStyles />
+            <div className="font-nunito w-full bg-[#f7f7f7] p-6 md:p-12 flex justify-center min-h-[600px] items-center text-[#484848]">
                 
-                <div className="flex gap-3 no-print">
-                    <button 
-                        onClick={handlePrint}
-                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-xs font-bold uppercase hover:border-[#333] transition-colors"
-                    >
-                        <Printer size={16} /> Print
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-xs font-bold uppercase hover:border-[#333] transition-colors">
-                        <Share2 size={16} /> Share
-                    </button>
-                </div>
-            </div>
-
-            {/* --- MAIN GRID LAYOUT --- */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                {/* --- LEFT SIDEBAR: Checklist & Summary --- */}
-                <div className="lg:col-span-4 space-y-6">
+                {/* --- MODULE CONTAINER --- */}
+                <div className="w-full max-w-5xl bg-white rounded-none shadow-xl shadow-slate-200/50 border border-slate-200 overflow-hidden flex flex-col">
                     
-                    {/* Project Overview Card */}
-                    <div className="bg-[#f9f9f9] border border-gray-200 p-6">
-                        <div className="flex items-center gap-1 mb-3">
-                             {[...Array(5)].map((_,i) => <Star key={i} size={16} fill="#F96302" stroke="none" />)}
-                             <span className="text-xs text-blue-800 underline ml-2 font-bold cursor-pointer">(4.9) Read Reviews</span>
-                        </div>
-                        <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                            Complete these 4 steps to secure your unit. This DIY guide ensures you have all documents and funds ready for a seamless move-in.
-                        </p>
-                        <div className="flex items-center gap-2 text-xs font-bold text-green-700 bg-green-50 p-2 border border-green-200">
-                            <ShieldCheck size={16} /> Verified Process
-                        </div>
-                    </div>
+                    {/* 1. HEADER: Ayden Blue with Integrated Progress */}
+                    <div className="bg-[#154279] px-8 py-6 relative overflow-hidden">
+                        {/* Abstract bg noise */}
+                        <div className="absolute top-0 right-0 w-64 h-full bg-white/5 skew-x-12 pointer-events-none" />
 
-                    {/* Materials Checklist */}
-                    <div className="border border-gray-300 p-5 bg-white shadow-sm">
-                        <h3 className="font-condensed font-bold text-lg text-[#333] border-b border-gray-200 pb-3 mb-4">
-                            Required Materials
-                        </h3>
-                        <ul className="space-y-3">
-                            {checklistData.map((item, i) => (
-                                <li 
-                                    key={i} 
-                                    onClick={() => toggleCheck(i)}
-                                    className="flex items-start gap-3 text-sm cursor-pointer group select-none"
-                                >
-                                    <div className={`mt-0.5 min-w-[18px] h-[18px] border border-gray-400 flex items-center justify-center transition-colors ${checkedItems[i] ? 'bg-[#F96302] border-[#F96302]' : 'bg-white group-hover:border-[#F96302]'}`}>
-                                        {checkedItems[i] && <CheckCircle2 size={14} className="text-white" />}
+                        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 relative z-10">
+                            <div className="flex items-start gap-5">
+                                <div className="bg-white/10 p-3 rounded-none backdrop-blur-sm border border-white/10">
+                                    <Hammer size={24} className="text-[#F96302]" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-[10px] font-bold tracking-[0.2em] text-[#F96302] uppercase bg-[#F96302]/10 px-2 py-0.5 rounded-none">
+                                            Guide #101
+                                        </span>
                                     </div>
-                                    <span className={`transition-colors ${checkedItems[i] ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                                        {item}
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                        <button className="w-full mt-6 flex items-center justify-center gap-2 border-2 border-[#333] py-3 text-xs font-bold uppercase hover:bg-[#333] hover:text-white transition-colors no-print">
-                            <Download size={16} /> Download Checklist
-                        </button>
-                    </div>
-
-                    {/* Ad Block */}
-                    <div className="border border-[#154279] bg-[#E6F0FA] p-4 text-[#154279] no-print">
-                        <div className="flex gap-3">
-                            <Truck size={24} className="shrink-0" />
-                            <div>
-                                <h4 className="font-bold text-sm uppercase">Free Move-In Truck</h4>
-                                <p className="text-xs mt-1">Rentals over 12 months qualify for a free 3-ton truck rental.</p>
-                                <span className="text-xs font-bold underline cursor-pointer mt-2 block">See details</span>
+                                    <h2 className="text-xl font-bold text-white leading-none tracking-tight">Leasing Dashboard</h2>
+                                    <p className="text-sm text-slate-300 mt-1 font-medium opacity-80">Complete these steps to secure your unit.</p>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                {/* --- RIGHT CONTENT: Step Cards --- */}
-                <div className="lg:col-span-8">
-                    
-                    {/* Sort/Filter Header */}
-                    <div className="flex justify-between items-center border-b-2 border-gray-100 pb-3 mb-6">
-                        <h2 className="font-condensed font-bold text-2xl text-[#333]">Project Steps (4)</h2>
-                        <div className="hidden md:flex items-center gap-2 text-xs font-bold text-gray-500 uppercase">
-                            <span>Sort By:</span>
-                            <div className="flex items-center gap-1 cursor-pointer text-[#333]">
-                                Recommended <ArrowRight size={12} className="rotate-90" />
+                            {/* Progress Indicator */}
+                            <div className="flex items-end gap-4 min-w-[200px]">
+                                <div className="flex-1">
+                                    <div className="flex justify-between text-[10px] font-bold text-slate-300 uppercase mb-2 tracking-wider">
+                                        <span>Readiness</span>
+                                        <span className="text-white">{progress}%</span>
+                                    </div>
+                                    <div className="h-2 w-full bg-[#0f325e] rounded-none overflow-hidden border border-white/5">
+                                        <motion.div 
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${progress}%` }}
+                                            transition={{ duration: 1, ease: "easeOut" }}
+                                            className="h-full bg-gradient-to-r from-[#d85502] to-[#F96302]" 
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* The Cards */}
-                    <div className="space-y-4">
-                        {steps.map((step) => (
-                            <motion.div 
-                                key={step.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="group flex flex-col sm:flex-row border border-gray-300 bg-white hover:shadow-lg transition-all duration-200"
-                            >
-                                {/* Image Section */}
-                                <div className="sm:w-48 h-40 sm:h-auto relative bg-gray-100 shrink-0">
-                                    <img 
-                                        src={step.img} 
-                                        alt={step.title}
-                                        className="w-full h-full object-cover mix-blend-multiply" 
-                                    />
-                                    <div className="absolute top-2 left-2 bg-white/90 text-[10px] font-bold px-2 py-0.5 border border-gray-200">
-                                        STEP {step.id}
-                                    </div>
-                                    <div className="absolute bottom-0 left-0 right-0 bg-[#F96302] text-white text-[10px] font-bold text-center py-1 uppercase">
-                                        {step.badge}
-                                    </div>
+                    {/* 2. MAIN LAYOUT GRID */}
+                    <div className="flex flex-col md:flex-row h-full">
+                        
+                        {/* --- LEFT COLUMN: CHECKLIST (30%) --- */}
+                        <div className="w-full md:w-[340px] bg-slate-50/80 border-b md:border-b-0 md:border-r border-slate-200 p-6 flex flex-col shrink-0">
+                            
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-xs font-bold text-[#154279] uppercase tracking-widest flex items-center gap-2">
+                                    <ShieldCheck size={14} className="text-[#F96302]" /> Requirements
+                                </h3>
+                                <span className="text-[10px] font-bold bg-white border border-slate-200 text-slate-600 px-2 py-0.5 rounded-none">
+                                    {checklistData.filter((_, i) => checkedItems[i]).length}/5
+                                </span>
+                            </div>
+
+                            <div className="space-y-3 mb-8">
+                                {checklistData.map((item, i) => (
+                                    <label 
+                                        key={i} 
+                                        className={`
+                                            flex items-center gap-3 p-3 rounded-none border cursor-pointer transition-all duration-200 group
+                                            ${checkedItems[i] 
+                                                ? 'bg-white border-[#154279] shadow-sm' 
+                                                : 'bg-transparent border-transparent hover:bg-white hover:border-slate-200'
+                                            }
+                                        `}
+                                    >
+                                        <div className={`
+                                            w-5 h-5 rounded-none border-2 flex items-center justify-center transition-all flex-shrink-0
+                                            ${checkedItems[i] ? 'bg-[#154279] border-[#154279]' : 'border-slate-300 group-hover:border-[#F96302]'}
+                                        `}>
+                                            {checkedItems[i] && <CheckCircle2 size={12} className="text-white" />}
+                                        </div>
+                                        <input 
+                                            type="checkbox" 
+                                            className="hidden" 
+                                            checked={!!checkedItems[i]} 
+                                            onChange={() => toggleCheck(i)} 
+                                        />
+                                        <span className={`text-xs font-bold ${checkedItems[i] ? 'text-[#154279]' : 'text-slate-500'}`}>
+                                            {item}
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
+
+                            {/* Benefit Card */}
+                            <div className="mt-auto relative overflow-hidden rounded-none bg-gradient-to-br from-[#154279] to-[#0f325e] p-5 text-white shadow-lg shadow-blue-900/10">
+                                <div className="absolute top-0 right-0 p-4 opacity-10">
+                                    <Truck size={80} />
                                 </div>
-
-                                {/* Content Section */}
-                                <div className="p-4 flex flex-col flex-grow">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <h3 className="font-bold text-[#154279] text-lg group-hover:underline cursor-pointer">
-                                                {step.title}
-                                            </h3>
-                                            <p className="text-[11px] text-gray-500 font-mono mt-0.5 mb-2">{step.sku}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <span className="block text-lg font-black text-[#333]">{step.time}</span>
-                                            <span className="text-[10px] text-gray-400 uppercase">Est. Time</span>
-                                        </div>
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Truck size={16} className="text-[#F96302]" />
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#F96302]">Logistics</span>
                                     </div>
-
-                                    {/* Ratings */}
-                                    <div className="flex items-center gap-1 mb-3">
-                                        <div className="flex">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star key={i} size={12} fill={i < 4 ? "#F96302" : "#ddd"} stroke="none" />
-                                            ))}
-                                        </div>
-                                        <span className="text-xs text-gray-400">({step.reviews})</span>
-                                    </div>
-
-                                    <p className="text-sm text-gray-700 leading-snug mb-4 max-w-lg">
-                                        {step.desc}
-                                    </p>
-
-                                    {/* Action Row */}
-                                    <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between gap-4 no-print">
-                                        <div className="flex items-center gap-1 text-xs font-bold text-green-700 uppercase">
-                                            <CheckCircle2 size={14} /> {step.status}
-                                        </div>
-                                        <button className="bg-[#F96302] text-white text-xs font-bold uppercase px-6 py-2.5 rounded-[2px] hover:bg-[#d55200] transition-colors flex items-center gap-2">
-                                            Start Step <ArrowRight size={14} />
-                                        </button>
-                                    </div>
+                                    <p className="text-sm font-bold leading-tight mb-1">Free Move-In Truck</p>
+                                    <p className="text-[10px] text-slate-300 mb-3">Available for verified 12-month leases.</p>
+                                    <button className="text-[10px] bg-white/10 hover:bg-[#F96302] hover:text-white transition-all px-3 py-2 rounded-none font-bold backdrop-blur-sm border border-white/10 uppercase tracking-wide">
+                                        Check Eligibility
+                                    </button>
                                 </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                            </div>
+                        </div>
 
-                    {/* Bottom Info */}
-                    <div className="mt-8 p-4 bg-gray-50 border border-gray-200 flex items-start gap-3 rounded-sm">
-                        <Info className="text-gray-400 shrink-0" size={20} />
-                        <div className="text-xs text-gray-500">
-                            <strong>Policy Note:</strong> Prices and availability are subject to change without notice. 
-                            Completing Step 1 (Search) does not guarantee unit reservation until Step 3 (Payment) is processed. 
-                            See store associate for details.
+                        {/* --- RIGHT COLUMN: STEPS (70%) --- */}
+                        <div className="flex-1 bg-white p-6 md:p-8">
+                            
+                            <div className="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                                <div>
+                                    <h3 className="text-lg font-bold text-[#154279]">Execution Plan </h3>
+                                    <p className="text-xs text-slate-500 mt-1 font-bold">Follow sequence strictly for reservation.</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button className="text-slate-400 hover:text-[#154279] transition-colors"><Printer size={18} /></button>
+                                    <button className="text-slate-400 hover:text-[#154279] transition-colors"><Share2 size={18} /></button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {steps.map((step) => {
+                                    const isActive = step.state === "active";
+                                    const isLocked = step.state === "locked";
+                                    
+                                    return (
+                                        <div 
+                                            key={step.id} 
+                                            className={`
+                                                group relative flex items-center gap-5 p-4 rounded-none border transition-all duration-300
+                                                ${isActive 
+                                                    ? 'bg-white border-[#F96302] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-[#F96302]/10 scale-[1.01]' 
+                                                    : isLocked
+                                                        ? 'bg-slate-50 border-slate-100 opacity-70 grayscale'
+                                                        : 'bg-white border-slate-200 hover:border-[#154279] hover:shadow-md'
+                                                }
+                                            `}
+                                        >
+                                            {/* Thumbnail */}
+                                            <div className="w-16 h-16 shrink-0 rounded-none overflow-hidden relative shadow-inner">
+                                                <img src={step.img} alt={step.title} className="w-full h-full object-cover" />
+                                                <div className="absolute inset-0 bg-black/10" />
+                                                <div className="absolute top-0 left-0 bg-[#154279]/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-none">
+                                                    {step.id}
+                                                </div>
+                                            </div>
+
+                                            {/* Content */}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex justify-between items-center mb-1">
+                                                    <h4 className={`text-sm font-bold truncate ${isActive ? 'text-[#154279]' : 'text-slate-700'}`}>
+                                                        {step.title}
+                                                    </h4>
+                                                    
+                                                    {isLocked ? (
+                                                        <Lock size={14} className="text-slate-400" />
+                                                    ) : (
+                                                        <span className={`
+                                                            text-[9px] font-bold uppercase px-2 py-0.5 rounded-none border
+                                                            ${step.state === 'done' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-orange-50 text-[#F96302] border-orange-100'}
+                                                        `}>
+                                                            {step.status}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="flex items-center gap-4 text-[11px] text-slate-500">
+                                                    <span className="font-bold text-slate-400">{step.meta}</span>
+                                                    <span className="w-1 h-1 rounded-none bg-slate-300" />
+                                                    <span className="flex items-center gap-1 font-bold"><Clock size={12} /> {step.time}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Action Arrow */}
+                                            {!isLocked && (
+                                                <div className="shrink-0 w-8 h-8 rounded-none bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-[#154279] group-hover:text-white transition-all transform group-hover:translate-x-1 cursor-pointer">
+                                                    <ChevronRight size={16} />
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Disclaimer */}
+                            <div className="mt-6 flex items-start gap-2.5 p-3 rounded-none bg-blue-50 border border-blue-100 text-[#154279]">
+                                <AlertCircle size={14} className="shrink-0 mt-0.5 text-[#F96302]" />
+                                <p className="text-[11px] leading-relaxed font-bold">
+                                    <strong className="text-[#F96302]">Note:</strong> Pricing and availability are dynamic. Completing Step 1 does not guarantee reservation until the Step 3 deposit is verified.
+                                </p>
+                            </div>
+
                         </div>
                     </div>
-
                 </div>
             </div>
-        </div>
         </>
     );
 }
