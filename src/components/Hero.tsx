@@ -221,8 +221,8 @@ const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
         <div className="p-6 md:p-10 pb-4 flex flex-col md:flex-row justify-between items-start border-b border-gray-100">
           <div>
             <div className="flex gap-2 mb-3">
-              <span className="bg-[#F96302] text-white text-xs font-bold px-3 py-1 rounded-full uppercase">For Rent</span>
-              {item.badge && <span className="bg-[#154279] text-white text-xs font-bold px-3 py-1 rounded-full uppercase">{item.badge}</span>}
+              <span className="bg-[#F96302] text-white text-xs font-bold px-3 py-1 rounded uppercase">For Rent</span>
+              {item.badge && <span className="bg-[#154279] text-white text-xs font-bold px-3 py-1 rounded uppercase">{item.badge}</span>}
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-[#222] mb-2">{item.title || item.subhead || item.headline}</h1>
             <p className="text-gray-500 flex items-center gap-2 text-sm md:text-base">
@@ -240,7 +240,7 @@ const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
           <div className="gallery-grid">
             <div className="gallery-main relative group overflow-hidden">
               <img src={item.gallery ? item.gallery[0] : item.img} alt="Main" className="gallery-img transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold shadow flex items-center gap-2 cursor-pointer hover:bg-[#F96302] hover:text-white transition-colors">
+              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded text-xs font-bold shadow flex items-center gap-2 cursor-pointer hover:bg-[#F96302] hover:text-white transition-colors">
                 <Maximize size={14}/> View Photos
               </div>
             </div>
@@ -354,15 +354,15 @@ const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
               </div>
 
               <form className="space-y-3">
-                <input type="text" placeholder="Your Name" className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
-                <input type="email" placeholder="Your Email" className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
-                <input type="tel" placeholder="Your Phone" className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
-                <textarea rows={3} placeholder="I am interested in this property..." className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"></textarea>
+                <input type="text" placeholder="Your Name" className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                <input type="email" placeholder="Your Email" className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                <input type="tel" placeholder="Your Phone" className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                <textarea rows={3} placeholder="I am interested in this property..." className="w-full bg-[#f9f9f9] border border-gray-200 rounded px-3 py-3 text-sm focus:border-[#F96302] outline-none"></textarea>
                 
-                <button className="w-full bg-[#F96302] hover:bg-[#d85502] text-white font-bold py-3 rounded-lg transition-all">
+                <button className="w-full bg-[#F96302] hover:bg-[#d85502] text-white font-bold py-3 rounded transition-all">
                   Submit Request
                 </button>
-                <button className="w-full border-2 border-[#154279] text-[#154279] font-bold py-3 rounded-lg hover:bg-[#154279] hover:text-white transition-all flex items-center justify-center gap-2">
+                <button className="w-full border-2 border-[#154279] text-[#154279] font-bold py-3 rounded hover:bg-[#154279] hover:text-white transition-all flex items-center justify-center gap-2">
                   <Phone size={18}/> Call Us
                 </button>
               </form>
@@ -376,7 +376,7 @@ const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
 };
 
 // ==========================================
-// MAP COMPONENT (ORIGINAL VERSION)
+// MAP COMPONENT (UNCHANGED)
 // ==========================================
 
 const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
@@ -436,7 +436,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
   ];
 
   return (
-    <div className="w-full bg-white border border-gray-200 shadow-sm mt-8 flex flex-col rounded-lg overflow-hidden">
+    <div className="w-full bg-white border border-gray-200 shadow-sm mt-8 flex flex-col rounded-sm overflow-hidden">
       
       {/* 1. Map Control Bar */}
       <div className="p-4 border-b border-gray-200 bg-white flex flex-col md:flex-row justify-between items-center gap-4 z-10">
@@ -450,15 +450,15 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         </div>
         
         <div className="flex items-center gap-3">
-             <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
+             <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-sm">
                 <Search size={14} className="text-gray-400" />
                 <span className="text-xs font-medium text-gray-500">Nairobi, KE</span>
              </div>
              <div className="flex gap-1">
-                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-[#1E3A5F] text-white rounded-lg hover:bg-[#152a45] transition-colors">
+                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-[#1E3A5F] text-white rounded-sm hover:bg-[#152a45] transition-colors">
                     Map
                 </button>
-                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
+                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-sm hover:bg-gray-50 transition-colors">
                     Satellite
                 </button>
              </div>
@@ -468,7 +468,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
       {/* 2. Map Container */}
       <div className="relative w-full h-[550px] min-h-[500px] bg-[#E5E3DF] overflow-hidden group">
         
-        {/* MAP BACKGROUND */}
+        {/* MAP BACKGROUND (Placeholder for visual effect) */}
         <div className="absolute inset-0 pointer-events-none">
             <iframe 
                 width="100%" 
@@ -484,7 +484,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         </div>
 
         {/* Legend Overlay */}
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-3 z-20 max-w-[200px] border border-gray-200">
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-sm shadow-md p-3 z-20 max-w-[200px] border border-gray-200">
           <h4 className="text-xs font-bold text-[#333] mb-2 flex items-center gap-1">
             <Layers size={12} /> Property Areas
           </h4>
@@ -504,16 +504,16 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         </div>
 
         {/* Custom Map Controls Overlay */}
-        <div className="absolute right-4 bottom-20 flex flex-col shadow-lg rounded-lg overflow-hidden bg-white z-20 border border-gray-300">
-            <button className="p-3 hover:bg-gray-50 text-gray-600 border-b border-gray-200 rounded-t-lg">
+        <div className="absolute right-4 bottom-20 flex flex-col shadow-lg rounded-sm overflow-hidden bg-white z-20 border border-gray-300">
+            <button className="p-3 hover:bg-gray-50 text-gray-600 border-b border-gray-200">
                 <Plus size={18} />
             </button>
-            <button className="p-3 hover:bg-gray-50 text-gray-600 rounded-b-lg">
+            <button className="p-3 hover:bg-gray-50 text-gray-600">
                 <Minus size={18} />
             </button>
         </div>
 
-        {/* PINS - Original Style */}
+        {/* PINS - UPDATED STYLE */}
         {mapPins.map((pin) => (
             <div 
                 key={pin.id}
@@ -522,10 +522,10 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
             >
                 <div className="relative flex flex-col items-center">
                     
-                    {/* Price Tag Pin */}
+                    {/* Enhanced Price Tag Pin */}
                     <div className={`
                         ${pin.active ? 'bg-[#F96302] scale-110 shadow-lg' : 'bg-[#1E3A5F]'} 
-                        text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-md 
+                        text-white text-[11px] font-bold px-3 py-1.5 rounded-sm shadow-md 
                         border-2 border-white hover:scale-125 transition-all duration-300 flex items-center gap-1
                         group-hover/pin:bg-[#F96302] relative z-20
                     `}>
@@ -546,7 +546,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
 
                     {/* Tooltip on Hover */}
                     <div className="absolute bottom-[140%] mb-2 opacity-0 group-hover/pin:opacity-100 transition-all duration-200 
-                        bg-white shadow-xl rounded-lg overflow-hidden min-w-[180px] pointer-events-none transform translate-y-2 
+                        bg-white shadow-xl rounded-sm overflow-hidden min-w-[180px] pointer-events-none transform translate-y-2 
                         group-hover/pin:translate-y-0 z-50 border border-gray-200">
                         <div className="h-20 w-full bg-gray-100 overflow-hidden relative">
                             <img 
@@ -554,7 +554,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
                                 className="w-full h-full object-cover" 
                                 alt={pin.area}
                             />
-                            <div className="absolute top-1 left-1 bg-[#F96302] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
+                            <div className="absolute top-1 left-1 bg-[#F96302] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-sm">
                                 FOR RENT
                             </div>
                         </div>
@@ -583,13 +583,13 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         ))}
       </div>
       
-      {/* 3. Footer */}
+      {/* 3. Footer - Updated */}
       <div className="bg-[#f9fafb] p-4 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-500">
           <div className="mb-2 md:mb-0">
               <div className="font-bold text-[#333]">Featured Properties Legend</div>
               <div className="flex items-center gap-3 mt-1">
-                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-[#F96302]"></div> Active/Highlighted</span>
-                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-[#1E3A5F]"></div> Available</span>
+                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-[#F96302]"></div> Active/Highlighted</span>
+                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-[#1E3A5F]"></div> Available</span>
               </div>
           </div>
           <div>© 2026 FindHouse Map Data • All 4 listings shown on map</div>
@@ -599,36 +599,26 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
 };
 
 // ==========================================
-// UPDATED LISTING CARD (WITH ANIMATIONS)
+// UPDATED LISTING CARD (AYDEN DESIGN)
 // ==========================================
 const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => void; isActive?: boolean }) => {
   const [isSaved, setIsSaved] = useState(false);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
-      className={`bg-white rounded-lg overflow-hidden border ${isActive ? 'border-[#F96302]' : 'border-gray-100'} shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col`}
+    <div 
+      className={`bg-white rounded-none overflow-hidden border ${isActive ? 'border-[#F96302]' : 'border-gray-100'} shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col`}
     >
       <div className="relative h-48 overflow-hidden cursor-pointer" onClick={onClick}>
-        <motion.img 
-          src={data.img} 
-          alt={data.title} 
-          className="w-full h-full object-cover"
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.4 }}
-        />
-        <div className="absolute top-4 left-4 bg-gradient-to-r from-[#154279] to-[#1a56b4] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow">
+        <img src={data.img} alt={data.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+        <div className="absolute top-4 left-4 bg-gradient-to-r from-[#154279] to-[#1a56b4] text-white text-[10px] font-bold px-3 py-1 rounded-none uppercase tracking-wide shadow">
           {data.beds === 0 ? "Studio" : `${data.beds} Bedroom`}
         </div>
         {data.badge && (
-          <div className="absolute top-4 right-4 bg-gradient-to-r from-[#F96302] to-[#ff7b2e] text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-[#F96302] to-[#ff7b2e] text-white text-[10px] font-bold px-2 py-1 rounded-none uppercase">
             {data.badge}
           </div>
         )}
-        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
+        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded-none text-xs font-bold flex items-center gap-1 shadow-sm">
           <Maximize size={12}/> 3
         </div>
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-3 pt-8">
@@ -665,16 +655,12 @@ const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => vo
 
         <div className="flex flex-wrap gap-1 mb-3">
           {data.amenities?.slice(0, 2).map((am:string, i:number) => (
-            <motion.span 
-              key={i} 
-              className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full"
-              whileHover={{ scale: 1.05 }}
-            >
+            <span key={i} className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-none">
               {am}
-            </motion.span>
+            </span>
           ))}
           {data.amenities?.length > 2 && (
-            <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full">
+            <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-none">
               +{data.amenities.length - 2}
             </span>
           )}
@@ -686,22 +672,20 @@ const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => vo
             <span className="flex items-center gap-1"><Bath size={13}/> {data.baths}</span>
             <span className="flex items-center gap-1"><Maximize size={13}/> {data.sqft}</span>
           </div>
-          <motion.button 
+          <button 
             onClick={onClick}
             className="text-[#F96302] text-xs font-bold uppercase hover:text-[#d85502] transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
             Details →
-          </motion.button>
+          </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
 // ==========================================
-// CAROUSEL WITH HOMEDEPOT-STYLE ANIMATIONS
+// CAROUSEL & CARD (UPDATED with 5-second auto-slide)
 // ==========================================
 
 const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: any) => void; onSlideChange: (slideId: number) => void }) => {
@@ -730,33 +714,13 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
   };
 
   const variants = {
-    enter: (dir: number) => ({ 
-      x: dir > 0 ? "100%" : "-100%", 
-      opacity: 0.5,
-      zIndex: 0,
-      scale: 0.95 
-    }),
-    center: { 
-      zIndex: 1, 
-      x: 0, 
-      opacity: 1,
-      scale: 1 
-    },
-    exit: (dir: number) => ({ 
-      zIndex: 0, 
-      x: dir < 0 ? "100%" : "-100%", 
-      opacity: 0.5,
-      scale: 0.95 
-    })
+    enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 1, zIndex: 0 }),
+    center: { zIndex: 1, x: 0, opacity: 1 },
+    exit: (dir: number) => ({ zIndex: 0, x: dir < 0 ? "100%" : "-100%", opacity: 1 })
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="relative w-full h-[450px] bg-white border border-gray-200 overflow-hidden shadow-sm group rounded-lg"
-    >
+    <div className="relative w-full h-[450px] bg-white border border-gray-200 overflow-hidden shadow-sm group">
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div 
           key={page}
@@ -765,112 +729,48 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ 
-            x: { type: "spring", stiffness: 300, damping: 30 }, 
-            opacity: { duration: 0.3 },
-            scale: { duration: 0.3 }
-          }}
+          transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
           className="absolute inset-0 flex flex-col md:flex-row h-full w-full bg-white"
         >
           <div className="w-full md:w-1/3 p-6 lg:p-10 flex flex-col justify-center relative z-10 bg-white border-r border-gray-100 h-full">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center gap-2 mb-4"
-            >
-              <span className="inline-block bg-[#F9A100] text-[#333] text-[10px] lg:text-[11px] font-black uppercase px-2 py-1 rounded-full tracking-wider">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="inline-block bg-[#F9A100] text-[#333] text-[10px] lg:text-[11px] font-black uppercase px-2 py-1 tracking-wider">
                 {currentSlide.tag}
               </span>
               <span className="text-[10px] font-bold text-[#F96302] uppercase flex items-center gap-1">
                 <Clock size={12} /> Auto-slides in 5s
               </span>
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-3xl lg:text-4xl font-extrabold text-[#333] leading-none mb-2 uppercase tracking-tight whitespace-pre-line"
-            >
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-extrabold text-[#333] leading-none mb-2 uppercase tracking-tight whitespace-pre-line">
               {currentSlide.headline.split("\n")[0]} <br />{" "}
               <span className="text-[#F96302]">{currentSlide.headline.split("\n")[1]}</span>
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide border-b border-gray-100 pb-2"
-            >
+            </h1>
+            <p className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide border-b border-gray-100 pb-2">
               {currentSlide.subhead}
-            </motion.p>
-            
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "48px" }}
-              transition={{ delay: 0.5, duration: 0.5 }}
-              className="h-1 bg-[#F96302] mb-4 rounded-full"
-            />
-            
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-sm text-gray-700 font-medium mb-6 leading-relaxed"
-            >
+            </p>
+            <div className="w-12 h-1 bg-[#F96302] mb-4"></div>
+            <p className="text-sm text-gray-700 font-medium mb-6 leading-relaxed">
               {currentSlide.description}
-            </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="flex flex-col gap-3"
-            >
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
                 onClick={() => onCardClick(currentSlide)}
-                className="bg-[#F96302] text-white font-bold text-sm uppercase py-3 px-6 hover:bg-[#d15200] transition-colors shadow-sm flex items-center justify-center gap-2 rounded-full border border-[#F96302]"
+                className="bg-[#F96302] text-white font-bold text-sm uppercase py-3 px-6 hover:bg-[#d15200] transition-colors shadow-sm flex items-center justify-center gap-2 rounded-sm border border-[#F96302]"
               >
                 View This Listing <ChevronRight size={16} />
-              </motion.button>
+              </button>
               <div className="flex items-center justify-center gap-4 text-[10px] font-bold text-gray-400 uppercase">
-                <motion.span 
-                  whileHover={{ scale: 1.05, color: "#333" }}
-                  className="cursor-pointer"
-                >
-                  Save to list
-                </motion.span>
+                <span className="cursor-pointer hover:text-[#333]">Save to list</span>
                 <span className="w-px h-3 bg-gray-300"></span>
-                <motion.span 
-                  whileHover={{ scale: 1.05, color: "#333" }}
-                  className="cursor-pointer"
-                >
-                  Share
-                </motion.span>
+                <span className="cursor-pointer hover:text-[#333]">Share</span>
               </div>
-            </motion.div>
+            </div>
           </div>
-          
           <div className="w-full md:w-2/3 h-full relative overflow-hidden bg-gray-100">
-            <motion.img 
-              src={currentSlide.img} 
-              alt="Property" 
-              className="w-full h-full object-cover"
-              initial={{ scale: 1.1 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.8 }}
-            />
+            <img src={currentSlide.img} alt="Property" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8 }}
-              className="absolute bottom-4 right-4 bg-white border border-gray-300 shadow-sm p-2.5 flex flex-col items-end min-w-[140px] z-20 rounded-lg"
-            >
-              <div className="bg-[#F9A100] text-[#333] text-[9px] font-black uppercase px-1.5 py-0.5 mb-1 leading-none rounded-full">
+            <div className="absolute bottom-4 right-4 bg-white border border-gray-300 shadow-sm p-2.5 flex flex-col items-end min-w-[140px] z-20">
+              <div className="bg-[#F9A100] text-[#333] text-[9px] font-black uppercase px-1.5 py-0.5 mb-1 leading-none">
                 {currentSlide.badge}
               </div>
               <div className="flex items-baseline gap-1">
@@ -886,38 +786,51 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
               <div className="text-[9px] text-gray-400 font-medium text-right truncate max-w-[150px]">
                 {currentSlide.location}
               </div>
+              {/* Show which map area this corresponds to */}
               <div className="mt-1 pt-1 border-t border-gray-200">
                 <div className="text-[8px] text-[#1E3A5F] font-bold uppercase">
                   Located in: {currentSlide.mapId === 101 ? 'CBD' : currentSlide.mapId === 102 ? 'Karen' : currentSlide.mapId === 103 ? 'Roysambu' : 'Westlands'}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>
       
-      {/* Enhanced Indicators - Curved with animation */}
+      {/* Navigation Buttons */}
+      <button
+        onClick={() => paginate(-1)}
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 p-2 rounded-full shadow-lg z-30 hover:bg-white transition-colors"
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        onClick={() => paginate(1)}
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 p-2 rounded-full shadow-lg z-30 hover:bg-white transition-colors"
+      >
+        <ChevronRight size={20} />
+      </button>
+      
+      {/* Enhanced Indicators */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-30">
         {VACANCY_SLIDES.map((slide, idx) => (
-          <motion.button
+          <button
             key={idx}
             onClick={() => goToSlide(idx)}
-            className={`h-2 transition-all duration-300 shadow-sm ${
+            className={`h-2 rounded-full transition-all duration-300 shadow-sm ${
               slideIndex === idx 
-                ? "bg-[#F96302] w-8 rounded-full" 
-                : "bg-white/70 w-2 rounded-full hover:w-4 hover:bg-gray-300"
+                ? "bg-[#F96302] w-8" 
+                : "bg-white/70 w-2 hover:w-4 hover:bg-gray-300"
             }`}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
 // ==========================================
-// MAIN COMPONENT WITH HOMEDEPOT ANIMATIONS
+// MAIN COMPONENT (UPDATED)
 // ==========================================
 const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
   const [previewListing, setPreviewListing] = useState<any>(null);
@@ -943,10 +856,7 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
       className="antialiased min-h-screen bg-white"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
@@ -954,99 +864,58 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
 
       <main className="max-w-[1440px] mx-auto px-4 lg:px-8 py-6 pt-[160px] lg:pt-[190px]">
         {/* Breadcrumb */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-[10px] text-gray-500 mb-4 flex items-center gap-1 font-medium"
-        >
+        <div className="text-[10px] text-gray-500 mb-4 flex items-center gap-1 font-medium">
           <span className="hover:underline cursor-pointer">Realtor</span>
           <ChevronRight size={10} />
           <span className="hover:underline cursor-pointer">Rentals</span>
           <ChevronRight size={10} />
           <span className="font-bold text-[#F96302]">Current Listings</span>
-        </motion.div>
+        </div>
 
         <div className="flex-1">
-          {/* Carousel with staggered animations */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8"
-          >
+          {/* Carousel */}
+          <div className="mb-8">
             <VacancyCarousel 
               onCardClick={openPreview} 
               onSlideChange={handleSlideChange}
             />
-          </motion.div>
+          </div>
 
           {/* Trending Rentals */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mb-8"
-          >
+          <div className="mb-8">
             <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
-              <motion.h2 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight"
-              >
+              <h2 className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight">
                 <MapPin className="text-[#F96302]" size={20} />
                 Trending Rentals (Mapped Below)
-              </motion.h2>
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline bg-transparent border-none"
-              >
+              </h2>
+              <span className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline">
                 See All 124 Results &gt;
-              </motion.button>
+              </span>
             </div>
             
-            {/* Grid with staggered card animations */}
+            {/* UPDATED: Grid with Ayden Design Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-5 w-full">
-              {LISTINGS_DATA.map((listing, index) => (
-                <motion.div
+              {LISTINGS_DATA.map((listing) => (
+                <ListingCard
                   key={listing.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
-                >
-                  <ListingCard
-                    data={listing}
-                    isActive={activeSlideId === listing.id || activeListingId === listing.id}
-                    onClick={() => handleListingClick(listing)}
-                  />
-                </motion.div>
+                  data={listing}
+                  isActive={activeSlideId === listing.id || activeListingId === listing.id}
+                  onClick={() => handleListingClick(listing)}
+                />
               ))}
             </div>
             
             {/* Info Box */}
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg"
-            >
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-sm">
               <div className="flex items-center gap-2 text-blue-800 text-sm font-medium">
                 <Navigation size={14} />
                 Click any property card to see its location highlighted on the map below
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Map Section with animation */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-          >
-            <NeighborhoodMap activeSlideId={activeSlideId} />
-          </motion.div>
+          {/* Map Section */}
+          <NeighborhoodMap activeSlideId={activeSlideId} />
           
         </div>
 
@@ -1057,7 +926,7 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
           )}
         </AnimatePresence>
       </main>
-    </motion.div>
+    </div>
   );
 };
 

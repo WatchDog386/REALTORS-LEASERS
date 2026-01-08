@@ -1,60 +1,65 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+// Updated Icon Imports for Rental/Leasing Context
 import {
   FaBars,
   FaUser,
   FaSearch,
-  FaBuilding,
+  FaBuilding, // Apartments
   FaChevronDown,
-  FaHome,
-  FaKey,
-  FaMapMarkedAlt,
+  FaHome, 
+  FaKey, 
   FaCity,
-  FaUsers,
   FaHeart,
   FaPhoneAlt,
   FaMapMarkerAlt,
-  FaArrowRight,
   FaSignOutAlt,
-  FaCog
+  FaCog,
+  // NEW IMPORTS ADDED BELOW:
+  FaTools,      // DIY
+  FaList,       // Features
+  FaTags,       // Prices
+  FaCreditCard, // Payments
+  FaStar,       // Reviews
+  FaHeadset     // Support
 } from "react-icons/fa";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 // ==========================================
-// SECTIONS CONFIGURATION
-// (IDs are ORIGINAL to preserve scrolling logic)
+// NEW SECTIONS CONFIGURATION
+// Context: Apartments, Rents, Leasing
 // ==========================================
 const SECTIONS = [
   { 
-    name: "Buy Property", 
-    id: "how-it-works", // Original ID
-    icon: <FaHome size={18} className="text-[#F96302]" /> 
+    name: "DIY Rental guides", 
+    id: "how-it-works", 
+    icon: <FaTools size={16} className="text-[#F96302]" /> // Changed to Tools
   },
   { 
-    name: "Rentals", 
-    id: "features", // Original ID
-    icon: <FaKey size={18} className="text-[#0056A6]" /> 
+    name: "Apartments features", 
+    id: "features", 
+    icon: <FaList size={16} className="text-[#0056A6]" /> // Changed to List
   },
   { 
-    name: "Commercial", 
-    id: "pricing", // Original ID
-    icon: <FaBuilding size={18} className="text-slate-600" />, 
+    name: "Affordable Prices", 
+    id: "pricing", 
+    icon: <FaTags size={18} className="text-slate-600" />, // Changed to Tags
     highlight: true 
   },
   { 
-    name: "Land & Plots", 
-    id: "payment-options", // Original ID
-    icon: <FaMapMarkedAlt size={18} className="text-emerald-600" /> 
+    name: "Payment methods", 
+    id: "payment-options", 
+    icon: <FaCreditCard size={18} className="text-emerald-600" /> // Changed to Credit Card
   },
   { 
-    name: "New Projects", 
-    id: "testimonials", // Original ID
-    icon: <FaCity size={18} className="text-purple-600" /> 
+    name: "Reviews", 
+    id: "testimonials", 
+    icon: <FaStar size={16} className="text-purple-600" /> // Changed to Star
   },
   { 
-    name: "Find Agents", 
-    id: "faq", // Original ID
-    icon: <FaUsers size={18} className="text-cyan-600" /> 
+    name: "Tenant Support", 
+    id: "faq", 
+    icon: <FaHeadset size={16} className="text-cyan-600" /> // Changed to Headset
   },
 ];
 
@@ -64,7 +69,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // LOGIC: Cart state preserved
+  // LOGIC: Cart state preserved (renamed to 'saved_listings' contextually)
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("realtor_cart");
     return savedCart ? JSON.parse(savedCart) : { count: 0, total: 0 };
@@ -80,29 +85,34 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // LOGIC: Navigation scrolling preserved
+  // LOGIC: Navigation scrolling
   const handleNavClick = (id) => {
     setMenuOpen(false);
+    
     if (location.pathname === "/") {
       const element = document.getElementById(id);
       if (element) {
-        const headerOffset = 160;
+        const headerOffset = 160; 
         const elementPosition = element.getBoundingClientRect().top;
-        window.scrollTo({ top: elementPosition + window.pageYOffset - headerOffset, behavior: "smooth" });
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+  
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
       }
     } else {
       navigate("/");
+      setTimeout(() => {
+          const element = document.getElementById(id);
+          if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   };
 
   const handleLoginRedirect = () => {
     setMenuOpen(false);
     navigate("/auth");
-  };
-
-  const handleProfileRedirect = () => {
-    setMenuOpen(false);
-    navigate("/profile"); 
   };
 
   return (
@@ -114,19 +124,19 @@ const Navbar = () => {
           <div className="flex items-center gap-5">
              <button className="flex items-center gap-1.5 hover:text-[#F96302] transition-colors duration-200 group">
                <FaMapMarkerAlt size={14} className="text-[#F96302]" />
-               <span className="font-semibold">Region:</span>
+               <span className="font-semibold">Location:</span>
                <span className="font-normal underline group-hover:no-underline">Nairobi, KE</span>
              </button>
              <div className="h-4 w-[1px] bg-gray-600"></div>
              <button className="flex items-center gap-1.5 hover:text-[#F96302]">
                <FaPhoneAlt size={12} className="text-[#F96302]" />
-               <span className="font-semibold">Hotline:</span>
-               <span className="font-normal">+254 700 000 000</span>
+               <span className="font-semibold">Leasing Office:</span>
+               <span className="font-normal">+254 711 493 222 or +254 734 712 578 </span>
              </button>
           </div>
           <div className="flex items-center gap-5 font-medium">
-            <button onClick={() => navigate("/dashboard")} className="hover:text-[#0056A6] transition-colors">List Property</button>
-            <button onClick={() => navigate("/dashboard")} className="hover:text-[#0056A6] transition-colors">Saved Homes</button>
+            <button onClick={() => navigate("/dashboard")} className="hover:text-[#0056A6] transition-colors">Post a Rental</button>
+            <button onClick={() => navigate("/dashboard")} className="hover:text-[#0056A6] transition-colors">Pay Rent</button>
           </div>
         </div>
       </div>
@@ -146,15 +156,15 @@ const Navbar = () => {
                   <FaBars size={24} />
                 </button>
 
-                {/* LOGO IMAGE REPLACEMENT */}
+                {/* LOGO */}
                 <div onClick={() => navigate("/")} className="shrink-0 cursor-pointer flex items-center gap-2">
                    <img 
                      src="/realtor.jpg" 
-                     alt="Kenya Realtors" 
+                     alt="Kenya Rentals" 
                      className="h-10 md:h-14 w-auto object-contain" 
                    />
                    <div className="flex flex-col">
-                      <span className="text-[#0056A6] font-black leading-none text-xl md:text-2xl font-sans tracking-tight">KENYA<span className="text-[#222]">REALTORS</span></span>
+                      <span className="text-[#0056A6] font-black leading-none text-xl md:text-2xl font-sans tracking-tight">KENYA<span className="text-[#222]">RENTALS</span></span>
                    </div>
                 </div>
               </div>
@@ -178,9 +188,9 @@ const Navbar = () => {
               onClick={() => setMenuOpen(true)}
               className="hidden lg:flex flex-col items-start justify-center px-4 h-12 border border-gray-300 hover:border-[#F96302] hover:shadow-[0_0_0_1px_#0056A6] transition-all group bg-gray-50 shrink-0 rounded-sm"
             >
-              <span className="text-[10px] text-gray-600 font-bold uppercase leading-none mb-0.5">Explore</span>
+              <span className="text-[10px] text-gray-600 font-bold uppercase leading-none mb-0.5">Filter</span>
               <span className="text-[15px] font-black text-[#222] flex items-center gap-2">
-                Property Types <FaChevronDown size={12} className="text-[#0056A6]" />
+                Unit Type <FaChevronDown size={12} className="text-[#0056A6]" />
               </span>
             </button>
 
@@ -189,16 +199,16 @@ const Navbar = () => {
               <div className="relative flex-1">
                 <input 
                   type="text" 
-                  placeholder="Address, City, Zip or Neighborhood..." 
+                  placeholder="City, Zip, Building Name or Amenities..." 
                   className="w-full h-11 md:h-12 pl-4 pr-10 border-2 border-r-0 border-gray-300 group-focus-within:border-[#F96302] group-focus-within:border-r-0 group-focus-within:shadow-[0_0_0_1px_#0056A6] outline-none text-[15px] md:text-[16px] rounded-l-sm placeholder:text-gray-400 font-medium transition-all"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#F96302] pointer-events-none">
-                     <FaSearch size={16} />
+                      <FaSearch size={16} />
                 </div>
               </div>
               <button className="bg-[#F96302] hover:bg-[#0056A6] text-white px-6 md:px-8 h-11 md:h-12 font-black uppercase tracking-tighter transition-all duration-300 shadow-md text-sm md:text-base rounded-r-sm flex items-center gap-2">
                  <FaSearch size={16} className="hidden md:block" />
-                 Find
+                 Search
               </button>
             </div>
 
@@ -223,7 +233,7 @@ const Navbar = () => {
                 </div>
                 <div className="flex flex-col items-start">
                     <span className="text-[11px] text-gray-500 font-bold uppercase">Saved</span>
-                    <span className="text-[14px] font-black text-[#222] leading-tight">Homes</span>
+                    <span className="text-[14px] font-black text-[#222] leading-tight">Units</span>
                 </div>
               </button>
             </div>
@@ -231,7 +241,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* 3. SUB-NAV (Desktop) */}
+      {/* 3. SUB-NAV (Desktop) - WITH APARTMENT/LEASING LINKS */}
       <div className="hidden lg:block bg-white border-b-2 border-gray-200 shadow-sm relative z-0">
         <div className="max-w-[1440px] mx-auto px-4 flex items-center h-12 relative">
           <div className="flex items-center gap-8 text-[13px] font-bold text-gray-700">
@@ -257,7 +267,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* 4. UPGRADED MOBILE MENU (Side Drawer) */}
+      {/* 4. MOBILE MENU (Side Drawer) */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetContent side="left" className="w-[85vw] max-w-[350px] p-0 border-r-0 z-[60] bg-gray-50 flex flex-col h-full">
           
@@ -270,8 +280,8 @@ const Navbar = () => {
                  <FaUser className="text-[#003A75] text-xl" />
                </div>
                <div>
-                 <h2 className="font-bold text-lg leading-tight">Welcome, Guest</h2>
-                 <p className="text-xs text-blue-200">Sign in to sync your saved homes</p>
+                 <h2 className="font-bold text-lg leading-tight">Welcome</h2>
+                 <p className="text-xs text-blue-200">Log in to view applications</p>
                </div>
             </div>
 
@@ -280,7 +290,7 @@ const Navbar = () => {
                 Sign In
               </button>
               <button onClick={handleLoginRedirect} className="bg-white/10 backdrop-blur-sm border border-white/20 text-white py-2 px-4 rounded font-bold text-xs uppercase tracking-wide hover:bg-white/20 transition">
-                Register
+                Apply Now
               </button>
             </div>
           </div>
@@ -290,34 +300,34 @@ const Navbar = () => {
              {/* Quick Actions Grid */}
              <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-200 bg-white">
                 <button onClick={() => handleNavClick('how-it-works')} className="flex flex-col items-center gap-2 p-2 rounded hover:bg-blue-50 transition">
-                   <div className="bg-blue-100 p-2 rounded-full text-[#0056A6]"><FaHome /></div>
-                   <span className="text-[10px] font-bold text-gray-600 uppercase">Buy</span>
+                   <div className="bg-blue-100 p-2 rounded-full text-[#0056A6]"><FaSearch /></div>
+                   <span className="text-[10px] font-bold text-gray-600 uppercase">Find</span>
                 </button>
                 <button onClick={() => handleNavClick('features')} className="flex flex-col items-center gap-2 p-2 rounded hover:bg-orange-50 transition">
                    <div className="bg-orange-100 p-2 rounded-full text-[#F96302]"><FaKey /></div>
-                   <span className="text-[10px] font-bold text-gray-600 uppercase">Rent</span>
+                   <span className="text-[10px] font-bold text-gray-600 uppercase">Lease</span>
                 </button>
                 <button onClick={() => navigate('/dashboard')} className="flex flex-col items-center gap-2 p-2 rounded hover:bg-green-50 transition">
                    <div className="bg-green-100 p-2 rounded-full text-green-600"><FaCity /></div>
-                   <span className="text-[10px] font-bold text-gray-600 uppercase">Sell</span>
+                   <span className="text-[10px] font-bold text-gray-600 uppercase">List</span>
                 </button>
              </div>
 
              {/* Main Navigation Links */}
              <div className="py-2 bg-white">
-               <div className="px-6 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Browse Categories</div>
+               <div className="px-6 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">Rental Categories</div>
                {SECTIONS.map((item) => (
-                  <button 
-                    key={item.id} 
-                    onClick={() => handleNavClick(item.id)} 
-                    className="w-full px-6 py-3.5 flex items-center justify-between text-left hover:bg-gray-50 active:bg-gray-100 transition-colors border-l-4 border-transparent hover:border-[#F96302]"
-                  >
-                    <div className="flex items-center gap-4 text-gray-700">
-                      <span className="text-gray-400">{item.icon}</span>
-                      <span className="font-semibold text-sm">{item.name}</span>
-                    </div>
-                    <FaChevronDown className="-rotate-90 text-gray-300 text-xs" />
-                  </button>
+                 <button 
+                   key={item.id} 
+                   onClick={() => handleNavClick(item.id)} 
+                   className="w-full px-6 py-3.5 flex items-center justify-between text-left hover:bg-gray-50 active:bg-gray-100 transition-colors border-l-4 border-transparent hover:border-[#F96302]"
+                 >
+                   <div className="flex items-center gap-4 text-gray-700">
+                     <span className="text-gray-400">{item.icon}</span>
+                     <span className="font-semibold text-sm">{item.name}</span>
+                   </div>
+                   <FaChevronDown className="-rotate-90 text-gray-300 text-xs" />
+                 </button>
                ))}
              </div>
 
@@ -325,10 +335,10 @@ const Navbar = () => {
              <div className="m-4 p-4 bg-gradient-to-br from-[#0056A6] to-[#003A75] rounded-xl text-white shadow-lg">
                 <div className="flex items-start justify-between">
                    <div>
-                     <span className="bg-[#F96302] text-[10px] font-bold px-2 py-0.5 rounded text-white">NEW</span>
-                     <h3 className="font-bold text-lg mt-1">Featured Projects</h3>
-                     <p className="text-xs text-blue-100 mt-1 mb-3">Explore premium apartments in Kilimani.</p>
-                     <button onClick={() => handleNavClick('testimonials')} className="text-xs font-bold underline hover:text-[#F96302]">View Details</button>
+                     <span className="bg-[#F96302] text-[10px] font-bold px-2 py-0.5 rounded text-white">PROMO</span>
+                     <h3 className="font-bold text-lg mt-1">Move-in Special</h3>
+                     <p className="text-xs text-blue-100 mt-1 mb-3">One month free on select 2-bedroom units.</p>
+                     <button onClick={() => handleNavClick('testimonials')} className="text-xs font-bold underline hover:text-[#F96302]">Check Availability</button>
                    </div>
                    <FaCity className="text-white/20 text-5xl" />
                 </div>
@@ -338,7 +348,7 @@ const Navbar = () => {
           {/* Footer Utility */}
           <div className="p-4 bg-gray-100 border-t border-gray-200">
              <button className="flex items-center gap-3 text-gray-600 font-bold text-sm hover:text-[#0056A6] w-full py-2">
-                <FaCog /> Settings
+                <FaCog /> Preferences
              </button>
              <button onClick={handleLoginRedirect} className="flex items-center gap-3 text-gray-600 font-bold text-sm hover:text-[#0056A6] w-full py-2">
                 <FaSignOutAlt /> Log Out
