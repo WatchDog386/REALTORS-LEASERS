@@ -2,15 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 24 L32 6 L52 24 V58 H12 V24 Z" fill="%231E3A5F"/><circle cx="32" cy="30" r="5" fill="white"/><rect x="29" y="30" width="6" height="18" fill="white"/></svg>' type="image/svg+xml" />
+    <link rel="icon" href="/realtor.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>REALTOR | Premium Residential Sales & Leasing</title>
+    <title>Kenya Realtors | The Property Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
       :root {
-        --navy: #1E3A5F;
-        --slate: #5B7C99;
+        /* UPDATED COLORS TO MATCH REACT APP */
+        --navy: #0056A6; 
+        --dark: #222222;
         --orange: #F96302;
         --bg: #ffffff;
       }
@@ -19,7 +20,6 @@
         margin: 0; 
         background-color: var(--bg); 
         font-family: 'Montserrat', sans-serif; 
-        /* Scroll is enabled */
       }
 
       .app-loader {
@@ -29,7 +29,7 @@
         justify-content: center;
         align-items: center;
         z-index: 9999;
-        background: radial-gradient(circle at center, #ffffff 0%, #eef2f5 100%);
+        background: radial-gradient(circle at center, #ffffff 0%, #f0f4f8 100%);
         transition: opacity 0.5s ease-out;
       }
 
@@ -42,9 +42,10 @@
 
       /* --- SVG SETUP --- */
       .logo-svg {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
         overflow: visible;
+        margin-bottom: 20px;
       }
 
       /* 1. KEY ANIMATION */
@@ -55,14 +56,13 @@
 
       .key-path {
         fill: none;
-        stroke: var(--slate);
-        stroke-width: 4;
+        stroke: var(--dark);
+        stroke-width: 3;
         stroke-linecap: round;
         stroke-linejoin: round;
-        /* FIXED: Increased to 500 to ensure line is fully drawn */
-        stroke-dasharray: 500;
-        stroke-dashoffset: 500;
-        animation: drawLine 0.8s ease-out forwards;
+        stroke-dasharray: 200;
+        stroke-dashoffset: 200;
+        animation: drawLine 1s ease-out forwards;
       }
 
       /* 2. THE CLICK (Pulse Effect) */
@@ -78,69 +78,73 @@
 
       /* 3. HOUSE ANIMATION */
       .house-path {
-        fill: transparent; /* Starts transparent */
+        fill: transparent;
         stroke: var(--navy);
-        stroke-width: 5;
+        stroke-width: 4;
         stroke-linecap: round;
         stroke-linejoin: round;
-        /* FIXED: Increased to 500 to ensure line is fully drawn */
-        stroke-dasharray: 500;
-        stroke-dashoffset: 500;
+        stroke-dasharray: 300;
+        stroke-dashoffset: 300;
         opacity: 0.5;
-        animation: drawHouse 1.5s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
+        animation: drawHouse 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.3s forwards;
       }
 
       /* 4. TEXT REVEAL */
       .text-mask {
         overflow: hidden;
-        margin-top: -15px;
+        height: 60px; /* Limits visibility to create slide-up effect */
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .brand-name {
-        font-size: 56px;
+        font-size: 40px;
         font-weight: 900;
-        color: var(--navy);
-        letter-spacing: -3px;
+        letter-spacing: -2px;
         transform: translateY(120%);
-        animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
+        animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 1.6s forwards;
+        display: flex;
+        gap: 5px;
       }
 
+      .brand-kenya { color: var(--navy); }
+      .brand-realtors { color: var(--dark); }
+
       .tagline {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--slate);
-        letter-spacing: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--orange);
+        letter-spacing: 3px;
         text-transform: uppercase;
         opacity: 0;
-        margin-top: 8px;
-        animation: fadeIn 1s ease-out 2.2s forwards;
+        margin-top: 5px;
+        animation: fadeIn 0.8s ease-out 2.0s forwards;
       }
 
       /* --- KEYFRAMES --- */
       
-      /* Universal Line Drawer */
       @keyframes drawLine {
         to { stroke-dashoffset: 0; }
       }
 
-      /* Key Rotation */
+      /* Key Rotation - The "Unlock" */
       @keyframes keySequence {
         0%, 40% { transform: rotate(0deg); } 
         50%, 100% { transform: rotate(90deg); }
       }
 
-      /* Ripple "Unlock" */
+      /* Ripple "Snap" */
       @keyframes rippleEffect {
         0% { opacity: 0; transform: scale(0.5); }
-        50% { opacity: 1; transform: scale(1.5); stroke-width: 1; }
-        100% { opacity: 0; transform: scale(2.5); stroke-width: 0; }
+        50% { opacity: 1; transform: scale(1.2); stroke-width: 2; }
+        100% { opacity: 0; transform: scale(2.0); stroke-width: 0; }
       }
 
-      /* House Draw & Fill */
+      /* House Draw */
       @keyframes drawHouse {
-        0% { stroke-dashoffset: 500; opacity: 0; fill: transparent; }
-        70% { stroke-dashoffset: 0; opacity: 1; fill: transparent; }
-        100% { stroke-dashoffset: 0; opacity: 1; fill: transparent; /* Keep outlined or change to var(--navy) for solid fill */ }
+        0% { stroke-dashoffset: 300; opacity: 0; }
+        100% { stroke-dashoffset: 0; opacity: 1; }
       }
 
       @keyframes slideUp {
@@ -152,9 +156,9 @@
       }
 
       @media (max-width: 600px) {
-        .logo-svg { width: 100px; height: 100px; }
-        .brand-name { font-size: 36px; letter-spacing: -1px; }
-        .tagline { font-size: 9px; letter-spacing: 2px; }
+        .logo-svg { width: 90px; height: 90px; }
+        .brand-name { font-size: 28px; letter-spacing: -1px; }
+        .tagline { font-size: 8px; letter-spacing: 2px; }
       }
     </style>
   </head>
@@ -167,23 +171,21 @@
           <svg class="logo-svg" viewBox="0 0 100 100">
              <circle class="click-ripple" cx="50" cy="45" r="20" />
 
-             <path class="house-path" d="M15 45 L50 10 L85 45 V90 H50" />
-             <path class="house-path" d="M15 90 H40" />
+             <path class="house-path" d="M15 45 L50 12 L85 45 V88 H15 V45 Z" />
              
              <g class="key-group">
-               <circle class="key-path" cx="50" cy="45" r="10" />
-               <path class="key-path" d="M50 55 V85" />
-               <path class="key-path" d="M50 65 H62" />
-               <path class="key-path" d="M50 75 H58" />
-               <circle cx="50" cy="45" r="1" fill="transparent"/> 
-             </g>
+               <circle class="key-path" cx="50" cy="45" r="9" />
+               <path class="key-path" d="M50 54 V80" /> <path class="key-path" d="M50 62 H60" /> <path class="key-path" d="M50 72 H58" /> </g>
           </svg>
 
           <div class="text-mask">
-            <div class="brand-name">REALTOR</div>
+            <div class="brand-name">
+                <span class="brand-kenya">KENYA</span>
+                <span class="brand-realtors">REALTORS</span>
+            </div>
           </div>
           
-          <div class="tagline">Welcome Home</div>
+          <div class="tagline">The Property Hub</div>
 
         </div>
       </div>
