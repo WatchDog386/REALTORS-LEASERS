@@ -51,7 +51,7 @@ const GlobalStyles = () => (
   `}</style>
 );
 
-// --- 2. DATA (AYDEN HOME TOWERS) ---
+// --- 2. DATA - INITIAL LISTINGS (Page 1) ---
 const INITIAL_LISTINGS = [
     {
         id: "AHT-304",
@@ -175,6 +175,130 @@ const INITIAL_LISTINGS = [
     }
 ];
 
+// --- PAGE 2 LISTINGS ---
+const PAGE_2_LISTINGS = [
+    {
+        id: "AHT-406",
+        title: "Penthouse 4-Bedroom Executive Suite",
+        type: "4 Bedroom",
+        price: 125000,
+        floor: "15th Floor",
+        rating: 5.0,
+        location: "Ayden Home Towers, Wing A",
+        beds: 4,
+        baths: 4,
+        sqft: 2200,
+        featured: true,
+        amenities: ["Panoramic View", "Private Terrace", "Jacuzzi", "Smart Home", "Wine Cellar"],
+        description: "The ultimate luxury penthouse offering breathtaking 360-degree city views, private terrace with outdoor kitchen, and premium finishes throughout.",
+        gallery: [
+            "https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=1200",
+            "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=800",
+            "https://images.unsplash.com/photo-1616594039325-18dcd0b4a20c?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-309",
+        title: "Executive 3-Bedroom Family Unit",
+        type: "3 Bedroom",
+        price: 92000,
+        floor: "10th Floor",
+        rating: 4.9,
+        location: "Ayden Home Towers, Wing A",
+        beds: 3,
+        baths: 3,
+        sqft: 1650,
+        featured: true,
+        amenities: ["Family Friendly", "Play Area", "Storage", "Ensuite Master"],
+        description: "Perfect for growing families, this spacious unit features a children's play area, extra storage, and proximity to the rooftop playground.",
+        gallery: [
+            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=1200",
+            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=800",
+            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-212",
+        title: "Modern 2-Bedroom Corner Unit",
+        type: "2 Bedroom",
+        price: 62000,
+        floor: "7th Floor",
+        rating: 4.7,
+        location: "Ayden Home Towers, Wing B",
+        beds: 2,
+        baths: 2,
+        sqft: 1100,
+        featured: false,
+        amenities: ["Corner Unit", "Extra Windows", "Balcony", "Modern Kitchen"],
+        description: "Corner unit with extra natural light from two sides. Features a modern open-concept kitchen with premium appliances.",
+        gallery: [
+            "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?q=80&w=1200",
+            "https://images.unsplash.com/photo-1560448204-603b3fc33ddc?q=80&w=800",
+            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-115",
+        title: "Premium 1-Bedroom Studio",
+        type: "1 Bedroom",
+        price: 42000,
+        floor: "5th Floor",
+        rating: 4.6,
+        location: "Ayden Home Towers, Wing B",
+        beds: 1,
+        baths: 1,
+        sqft: 750,
+        featured: false,
+        amenities: ["Study Nook", "Walk-in Closet", "Premium Finishes", "City View"],
+        description: "Elegant studio apartment with custom-built storage solutions, dedicated study area, and high-end fixtures throughout.",
+        gallery: [
+            "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=1200",
+            "https://images.unsplash.com/photo-1523755231516-e43fd2e8dca5?q=80&w=800",
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-003",
+        title: "Deluxe Bedsitter with Balcony",
+        type: "Bedsitter",
+        price: 22000,
+        floor: "2nd Floor",
+        rating: 4.3,
+        location: "Ayden Home Towers, Wing C",
+        beds: 0,
+        baths: 1,
+        sqft: 420,
+        featured: false,
+        amenities: ["Private Balcony", "Modern Kitchenette", "Smart TV", "Security"],
+        description: "Upgraded bedsitter with private balcony, modern kitchenette with breakfast bar, and pre-installed smart home features.",
+        gallery: [
+            "https://images.unsplash.com/photo-1558036117-15e82a2c9a9a?q=80&w=1200",
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800",
+            "https://images.unsplash.com/photo-1558036117-15e82a2c9a9a?q=80&w=800"
+        ]
+    },
+    {
+        id: "AHT-110",
+        title: "Budget-Friendly Studio Apartment",
+        type: "Studio",
+        price: 25000,
+        floor: "Ground Floor",
+        rating: 4.1,
+        location: "Ayden Home Towers, Wing C",
+        beds: 0,
+        baths: 1,
+        sqft: 380,
+        featured: false,
+        amenities: ["All Inclusive", "Furnished", "Utilities Included", "Laundry Access"],
+        description: "Fully furnished studio with all utilities included. Perfect for students or young professionals seeking hassle-free living.",
+        gallery: [
+            "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=1200",
+            "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?q=80&w=800",
+            "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=800"
+        ]
+    }
+];
+
 // --- 3. SUB-COMPONENTS ---
 
 const Navbar = ({ cartCount }: { cartCount: number }) => (
@@ -250,6 +374,8 @@ const FilterSidebar = ({ filters, setFilters }: any) => {
                         <option value="2 Bedroom">2 Bedrooms</option>
                         <option value="1 Bedroom">1 Bedrooms</option>
                         <option value="Bedsitter">Bedsitters</option>
+                        <option value="4 Bedroom">4 Bedrooms</option>
+                        <option value="Studio">Studio</option>
                     </select>
                 </div>
 
@@ -259,7 +385,7 @@ const FilterSidebar = ({ filters, setFilters }: any) => {
                         type="range" 
                         name="maxPrice"
                         min="10000" 
-                        max="100000" 
+                        max="150000" 
                         step="5000"
                         value={filters.maxPrice}
                         onChange={handleChange}
@@ -267,7 +393,7 @@ const FilterSidebar = ({ filters, setFilters }: any) => {
                     />
                     <div className="flex justify-between text-[10px] text-gray-500 mt-1 font-bold">
                         <span>10k</span>
-                        <span>100k+</span>
+                        <span>150k+</span>
                     </div>
                 </div>
 
@@ -474,12 +600,17 @@ export default function AydenTowersListing() {
     const [filters, setFilters] = useState({
         keyword: "",
         type: "All",
-        maxPrice: 100000
+        maxPrice: 150000
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const listingsPerPage = 6;
+    
+    // Combine both sets of listings
+    const ALL_LISTINGS = [...INITIAL_LISTINGS, ...PAGE_2_LISTINGS];
     
     // Derived State for Filtering
     const filteredListings = useMemo(() => {
-        return INITIAL_LISTINGS.filter(item => {
+        return ALL_LISTINGS.filter(item => {
             const matchesKeyword = item.title.toLowerCase().includes(filters.keyword.toLowerCase()) || 
                                    item.amenities.some(am => am.toLowerCase().includes(filters.keyword.toLowerCase()));
             const matchesType = filters.type === "All" || item.type === filters.type;
@@ -487,7 +618,12 @@ export default function AydenTowersListing() {
             
             return matchesKeyword && matchesType && matchesPrice;
         });
-    }, [filters]);
+    }, [filters, ALL_LISTINGS]);
+    
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredListings.length / listingsPerPage);
+    const startIndex = (currentPage - 1) * listingsPerPage;
+    const currentListings = filteredListings.slice(startIndex, startIndex + listingsPerPage);
 
     return (
         <>
@@ -634,11 +770,11 @@ export default function AydenTowersListing() {
                         </div>
                     </div>
 
-                    {filteredListings.length === 0 ? (
+                    {currentListings.length === 0 ? (
                         <div className="bg-white p-10 text-center rounded-none shadow-sm border border-gray-100">
                             <h3 className="text-lg font-bold text-gray-400 mb-2">No units match your criteria.</h3>
                             <button 
-                                onClick={()=>setFilters({keyword:"", type:"All", maxPrice:100000})} 
+                                onClick={()=>setFilters({keyword:"", type:"All", maxPrice:150000})} 
                                 className="text-[#F96302] font-bold hover:underline text-sm"
                             >
                                 Reset Filters
@@ -646,7 +782,7 @@ export default function AydenTowersListing() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            {filteredListings.map((item) => (
+                            {currentListings.map((item) => (
                                 <div 
                                     key={item.id} 
                                     className="bg-white rounded-none overflow-hidden border border-gray-100 shadow-sm hover:shadow-md shadow-hover group flex flex-col transition-all duration-300"
@@ -716,11 +852,26 @@ export default function AydenTowersListing() {
                     {/* Pagination */}
                     {filteredListings.length > 0 && (
                         <div className="mt-10 flex justify-center gap-2">
-                            <button className="w-10 h-10 rounded-none bg-[#154279] text-white font-bold hover:bg-[#0f325e]">1</button>
-                            <button className="w-10 h-10 rounded-none bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50">2</button>
-                            <button className="w-10 h-10 rounded-none bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 flex items-center justify-center">
-                                <ChevronRight size={16}/>
+                            <button 
+                                onClick={() => setCurrentPage(1)}
+                                className={`w-10 h-10 rounded-none font-bold ${currentPage === 1 ? 'bg-[#154279] text-white hover:bg-[#0f325e]' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                            >
+                                1
                             </button>
+                            <button 
+                                onClick={() => setCurrentPage(2)}
+                                className={`w-10 h-10 rounded-none font-bold ${currentPage === 2 ? 'bg-[#154279] text-white hover:bg-[#0f325e]' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                            >
+                                2
+                            </button>
+                            {totalPages > 2 && (
+                                <button 
+                                    onClick={() => setCurrentPage(currentPage < totalPages ? currentPage + 1 : totalPages)}
+                                    className="w-10 h-10 rounded-none bg-white border border-gray-200 text-gray-600 font-bold hover:bg-gray-50 flex items-center justify-center"
+                                >
+                                    <ChevronRight size={16}/>
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>

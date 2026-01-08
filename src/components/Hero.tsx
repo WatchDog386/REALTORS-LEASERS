@@ -15,11 +15,23 @@ import {
   Minus,
   Layers,
   Search,
-  Move
+  X,
+  CheckCircle2,
+  BedDouble,
+  User,
+  Phone,
+  Home,
+  Shield,
+  Zap,
+  Wifi,
+  ShoppingCart,
+  Menu,
+  PlayCircle,
+  ArrowRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Keep your import
+// Keep your existing import
 import NavbarSection from "@/components/sections/NavbarSection";
 
 // ==========================================
@@ -38,7 +50,18 @@ const VACANCY_SLIDES = [
     location: "Westlands, Nairobi",
     specs: "2 Bed • 2 Bath",
     badge: "Special Buy",
-    mapId: 104 // Links to Westlands on map
+    mapId: 104,
+    beds: 2,
+    baths: 2,
+    sqft: 1200,
+    amenities: ["Gym Access", "Swimming Pool", "Backup Generator", "24/7 Security"],
+    floor: "8th Floor",
+    description: "Browse over 500+ verified listings. This unit features a gym, pool, and backup generator. First month 50% off. Located in the prestigious Westlands area with panoramic city views.",
+    gallery: [
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=800",
+      "https://images.unsplash.com/photo-1616594039325-18dcd0b4a20c?q=80&w=800"
+    ]
   },
   {
     id: 2,
@@ -51,7 +74,18 @@ const VACANCY_SLIDES = [
     location: "Garden Estate, Thika Rd",
     specs: "4 Bed • 3 Bath",
     badge: "New",
-    mapId: 102 // Links to Karen on map
+    mapId: 102,
+    beds: 4,
+    baths: 3,
+    sqft: 2200,
+    amenities: ["Gated Community", "Large Backyard", "Pet Friendly", "Parking"],
+    floor: "Ground Floor",
+    description: "Located in a secure gated community with a huge backyard. Perfect for families with pets. This spacious bungalow features modern amenities and a serene garden setting.",
+    gallery: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800"
+    ]
   },
   {
     id: 3,
@@ -64,7 +98,18 @@ const VACANCY_SLIDES = [
     location: "Moi Avenue, CBD",
     specs: "Studio • 450 sqft",
     badge: "Hot Deal",
-    mapId: 101 // Links to CBD on map
+    mapId: 101,
+    beds: 0,
+    baths: 1,
+    sqft: 450,
+    amenities: ["High-Speed Elevator", "Fiber Ready", "Rooftop Lounge", "Central Location"],
+    floor: "12th Floor",
+    description: "High-speed elevator, fibre ready, and rooftop lounge access included. Studios starting low. Perfect for professionals working in the Central Business District.",
+    gallery: [
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2070&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1484154218962-a1c002085d2f?q=80&w=800",
+      "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800"
+    ]
   }
 ];
 
@@ -78,7 +123,15 @@ const LISTINGS_DATA = [
     rating: 4.8, reviews: 24,
     img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=400&auto=format&fit=crop",
     badge: "Top Rated",
-    mapArea: "CBD"
+    mapArea: "CBD",
+    amenities: ["City View", "Modern Kitchen", "Balcony", "Gym Access"],
+    floor: "15th Floor",
+    description: "Experience urban living at its finest in this modern downtown loft featuring panoramic city views, premium finishes, and smart home technology.",
+    gallery: [
+      "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+      "https://images.unsplash.com/photo-1484154218962-a1c002085d2f?q=80&w=800",
+      "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800"
+    ]
   },
   {
     id: 102,
@@ -89,7 +142,15 @@ const LISTINGS_DATA = [
     rating: 4.9, reviews: 12,
     img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop",
     badge: null,
-    mapArea: "Karen"
+    mapArea: "Karen",
+    amenities: ["Spacious Garden", "Garage", "Children's Play Area", "Quiet Neighborhood"],
+    floor: "Ground Floor",
+    description: "Perfect family home in a serene Karen neighborhood. Features a spacious garden, modern kitchen, and proximity to international schools.",
+    gallery: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200",
+      "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=800",
+      "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=800"
+    ]
   },
   {
     id: 103,
@@ -100,7 +161,15 @@ const LISTINGS_DATA = [
     rating: 4.5, reviews: 8,
     img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=400&auto=format&fit=crop",
     badge: "Best Value",
-    mapArea: "Roysambu"
+    mapArea: "Roysambu",
+    amenities: ["Affordable", "Furnished", "Utilities Included", "Laundry Access"],
+    floor: "5th Floor",
+    description: "Fully furnished studio apartment with all utilities included. Perfect for students or young professionals starting out in the city.",
+    gallery: [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200",
+      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?q=80&w=800",
+      "https://images.unsplash.com/photo-1584622050111-993a426fbf0a?q=80&w=800"
+    ]
   },
   {
     id: 104,
@@ -111,16 +180,206 @@ const LISTINGS_DATA = [
     rating: 5.0, reviews: 3,
     img: "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=400&auto=format&fit=crop",
     badge: "New",
-    mapArea: "Westlands"
+    mapArea: "Westlands",
+    amenities: ["Panoramic View", "Private Terrace", "Jacuzzi", "Smart Home"],
+    floor: "20th Floor",
+    description: "The ultimate luxury condo offering breathtaking city views, private terrace with outdoor kitchen, and premium finishes throughout.",
+    gallery: [
+      "https://images.unsplash.com/photo-1515263487990-61b07816b324?q=80&w=1200",
+      "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?q=80&w=800",
+      "https://images.unsplash.com/photo-1616594039325-18dcd0b4a20c?q=80&w=800"
+    ]
   }
 ];
 
 // ==========================================
-// MAP COMPONENT (UPDATED)
+// DETAIL MODAL (AYDEN DESIGN)
+// ==========================================
+const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
+  if (!item) return null;
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm overflow-y-auto custom-scroll"
+    >
+      {/* Header / Nav inside Modal */}
+      <div className="sticky top-0 bg-white shadow-md z-50 px-4 md:px-8 h-16 flex items-center justify-between">
+        <div className="font-bold text-xl text-[#154279]">AYDEN<span className="text-[#F96302]">HOMES</span></div>
+        <button 
+          onClick={onClose}
+          className="w-8 h-8 rounded-full bg-gray-100 hover:bg-[#F96302] hover:text-white flex items-center justify-center transition-all"
+        >
+          <X size={18} />
+        </button>
+      </div>
+
+      <div className="max-w-7xl mx-auto bg-white min-h-screen pb-20">
+        {/* 1. Title Header Section */}
+        <div className="p-6 md:p-10 pb-4 flex flex-col md:flex-row justify-between items-start border-b border-gray-100">
+          <div>
+            <div className="flex gap-2 mb-3">
+              <span className="bg-[#F96302] text-white text-xs font-bold px-3 py-1 rounded-full uppercase">For Rent</span>
+              {item.badge && <span className="bg-[#154279] text-white text-xs font-bold px-3 py-1 rounded-full uppercase">{item.badge}</span>}
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#222] mb-2">{item.title || item.subhead || item.headline}</h1>
+            <p className="text-gray-500 flex items-center gap-2 text-sm md:text-base">
+              <MapPin size={18} className="text-[#F96302]"/> {item.address || item.location} - {item.floor}
+            </p>
+          </div>
+          <div className="mt-4 md:mt-0 text-right">
+            <div className="text-3xl font-extrabold text-[#F96302]">KES {parseInt(item.price.replace(',', '')).toLocaleString()}</div>
+            <p className="text-gray-400 font-bold text-sm">/ Month</p>
+          </div>
+        </div>
+
+        {/* 2. Gallery Section */}
+        <div className="p-6 md:p-10 pt-6">
+          <div className="gallery-grid">
+            <div className="gallery-main relative group overflow-hidden">
+              <img src={item.gallery ? item.gallery[0] : item.img} alt="Main" className="gallery-img transition-transform duration-700 group-hover:scale-110" />
+              <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold shadow flex items-center gap-2 cursor-pointer hover:bg-[#F96302] hover:text-white transition-colors">
+                <Maximize size={14}/> View Photos
+              </div>
+            </div>
+            <div className="gallery-sub">
+              <img src={item.gallery ? item.gallery[1] : item.img} alt="Sub 1" className="gallery-img h-1/2" />
+              <img src={item.gallery ? item.gallery[2] : item.img} alt="Sub 2" className="gallery-img h-1/2" />
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Main Content & Sidebar */}
+        <div className="p-6 md:p-10 pt-0 grid grid-cols-1 lg:grid-cols-3 gap-10">
+          
+          {/* LEFT COLUMN: Details */}
+          <div className="lg:col-span-2">
+            {/* Quick Overview Badges */}
+            <div className="bg-[#f7f7f7] p-6 rounded-lg flex flex-wrap gap-6 md:gap-12 mb-8 border border-gray-100">
+              <div className="flex items-center gap-3">
+                <BedDouble size={24} className="text-[#F96302]"/>
+                <div>
+                  <span className="block font-bold text-lg text-[#222]">{item.beds}</span>
+                  <span className="text-xs text-gray-500 font-bold uppercase">Bedrooms</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Bath size={24} className="text-[#F96302]"/>
+                <div>
+                  <span className="block font-bold text-lg text-[#222]">{item.baths}</span>
+                  <span className="text-xs text-gray-500 font-bold uppercase">Bathrooms</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Maximize size={24} className="text-[#F96302]"/>
+                <div>
+                  <span className="block font-bold text-lg text-[#222]">{item.sqft}</span>
+                  <span className="text-xs text-gray-500 font-bold uppercase">Sq Ft</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="mb-8">
+              <h3 className="text-xl font-bold text-[#222] mb-4 border-b pb-2">Description</h3>
+              <p className="text-gray-600 leading-relaxed text-[15px]">
+                {item.description}
+                <br/><br/>
+                Living in this property offers a unique blend of comfort and convenience. 
+                Enjoy dedicated maintenance teams, secure access, and modern amenities designed for contemporary living.
+              </p>
+            </div>
+
+            {/* Amenities */}
+            <div className="mb-8">
+              <h3 className="text-xl font-bold text-[#222] mb-4 border-b pb-2">Amenities</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {item.amenities?.map((am:string, i:number) => (
+                  <div key={i} className="flex items-center gap-2 text-gray-600 text-sm">
+                    <CheckCircle2 size={16} className="text-[#F96302]"/> {am}
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 text-gray-600 text-sm"><CheckCircle2 size={16} className="text-[#F96302]"/> CCTV Security</div>
+                <div className="flex items-center gap-2 text-gray-600 text-sm"><CheckCircle2 size={16} className="text-[#F96302]"/> Borehole Water</div>
+                <div className="flex items-center gap-2 text-gray-600 text-sm"><CheckCircle2 size={16} className="text-[#F96302]"/> Backup Generator</div>
+              </div>
+            </div>
+
+            {/* Property Details Table */}
+            <div className="bg-[#f9f9f9] p-6 rounded-lg mb-8">
+              <h3 className="text-lg font-bold text-[#222] mb-4">Property Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4 text-sm">
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-bold text-[#555]">Property ID:</span>
+                  <span className="text-gray-500">{item.id}</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-bold text-[#555]">Price:</span>
+                  <span className="text-gray-500">KES {parseInt(item.price.replace(',', '')).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-bold text-[#555]">Property Size:</span>
+                  <span className="text-gray-500">{item.sqft} Sq Ft</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-bold text-[#555]">Bedrooms:</span>
+                  <span className="text-gray-500">{item.beds}</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-bold text-[#555]">Year Built:</span>
+                  <span className="text-gray-500">2024</span>
+                </div>
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="font-bold text-[#555]">Property Type:</span>
+                  <span className="text-gray-500">{item.beds === 0 ? 'Studio' : `${item.beds} Bedroom`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: Contact Form */}
+          <div className="lg:col-span-1">
+            <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-lg sticky top-24">
+              <h4 className="text-lg font-bold text-[#154279] mb-4">Schedule a Tour</h4>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                  <img src="https://i.pravatar.cc/150?u=property" alt="Agent" />
+                </div>
+                <div>
+                  <div className="font-bold text-[#333]">Property Manager</div>
+                  <div className="text-xs text-[#F96302] font-bold">FindHouse Office</div>
+                </div>
+              </div>
+
+              <form className="space-y-3">
+                <input type="text" placeholder="Your Name" className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                <input type="email" placeholder="Your Email" className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                <input type="tel" placeholder="Your Phone" className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"/>
+                <textarea rows={3} placeholder="I am interested in this property..." className="w-full bg-[#f9f9f9] border border-gray-200 rounded-lg px-3 py-3 text-sm focus:border-[#F96302] outline-none"></textarea>
+                
+                <button className="w-full bg-[#F96302] hover:bg-[#d85502] text-white font-bold py-3 rounded-lg transition-all">
+                  Submit Request
+                </button>
+                <button className="w-full border-2 border-[#154279] text-[#154279] font-bold py-3 rounded-lg hover:bg-[#154279] hover:text-white transition-all flex items-center justify-center gap-2">
+                  <Phone size={18}/> Call Us
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// ==========================================
+// MAP COMPONENT (ORIGINAL VERSION)
 // ==========================================
 
 const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
-  // Updated Pin Coordinates for better positioning
   const mapPins = [
     { 
       id: 104, 
@@ -177,7 +436,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
   ];
 
   return (
-    <div className="w-full bg-white border border-gray-200 shadow-sm mt-8 flex flex-col rounded-sm overflow-hidden">
+    <div className="w-full bg-white border border-gray-200 shadow-sm mt-8 flex flex-col rounded-lg overflow-hidden">
       
       {/* 1. Map Control Bar */}
       <div className="p-4 border-b border-gray-200 bg-white flex flex-col md:flex-row justify-between items-center gap-4 z-10">
@@ -191,15 +450,15 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         </div>
         
         <div className="flex items-center gap-3">
-             <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-sm">
+             <div className="hidden md:flex items-center gap-2 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
                 <Search size={14} className="text-gray-400" />
                 <span className="text-xs font-medium text-gray-500">Nairobi, KE</span>
              </div>
              <div className="flex gap-1">
-                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-[#1E3A5F] text-white rounded-sm hover:bg-[#152a45] transition-colors">
+                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-[#1E3A5F] text-white rounded-lg hover:bg-[#152a45] transition-colors">
                     Map
                 </button>
-                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-sm hover:bg-gray-50 transition-colors">
+                <button className="text-[10px] font-bold uppercase px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors">
                     Satellite
                 </button>
              </div>
@@ -209,7 +468,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
       {/* 2. Map Container */}
       <div className="relative w-full h-[550px] min-h-[500px] bg-[#E5E3DF] overflow-hidden group">
         
-        {/* GOOGLE MAPS EMBED - Updated for better view */}
+        {/* MAP BACKGROUND */}
         <div className="absolute inset-0 pointer-events-none">
             <iframe 
                 width="100%" 
@@ -218,14 +477,14 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
                 scrolling="no" 
                 marginHeight={0} 
                 marginWidth={0} 
-                src="https://maps.google.com/maps?q=Nairobi&t=m&z=11&ie=UTF8&iwloc=&output=embed"
-                style={{ filter: "saturate(1.2) contrast(1.1)" }}
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15955.27830383803!2d36.8219!3d-1.2921!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2ske!4v1700000000000!5m2!1sen!2ske"
+                style={{ filter: "saturate(0) contrast(1.1) brightness(1.1)", opacity: 0.8 }}
                 title="Nairobi Property Map"
             ></iframe>
         </div>
 
         {/* Legend Overlay */}
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-sm shadow-md p-3 z-20 max-w-[200px] border border-gray-200">
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-md p-3 z-20 max-w-[200px] border border-gray-200">
           <h4 className="text-xs font-bold text-[#333] mb-2 flex items-center gap-1">
             <Layers size={12} /> Property Areas
           </h4>
@@ -245,16 +504,16 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         </div>
 
         {/* Custom Map Controls Overlay */}
-        <div className="absolute right-4 bottom-20 flex flex-col shadow-lg rounded-sm overflow-hidden bg-white z-20 border border-gray-300">
-            <button className="p-3 hover:bg-gray-50 text-gray-600 border-b border-gray-200">
+        <div className="absolute right-4 bottom-20 flex flex-col shadow-lg rounded-lg overflow-hidden bg-white z-20 border border-gray-300">
+            <button className="p-3 hover:bg-gray-50 text-gray-600 border-b border-gray-200 rounded-t-lg">
                 <Plus size={18} />
             </button>
-            <button className="p-3 hover:bg-gray-50 text-gray-600">
+            <button className="p-3 hover:bg-gray-50 text-gray-600 rounded-b-lg">
                 <Minus size={18} />
             </button>
         </div>
 
-        {/* PINS - UPDATED STYLE */}
+        {/* PINS - Original Style */}
         {mapPins.map((pin) => (
             <div 
                 key={pin.id}
@@ -263,10 +522,10 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
             >
                 <div className="relative flex flex-col items-center">
                     
-                    {/* Enhanced Price Tag Pin */}
+                    {/* Price Tag Pin */}
                     <div className={`
                         ${pin.active ? 'bg-[#F96302] scale-110 shadow-lg' : 'bg-[#1E3A5F]'} 
-                        text-white text-[11px] font-bold px-3 py-1.5 rounded-sm shadow-md 
+                        text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-md 
                         border-2 border-white hover:scale-125 transition-all duration-300 flex items-center gap-1
                         group-hover/pin:bg-[#F96302] relative z-20
                     `}>
@@ -287,7 +546,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
 
                     {/* Tooltip on Hover */}
                     <div className="absolute bottom-[140%] mb-2 opacity-0 group-hover/pin:opacity-100 transition-all duration-200 
-                        bg-white shadow-xl rounded-sm overflow-hidden min-w-[180px] pointer-events-none transform translate-y-2 
+                        bg-white shadow-xl rounded-lg overflow-hidden min-w-[180px] pointer-events-none transform translate-y-2 
                         group-hover/pin:translate-y-0 z-50 border border-gray-200">
                         <div className="h-20 w-full bg-gray-100 overflow-hidden relative">
                             <img 
@@ -295,7 +554,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
                                 className="w-full h-full object-cover" 
                                 alt={pin.area}
                             />
-                            <div className="absolute top-1 left-1 bg-[#F96302] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-sm">
+                            <div className="absolute top-1 left-1 bg-[#F96302] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
                                 FOR RENT
                             </div>
                         </div>
@@ -324,13 +583,13 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
         ))}
       </div>
       
-      {/* 3. Footer - Updated */}
+      {/* 3. Footer */}
       <div className="bg-[#f9fafb] p-4 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-500">
           <div className="mb-2 md:mb-0">
               <div className="font-bold text-[#333]">Featured Properties Legend</div>
               <div className="flex items-center gap-3 mt-1">
-                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-[#F96302]"></div> Active/Highlighted</span>
-                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-sm bg-[#1E3A5F]"></div> Available</span>
+                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-[#F96302]"></div> Active/Highlighted</span>
+                  <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-[#1E3A5F]"></div> Available</span>
               </div>
           </div>
           <div>© 2026 FindHouse Map Data • All 4 listings shown on map</div>
@@ -340,54 +599,109 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
 };
 
 // ==========================================
-// MODAL
+// UPDATED LISTING CARD (WITH ANIMATIONS)
 // ==========================================
-const ListingPreviewModal = ({ listing, onClose }: { listing: any; onClose: () => void }) => {
-  return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-white max-w-2xl w-full max-h-[85vh] overflow-auto rounded-sm relative animate-in fade-in zoom-in duration-200">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 bg-white/90 p-1 rounded-full shadow z-10 hover:bg-white"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        <div className="h-64 md:h-80 w-full overflow-hidden">
-          <img src={listing.img} alt={listing.title || listing.subhead} className="w-full h-full object-cover" />
-        </div>
-        <div className="p-5">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-                 <h2 className="text-xl font-bold text-[#333]">{listing.title || listing.subhead}</h2>
-                 <p className="text-xs text-gray-500 flex items-center gap-1 mt-1"><MapPin size={12} /> {listing.location || listing.address}</p>
-            </div>
-            <div className="text-right">
-                 <div className="text-lg font-black text-[#F96302]">Ksh {listing.price}</div>
-                 <div className="text-[10px] text-gray-400 uppercase font-bold">Per Month</div>
-            </div>
-          </div>
-          
-          <div className="flex gap-3 py-3 border-y border-gray-100 mb-3">
-              <div className="flex items-center gap-1 text-xs font-medium text-gray-600"><Bed size={14} className="text-gray-400"/> {listing.beds || 2} Beds</div>
-              <div className="flex items-center gap-1 text-xs font-medium text-gray-600"><Bath size={14} className="text-gray-400"/> {listing.baths || 1} Baths</div>
-              <div className="flex items-center gap-1 text-xs font-medium text-gray-600"><Maximize size={14} className="text-gray-400"/> {listing.sqft || 1200} sqft</div>
-          </div>
+const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => void; isActive?: boolean }) => {
+  const [isSaved, setIsSaved] = useState(false);
 
-          <p className="text-sm text-gray-600 leading-relaxed mb-4">
-            {listing.description || "This stunning property features modern amenities, spacious interiors, and is located in a prime neighborhood. Perfect for professionals and families looking for comfort and convenience."}
-          </p>
-          
-          <button className="w-full bg-[#F96302] text-white font-bold uppercase py-3 rounded-sm hover:bg-[#d55200] transition-colors">
-            Schedule Viewing
-          </button>
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+      className={`bg-white rounded-lg overflow-hidden border ${isActive ? 'border-[#F96302]' : 'border-gray-100'} shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col`}
+    >
+      <div className="relative h-48 overflow-hidden cursor-pointer" onClick={onClick}>
+        <motion.img 
+          src={data.img} 
+          alt={data.title} 
+          className="w-full h-full object-cover"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.4 }}
+        />
+        <div className="absolute top-4 left-4 bg-gradient-to-r from-[#154279] to-[#1a56b4] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow">
+          {data.beds === 0 ? "Studio" : `${data.beds} Bedroom`}
+        </div>
+        {data.badge && (
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-[#F96302] to-[#ff7b2e] text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">
+            {data.badge}
+          </div>
+        )}
+        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
+          <Maximize size={12}/> 3
+        </div>
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-3 pt-8">
+          <div className="text-white font-bold text-lg">KES {data.price}</div>
+          <div className="text-white/80 text-xs">{data.floor}</div>
         </div>
       </div>
-    </div>
+      
+      <div className="p-4 flex-1 flex flex-col">
+        <h4 
+          className="font-bold text-base text-[#222] mb-2 cursor-pointer hover:text-[#F96302] transition-colors leading-tight line-clamp-1"
+          onClick={onClick}
+        >
+          {data.title}
+        </h4>
+        <div className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+          <MapPin size={12} className="text-gray-400"/> {data.address}
+        </div>
+
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                size={12}
+                className={
+                  i < Math.floor(data.rating) ? "fill-[#F96302] text-[#F96302]" : "text-gray-300"
+                }
+              />
+            ))}
+          </div>
+          <span className="text-xs text-gray-500 font-medium">({data.reviews} reviews)</span>
+        </div>
+
+        <div className="flex flex-wrap gap-1 mb-3">
+          {data.amenities?.slice(0, 2).map((am:string, i:number) => (
+            <motion.span 
+              key={i} 
+              className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full"
+              whileHover={{ scale: 1.05 }}
+            >
+              {am}
+            </motion.span>
+          ))}
+          {data.amenities?.length > 2 && (
+            <span className="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded-full">
+              +{data.amenities.length - 2}
+            </span>
+          )}
+        </div>
+
+        <div className="flex justify-between items-center border-t border-gray-100 pt-3 mt-auto">
+          <div className="flex gap-4 text-xs font-medium text-gray-500">
+            <span className="flex items-center gap-1"><Bed size={13}/> {data.beds}</span>
+            <span className="flex items-center gap-1"><Bath size={13}/> {data.baths}</span>
+            <span className="flex items-center gap-1"><Maximize size={13}/> {data.sqft}</span>
+          </div>
+          <motion.button 
+            onClick={onClick}
+            className="text-[#F96302] text-xs font-bold uppercase hover:text-[#d85502] transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Details →
+          </motion.button>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
 // ==========================================
-// CAROUSEL & CARD (UPDATED with 5-second auto-slide)
+// CAROUSEL WITH HOMEDEPOT-STYLE ANIMATIONS
 // ==========================================
 
 const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: any) => void; onSlideChange: (slideId: number) => void }) => {
@@ -416,13 +730,33 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
   };
 
   const variants = {
-    enter: (dir: number) => ({ x: dir > 0 ? "100%" : "-100%", opacity: 1, zIndex: 0 }),
-    center: { zIndex: 1, x: 0, opacity: 1 },
-    exit: (dir: number) => ({ zIndex: 0, x: dir < 0 ? "100%" : "-100%", opacity: 1 })
+    enter: (dir: number) => ({ 
+      x: dir > 0 ? "100%" : "-100%", 
+      opacity: 0.5,
+      zIndex: 0,
+      scale: 0.95 
+    }),
+    center: { 
+      zIndex: 1, 
+      x: 0, 
+      opacity: 1,
+      scale: 1 
+    },
+    exit: (dir: number) => ({ 
+      zIndex: 0, 
+      x: dir < 0 ? "100%" : "-100%", 
+      opacity: 0.5,
+      scale: 0.95 
+    })
   };
 
   return (
-    <div className="relative w-full h-[450px] bg-white border border-gray-200 overflow-hidden shadow-sm group">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="relative w-full h-[450px] bg-white border border-gray-200 overflow-hidden shadow-sm group rounded-lg"
+    >
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
         <motion.div 
           key={page}
@@ -431,48 +765,112 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ x: { type: "spring", stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
+          transition={{ 
+            x: { type: "spring", stiffness: 300, damping: 30 }, 
+            opacity: { duration: 0.3 },
+            scale: { duration: 0.3 }
+          }}
           className="absolute inset-0 flex flex-col md:flex-row h-full w-full bg-white"
         >
           <div className="w-full md:w-1/3 p-6 lg:p-10 flex flex-col justify-center relative z-10 bg-white border-r border-gray-100 h-full">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="inline-block bg-[#F9A100] text-[#333] text-[10px] lg:text-[11px] font-black uppercase px-2 py-1 tracking-wider">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center gap-2 mb-4"
+            >
+              <span className="inline-block bg-[#F9A100] text-[#333] text-[10px] lg:text-[11px] font-black uppercase px-2 py-1 rounded-full tracking-wider">
                 {currentSlide.tag}
               </span>
               <span className="text-[10px] font-bold text-[#F96302] uppercase flex items-center gap-1">
                 <Clock size={12} /> Auto-slides in 5s
               </span>
-            </div>
-            <h1 className="text-3xl lg:text-4xl font-extrabold text-[#333] leading-none mb-2 uppercase tracking-tight whitespace-pre-line">
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-3xl lg:text-4xl font-extrabold text-[#333] leading-none mb-2 uppercase tracking-tight whitespace-pre-line"
+            >
               {currentSlide.headline.split("\n")[0]} <br />{" "}
               <span className="text-[#F96302]">{currentSlide.headline.split("\n")[1]}</span>
-            </h1>
-            <p className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide border-b border-gray-100 pb-2">
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide border-b border-gray-100 pb-2"
+            >
               {currentSlide.subhead}
-            </p>
-            <div className="w-12 h-1 bg-[#F96302] mb-4"></div>
-            <p className="text-sm text-gray-700 font-medium mb-6 leading-relaxed">
+            </motion.p>
+            
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "48px" }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="h-1 bg-[#F96302] mb-4 rounded-full"
+            />
+            
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-sm text-gray-700 font-medium mb-6 leading-relaxed"
+            >
               {currentSlide.description}
-            </p>
-            <div className="flex flex-col gap-3">
-              <button
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="flex flex-col gap-3"
+            >
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => onCardClick(currentSlide)}
-                className="bg-[#F96302] text-white font-bold text-sm uppercase py-3 px-6 hover:bg-[#d15200] transition-colors shadow-sm flex items-center justify-center gap-2 rounded-sm border border-[#F96302]"
+                className="bg-[#F96302] text-white font-bold text-sm uppercase py-3 px-6 hover:bg-[#d15200] transition-colors shadow-sm flex items-center justify-center gap-2 rounded-full border border-[#F96302]"
               >
                 View This Listing <ChevronRight size={16} />
-              </button>
+              </motion.button>
               <div className="flex items-center justify-center gap-4 text-[10px] font-bold text-gray-400 uppercase">
-                <span className="cursor-pointer hover:text-[#333]">Save to list</span>
+                <motion.span 
+                  whileHover={{ scale: 1.05, color: "#333" }}
+                  className="cursor-pointer"
+                >
+                  Save to list
+                </motion.span>
                 <span className="w-px h-3 bg-gray-300"></span>
-                <span className="cursor-pointer hover:text-[#333]">Share</span>
+                <motion.span 
+                  whileHover={{ scale: 1.05, color: "#333" }}
+                  className="cursor-pointer"
+                >
+                  Share
+                </motion.span>
               </div>
-            </div>
+            </motion.div>
           </div>
+          
           <div className="w-full md:w-2/3 h-full relative overflow-hidden bg-gray-100">
-            <img src={currentSlide.img} alt="Property" className="w-full h-full object-cover" />
+            <motion.img 
+              src={currentSlide.img} 
+              alt="Property" 
+              className="w-full h-full object-cover"
+              initial={{ scale: 1.1 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8 }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-            <div className="absolute bottom-4 right-4 bg-white border border-gray-300 shadow-sm p-2.5 flex flex-col items-end min-w-[140px] z-20">
-              <div className="bg-[#F9A100] text-[#333] text-[9px] font-black uppercase px-1.5 py-0.5 mb-1 leading-none">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+              className="absolute bottom-4 right-4 bg-white border border-gray-300 shadow-sm p-2.5 flex flex-col items-end min-w-[140px] z-20 rounded-lg"
+            >
+              <div className="bg-[#F9A100] text-[#333] text-[9px] font-black uppercase px-1.5 py-0.5 mb-1 leading-none rounded-full">
                 {currentSlide.badge}
               </div>
               <div className="flex items-baseline gap-1">
@@ -488,165 +886,42 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
               <div className="text-[9px] text-gray-400 font-medium text-right truncate max-w-[150px]">
                 {currentSlide.location}
               </div>
-              {/* Show which map area this corresponds to */}
               <div className="mt-1 pt-1 border-t border-gray-200">
                 <div className="text-[8px] text-[#1E3A5F] font-bold uppercase">
                   Located in: {currentSlide.mapId === 101 ? 'CBD' : currentSlide.mapId === 102 ? 'Karen' : currentSlide.mapId === 103 ? 'Roysambu' : 'Westlands'}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </AnimatePresence>
       
-      {/* Navigation Buttons */}
-      <button
-        onClick={() => paginate(-1)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 p-2 rounded-full shadow-lg z-30 hover:bg-white transition-colors"
-      >
-        <ChevronLeft size={20} />
-      </button>
-      <button
-        onClick={() => paginate(1)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 p-2 rounded-full shadow-lg z-30 hover:bg-white transition-colors"
-      >
-        <ChevronRight size={20} />
-      </button>
-      
-      {/* Enhanced Indicators */}
+      {/* Enhanced Indicators - Curved with animation */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-30">
         {VACANCY_SLIDES.map((slide, idx) => (
-          <button
+          <motion.button
             key={idx}
             onClick={() => goToSlide(idx)}
-            className={`h-2 rounded-full transition-all duration-300 shadow-sm ${
+            className={`h-2 transition-all duration-300 shadow-sm ${
               slideIndex === idx 
-                ? "bg-[#F96302] w-8" 
-                : "bg-white/70 w-2 hover:w-4 hover:bg-gray-300"
+                ? "bg-[#F96302] w-8 rounded-full" 
+                : "bg-white/70 w-2 rounded-full hover:w-4 hover:bg-gray-300"
             }`}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
           />
         ))}
       </div>
-    </div>
-  );
-};
-
-const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => void; isActive?: boolean }) => {
-  const [isSaved, setIsSaved] = useState(false);
-  const [isCompare, setIsCompare] = useState(false);
-
-  return (
-    <div className={`group bg-white border ${isActive ? 'border-[#F96302] ring-2 ring-[#F96302]/20' : 'border-gray-200'} p-0 flex flex-col cursor-pointer hover:border-[#666] hover:shadow-lg transition-all duration-200 relative`}>
-      {isActive && (
-        <div className="absolute top-2 left-2 z-30 bg-[#F96302] text-white text-[9px] font-bold px-2 py-1 rounded-sm animate-pulse">
-          ACTIVE ON MAP
-        </div>
-      )}
-      <div className="h-48 overflow-hidden relative border-b border-gray-100 bg-gray-100" onClick={onClick}>
-        <img
-          src={data.img}
-          alt={data.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        {data.badge && (
-          <div className="absolute top-0 left-0 bg-[#F96302] text-white px-2 py-1 text-[10px] font-bold uppercase tracking-wide z-10">
-            {data.badge}
-          </div>
-        )}
-        <div
-          className="absolute top-2 left-2 z-20 flex items-center gap-1 bg-white/90 px-1.5 py-1 rounded-sm shadow-sm cursor-default"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <input
-            type="checkbox"
-            checked={isCompare}
-            onChange={() => setIsCompare(!isCompare)}
-            className="w-3 h-3 accent-[#F96302] cursor-pointer"
-          />
-          <span className="text-[9px] font-bold text-gray-700 uppercase">Compare</span>
-        </div>
-        <div
-          className="absolute top-2 right-2 z-20 bg-white/90 p-1.5 rounded-full shadow-sm hover:bg-white transition-colors"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsSaved(!isSaved);
-          }}
-        >
-          <Heart
-            size={14}
-            className={
-              isSaved ? "fill-[#F96302] text-[#F96302]" : "text-gray-400 hover:text-[#F96302]"
-            }
-          />
-        </div>
-      </div>
-      <div className="p-4 flex flex-col flex-1" onClick={onClick}>
-        <div className="mb-1">
-          <div className="flex items-baseline gap-1">
-            <span className="text-xs font-bold text-[#333]">Ksh</span>
-            <span className="text-2xl font-black text-[#333] tracking-tighter">{data.price}</span>
-            <span className="text-[10px] font-bold text-gray-500">/ mo</span>
-          </div>
-        </div>
-        <h3 className="font-bold text-[#333] text-[13px] leading-tight mb-1 group-hover:underline group-hover:text-[#F96302] line-clamp-1">
-          {data.title}
-        </h3>
-        <div className="flex items-center gap-1 mb-3">
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                size={10}
-                className={
-                  i < Math.floor(data.rating) ? "fill-[#F96302] text-[#F96302]" : "text-gray-300"
-                }
-              />
-            ))}
-          </div>
-          <span className="text-[10px] text-gray-500 font-medium">({data.reviews})</span>
-        </div>
-        <div className="flex items-center flex-wrap gap-2 text-[11px] text-gray-600 font-medium mb-4 border-t border-gray-100 pt-2">
-          <span className="flex items-center gap-1">
-            <Bed size={12} className="text-gray-400" /> {data.beds === 0 ? "Studio" : `${data.beds} Bed`}
-          </span>
-          <span className="w-px h-3 bg-gray-300"></span>
-          <span className="flex items-center gap-1">
-            <Bath size={12} className="text-gray-400" /> {data.baths} Bath
-          </span>
-          <span className="w-px h-3 bg-gray-300"></span>
-          <span className="flex items-center gap-1">
-            <Maximize size={12} className="text-gray-400" /> {data.sqft} sqft
-          </span>
-        </div>
-        <p className="text-[10px] text-gray-400 flex items-center gap-1 mb-4 mt-auto">
-          <MapPin size={10} /> {data.address}
-        </p>
-        <div className="flex gap-2 mt-auto">
-          <button
-            className="flex-1 bg-white border border-[#F96302] text-[#F96302] text-[11px] font-bold py-2 uppercase hover:bg-[#F96302] hover:text-white transition-colors rounded-sm"
-            onClick={(e) => e.stopPropagation()}
-          >
-            Check Availability
-          </button>
-          <button
-            className="px-3 border border-gray-300 text-gray-500 hover:border-gray-400 hover:text-[#333] rounded-sm flex items-center justify-center transition-colors"
-            onClick={(e) => e.stopPropagation()}
-            title="Quick View"
-          >
-            <Eye size={14} />
-          </button>
-        </div>
-      </div>
-    </div>
+    </motion.div>
   );
 };
 
 // ==========================================
-// MAIN COMPONENT (UPDATED)
+// MAIN COMPONENT WITH HOMEDEPOT ANIMATIONS
 // ==========================================
 const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
   const [previewListing, setPreviewListing] = useState<any>(null);
-  const [activeSlideId, setActiveSlideId] = useState<number>(104); // Default to Westlands
+  const [activeSlideId, setActiveSlideId] = useState<number>(104);
   const [activeListingId, setActiveListingId] = useState<number | null>(null);
 
   const openPreview = (listing: any) => {
@@ -661,7 +936,6 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
 
   const handleListingClick = (listing: any) => {
     openPreview(listing);
-    // Find the corresponding map pin ID
     const mapPinId = VACANCY_SLIDES.find(slide => 
       slide.location.includes(listing.mapArea) || listing.mapArea.includes(slide.location?.split(',')[0])
     )?.mapId || listing.id;
@@ -669,7 +943,10 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
       className="antialiased min-h-screen bg-white"
       style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}
     >
@@ -677,69 +954,110 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
 
       <main className="max-w-[1440px] mx-auto px-4 lg:px-8 py-6 pt-[160px] lg:pt-[190px]">
         {/* Breadcrumb */}
-        <div className="text-[10px] text-gray-500 mb-4 flex items-center gap-1 font-medium">
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-[10px] text-gray-500 mb-4 flex items-center gap-1 font-medium"
+        >
           <span className="hover:underline cursor-pointer">Realtor</span>
           <ChevronRight size={10} />
           <span className="hover:underline cursor-pointer">Rentals</span>
           <ChevronRight size={10} />
           <span className="font-bold text-[#F96302]">Current Listings</span>
-        </div>
+        </motion.div>
 
         <div className="flex-1">
-          {/* Carousel */}
-          <div className="mb-8">
+          {/* Carousel with staggered animations */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-8"
+          >
             <VacancyCarousel 
               onCardClick={openPreview} 
               onSlideChange={handleSlideChange}
             />
-          </div>
+          </motion.div>
 
           {/* Trending Rentals */}
-          <div className="mb-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mb-8"
+          >
             <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
-              <h2 className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight">
+              <motion.h2 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-xl font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight"
+              >
                 <MapPin className="text-[#F96302]" size={20} />
                 Trending Rentals (Mapped Below)
-              </h2>
-              <span className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline">
+              </motion.h2>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="text-xs font-bold text-[#F96302] cursor-pointer hover:underline bg-transparent border-none"
+              >
                 See All 124 Results &gt;
-              </span>
+              </motion.button>
             </div>
             
-            {/* Grid with active state tracking */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 w-full">
-              {LISTINGS_DATA.map((listing) => (
-                <ListingCard
+            {/* Grid with staggered card animations */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-5 w-full">
+              {LISTINGS_DATA.map((listing, index) => (
+                <motion.div
                   key={listing.id}
-                  data={listing}
-                  isActive={activeSlideId === listing.id || activeListingId === listing.id}
-                  onClick={() => handleListingClick(listing)}
-                />
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                >
+                  <ListingCard
+                    data={listing}
+                    isActive={activeSlideId === listing.id || activeListingId === listing.id}
+                    onClick={() => handleListingClick(listing)}
+                  />
+                </motion.div>
               ))}
             </div>
             
             {/* Info Box */}
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-sm">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg"
+            >
               <div className="flex items-center gap-2 text-blue-800 text-sm font-medium">
                 <Navigation size={14} />
                 Click any property card to see its location highlighted on the map below
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* Updated Map Section with active slide tracking */}
-          <NeighborhoodMap activeSlideId={activeSlideId} />
+          {/* Map Section with animation */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <NeighborhoodMap activeSlideId={activeSlideId} />
+          </motion.div>
           
         </div>
 
-        {/* Safe Preview Modal */}
+        {/* Ayden Design Detail Modal */}
         <AnimatePresence>
           {previewListing && (
-            <ListingPreviewModal listing={previewListing} onClose={closePreview} />
+            <DetailModal item={previewListing} onClose={closePreview} />
           )}
         </AnimatePresence>
       </main>
-    </div>
+    </motion.div>
   );
 };
 
