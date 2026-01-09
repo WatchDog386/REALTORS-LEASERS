@@ -301,41 +301,6 @@ const PAGE_2_LISTINGS = [
 
 // --- 3. SUB-COMPONENTS ---
 
-const Navbar = ({ cartCount }: { cartCount: number }) => (
-    <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-                <div className="bg-[#154279] text-white p-2 rounded">
-                    <MapPin size={20} />
-                </div>
-                <div>
-                    <h1 className="text-2xl font-extrabold text-[#154279] leading-none">AYDEN<span className="text-[#F96302]">HOMES</span></h1>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Towers & Residencies</p>
-                </div>
-            </div>
-            
-            <nav className="hidden lg:flex gap-8 font-bold text-sm text-[#484848]">
-                <span className="text-[#F96302]">Home</span>
-                <span className="hover:text-[#F96302] cursor-pointer">Apartments</span>
-                <span className="hover:text-[#F96302] cursor-pointer">Amenities</span>
-                <span className="hover:text-[#F96302] cursor-pointer">About Us</span>
-                <span className="hover:text-[#F96302] cursor-pointer">Contact</span>
-            </nav>
-
-            <div className="flex items-center gap-4">
-                <button className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-[#F96302] hover:bg-[#d85502] text-white rounded font-bold transition-all shadow-lg shadow-orange-500/20">
-                    <User size={18}/> Tenant Portal
-                </button>
-                <div className="relative p-2 cursor-pointer">
-                    <ShoppingCart className="text-[#154279]" size={24}/>
-                    {cartCount > 0 && <span className="absolute top-0 right-0 bg-[#F96302] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">{cartCount}</span>}
-                </div>
-                <Menu className="lg:hidden text-[#154279]" size={28}/>
-            </div>
-        </div>
-    </header>
-);
-
 const FilterSidebar = ({ filters, setFilters }: any) => {
     const handleChange = (e: any) => {
         const { name, value } = e.target;
@@ -343,31 +308,31 @@ const FilterSidebar = ({ filters, setFilters }: any) => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-none shadow-sm border border-gray-100">
-            <h3 className="font-bold text-lg mb-6 text-[#154279] flex items-center gap-2">
+        <div className="bg-[#154279] p-6 rounded-none shadow-sm border border-[#154279] text-white">
+            <h3 className="font-bold text-lg mb-6 text-white flex items-center gap-2">
                 <Search size={18} className="text-[#F96302]" /> Find Your Unit
             </h3>
             
             <div className="space-y-5">
                 <div>
-                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Search</label>
+                    <label className="text-xs font-bold uppercase text-blue-200 mb-2 block">Search</label>
                     <input 
                         type="text" 
                         name="keyword"
                         placeholder="Keyword (e.g. Balcony)" 
                         value={filters.keyword}
                         onChange={handleChange}
-                        className="w-full bg-[#f9f9f9] border border-gray-200 p-3 rounded-none text-sm focus:border-[#F96302] focus:ring-1 focus:ring-[#F96302] outline-none"
+                        className="w-full bg-white border-none p-3 rounded-none text-sm text-gray-900 focus:ring-1 focus:ring-[#F96302] outline-none"
                     />
                 </div>
 
                 <div>
-                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Apartment Type</label>
+                    <label className="text-xs font-bold uppercase text-blue-200 mb-2 block">Apartment Type</label>
                     <select 
                         name="type" 
                         value={filters.type}
                         onChange={handleChange}
-                        className="w-full bg-[#f9f9f9] border border-gray-200 p-3 rounded-none text-sm focus:border-[#F96302] outline-none cursor-pointer"
+                        className="w-full bg-white border-none p-3 rounded-none text-sm text-gray-900 focus:ring-1 focus:ring-[#F96302] outline-none cursor-pointer"
                     >
                         <option value="All">All Types</option>
                         <option value="3 Bedroom">3 Bedrooms</option>
@@ -380,7 +345,7 @@ const FilterSidebar = ({ filters, setFilters }: any) => {
                 </div>
 
                 <div>
-                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Max Price: KES {Number(filters.maxPrice).toLocaleString()}</label>
+                    <label className="text-xs font-bold uppercase text-blue-200 mb-2 block">Max Price: KES {Number(filters.maxPrice).toLocaleString()}</label>
                     <input 
                         type="range" 
                         name="maxPrice"
@@ -389,26 +354,26 @@ const FilterSidebar = ({ filters, setFilters }: any) => {
                         step="5000"
                         value={filters.maxPrice}
                         onChange={handleChange}
-                        className="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#F96302]"
+                        className="w-full h-1 bg-gray-400 rounded-lg appearance-none cursor-pointer accent-[#F96302]"
                     />
-                    <div className="flex justify-between text-[10px] text-gray-500 mt-1 font-bold">
+                    <div className="flex justify-between text-[10px] text-blue-200 mt-1 font-bold">
                         <span>10k</span>
                         <span>150k+</span>
                     </div>
                 </div>
 
                 <div className="pt-2">
-                    <label className="text-xs font-bold uppercase text-gray-400 mb-2 block">Tower Wing</label>
+                    <label className="text-xs font-bold uppercase text-blue-200 mb-2 block">Tower Wing</label>
                     <div className="space-y-2">
                         {["Wing A (Executive)", "Wing B (Standard)", "Wing C (Economy)"].map((wing, i) => (
-                            <label key={i} className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer hover:text-[#F96302]">
+                            <label key={i} className="flex items-center gap-2 text-sm text-white cursor-pointer hover:text-[#F96302]">
                                 <input type="checkbox" className="hd-checkbox rounded-sm" /> {wing}
                             </label>
                         ))}
                     </div>
                 </div>
 
-                <button className="w-full bg-[#154279] text-white font-bold py-3 rounded-none shadow hover:bg-[#0f325e] transition-colors uppercase text-sm tracking-wide">
+                <button className="w-full bg-[#F96302] text-white font-bold py-3 rounded-none shadow hover:bg-[#d85502] transition-colors uppercase text-sm tracking-wide">
                     Search Availability
                 </button>
             </div>
@@ -629,8 +594,7 @@ export default function AydenTowersListing() {
         <>
         <GlobalStyles />
         <div className="min-h-screen bg-[#f7f7f7] text-[#484848] font-sans">
-            <Navbar cartCount={0} />
-
+            
             {/* --- IMPROVED HERO SECTION --- */}
             <section className="bg-gradient-to-br from-white to-gray-50 pt-8 pb-12 lg:pt-10 lg:pb-16 border-b border-gray-200">
                 <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
@@ -736,7 +700,7 @@ export default function AydenTowersListing() {
             {/* MAIN CONTENT AREA */}
             <div className="max-w-7xl mx-auto p-4 md:p-8 flex flex-col md:flex-row gap-8 relative z-30 mt-6">
                 
-                {/* SIDEBAR FILTER */}
+                {/* SIDEBAR FILTER - NOW WITH BLUE THEME */}
                 <div className="w-full md:w-[300px] flex-shrink-0">
                     <FilterSidebar filters={filters} setFilters={setFilters} />
                     

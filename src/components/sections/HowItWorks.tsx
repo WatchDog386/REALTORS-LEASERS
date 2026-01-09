@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { 
     CheckCircle2, 
     Truck, 
-    Printer, 
+    Download, 
     Share2, 
     Hammer, 
     ArrowRight, 
@@ -45,6 +45,17 @@ export default function PolishedLeasingModule() {
         setProgress(Math.round((checkedCount / total) * 100));
     }, [checkedItems]);
 
+    // Simulated Download Function
+    const handleDownload = () => {
+        const link = document.createElement('a');
+        link.href = '#'; // Placeholder
+        link.download = 'Leasing_Guide_101.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        alert("Downloading Leasing Guide PDF...");
+    };
+
     const checklistData = [
         "Valid National ID / Passport",
         "KRA PIN Certificate",
@@ -62,7 +73,7 @@ export default function PolishedLeasingModule() {
             status: "Completed", 
             state: "done",
             icon: MapPin,
-            img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=150&fit=crop" 
+            img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&q=100" // Increased quality
         },
         { 
             id: "02", 
@@ -72,7 +83,7 @@ export default function PolishedLeasingModule() {
             status: "In Progress", 
             state: "active",
             icon: ShieldCheck,
-            img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=200&h=150&fit=crop" 
+            img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop&q=100" // Increased quality
         },
         { 
             id: "03", 
@@ -82,7 +93,7 @@ export default function PolishedLeasingModule() {
             status: "Locked", 
             state: "locked",
             icon: FileText,
-            img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=200&h=150&fit=crop" 
+            img: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=300&fit=crop&q=100" // Increased quality
         },
         { 
             id: "04", 
@@ -92,7 +103,7 @@ export default function PolishedLeasingModule() {
             status: "Locked", 
             state: "locked",
             icon: Truck,
-            img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=200&h=150&fit=crop" 
+            img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&h=300&fit=crop&q=100" // Increased quality
         }
     ];
 
@@ -112,11 +123,11 @@ export default function PolishedLeasingModule() {
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 relative z-10">
                             <div className="flex items-start gap-5">
                                 <div className="bg-white/10 p-3 rounded-none backdrop-blur-sm border border-white/10">
-                                    <Hammer size={24} className="text-[#F96302]" />
+                                    <Hammer size={24} className="text-[#F96302] fill-[#F96302]" /> {/* Amplified Icon */}
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-[10px] font-bold tracking-[0.2em] text-[#F96302] uppercase bg-[#F96302]/10 px-2 py-0.5 rounded-none">
+                                        <span className="text-[10px] font-bold tracking-[0.2em] text-[#F96302] uppercase bg-[#F96302]/10 px-2 py-0.5 rounded-none border border-[#F96302]/20">
                                             Guide #101
                                         </span>
                                     </div>
@@ -219,8 +230,12 @@ export default function PolishedLeasingModule() {
                                     <p className="text-xs text-slate-500 mt-1 font-bold">Follow sequence strictly for reservation.</p>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <button className="text-slate-400 hover:text-[#154279] transition-colors"><Printer size={18} /></button>
-                                    <button className="text-slate-400 hover:text-[#154279] transition-colors"><Share2 size={18} /></button>
+                                    <button 
+                                        onClick={handleDownload}
+                                        className="text-[#154279] hover:bg-slate-50 px-3 py-1.5 border border-slate-200 text-xs font-bold uppercase tracking-wide flex items-center gap-2 transition-all hover:border-[#154279]"
+                                    >
+                                        <Download size={14} /> Download PDF
+                                    </button>
                                 </div>
                             </div>
 
@@ -237,16 +252,20 @@ export default function PolishedLeasingModule() {
                                                 ${isActive 
                                                     ? 'bg-white border-[#F96302] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-[#F96302]/10 scale-[1.01]' 
                                                     : isLocked
-                                                        ? 'bg-slate-50 border-slate-100 opacity-70 grayscale'
+                                                        ? 'bg-slate-50 border-slate-100 opacity-80' // Reduced opacity, removed grayscale for better color pop
                                                         : 'bg-white border-slate-200 hover:border-[#154279] hover:shadow-md'
                                                 }
                                             `}
                                         >
-                                            {/* Thumbnail */}
-                                            <div className="w-16 h-16 shrink-0 rounded-none overflow-hidden relative shadow-inner">
-                                                <img src={step.img} alt={step.title} className="w-full h-full object-cover" />
-                                                <div className="absolute inset-0 bg-black/10" />
-                                                <div className="absolute top-0 left-0 bg-[#154279]/90 backdrop-blur text-white text-[9px] font-bold px-1.5 py-0.5 rounded-none">
+                                            {/* Thumbnail - Enhanced vibrancy */}
+                                            <div className="w-16 h-16 shrink-0 rounded-none overflow-hidden relative shadow-sm border border-slate-100">
+                                                <img 
+                                                    src={step.img} 
+                                                    alt={step.title} 
+                                                    className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 ${isLocked ? 'saturate-50' : 'saturate-100'}`} 
+                                                />
+                                                {/* Removed dark overlay to amplify color */}
+                                                <div className="absolute top-0 left-0 bg-[#154279] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-none">
                                                     {step.id}
                                                 </div>
                                             </div>
@@ -273,7 +292,7 @@ export default function PolishedLeasingModule() {
                                                 <div className="flex items-center gap-4 text-[11px] text-slate-500">
                                                     <span className="font-bold text-slate-400">{step.meta}</span>
                                                     <span className="w-1 h-1 rounded-none bg-slate-300" />
-                                                    <span className="flex items-center gap-1 font-bold"><Clock size={12} /> {step.time}</span>
+                                                    <span className="flex items-center gap-1 font-bold text-[#154279]"><Clock size={12} className="text-[#F96302]" /> {step.time}</span>
                                                 </div>
                                             </div>
 

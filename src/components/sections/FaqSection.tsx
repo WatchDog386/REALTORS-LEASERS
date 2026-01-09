@@ -1,460 +1,408 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   ChevronRight, 
-  ChevronDown, 
-  Printer, 
-  Share2, 
+  CreditCard, 
+  FileText, 
+  Users, 
+  Terminal, 
+  Copy, 
+  Check, 
+  Layout, 
+  Filter, 
+  Bell, 
+  BookOpen,
   MessageSquare,
-  Phone,
-  AlertCircle,
-  CreditCard,
-  Wrench,
-  ShieldCheck,
-  FileSignature,
-  Users,
-  Smartphone
+  Server
 } from "lucide-react";
 
 // ==========================================
-// 1. GLOBAL STYLES & FONTS
+// 1. STYLES & THEME
 // ==========================================
-const GlobalStyles = () => (
+const ConsoleStyles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
     
-    .font-condensed { font-family: 'Roboto Condensed', sans-serif; }
-    .font-body { font-family: 'Roboto', sans-serif; }
-    
-    .hd-search-container {
-        border: 1px solid #ccc;
-        border-radius: 9999px; /* Modern rounded pill shape */
-        overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    :root {
+      --obsidian: #0f172a;
+      --industrial-orange: #f97316; 
+      --canvas: #f1f5f9;
     }
-    
-    .bg-hd-orange { background-color: #F96302; }
-    .text-hd-orange { color: #F96302; }
-    .border-hd-orange { border-color: #F96302; }
-    .hover-hd-orange:hover { color: #F96302; }
-    
-    /* Custom Scrollbar for modern feel */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #f1f1f1; }
-    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #999; }
+
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: var(--canvas); 
+      color: #334155; 
+      font-size: 14px; /* Reduced from 15px */
+    }
+
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .scroll-panel::-webkit-scrollbar { width: 8px; }
+    .scroll-panel::-webkit-scrollbar-track { background: transparent; }
+    .scroll-panel::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .scroll-panel::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .code-window {
+        background: #0f172a;
+        color: #e2e8f0;
+        border-radius: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px; /* Reduced from 13px */
+        border: 1px solid #334155;
+        box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* Hover Animations */
+    .nav-item-hover { position: relative; overflow: hidden; }
+    .nav-item-hover::before {
+        content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
+        background-color: var(--industrial-orange); transform: scaleY(0); transition: transform 0.2s ease;
+    }
+    .nav-item-hover:hover::before { transform: scaleY(1); }
+
+    .table-row-hover { transition: all 0.15s ease-in-out; border-left: 4px solid transparent; }
+    .table-row-hover:hover {
+        background-color: #f8fafc; border-left-color: var(--industrial-orange); transform: translateX(2px);
+    }
   `}</style>
 );
 
 // ==========================================
-// 2. ENHANCED MOCK DATA (SECTION 12345)
+// 2. DATA
 // ==========================================
-const categories = [
-    { name: "Payments & Billing", count: 24, id: "pay" },
-    { name: "Account Management", count: 12, id: "acc" },
-    { name: "Lease Agreements", count: 8, id: "lease" },
-    { name: "Maintenance Requests", count: 15, id: "maint" },
-    { name: "Legal & Compliance", count: 5, id: "legal" },
+
+const CATEGORIES = [
+    { id: "All", label: "All Topics", icon: Layout },
+    { id: "Billing", label: "Billing & Finance", icon: CreditCard },
+    { id: "Leases", label: "Lease Management", icon: FileText },
+    { id: "Tenants", label: "Tenant Portal", icon: Users },
+    { id: "API", label: "API Integration", icon: Terminal },
+    { id: "System", label: "System Config", icon: Server },
 ];
 
-const faqs = [
+const RAW_FAQS = [
     {
-        id: "12345-01",
-        model: "FIN-MPESA-24",
-        type: "finance",
-        question: "How do I automate monthly rent collection via M-Pesa?",
-        shortDesc: "Setup guide for STK pushes, Paybill validation, and recurring billing cycles.",
-        answer: "Navigate to the 'Finance' tab in your dashboard. Select 'Automation Settings'. Enter your Paybill number (Model #522522) and check 'Enable Monthly STK Push'. This ensures tenants receive a popup on their phone on the due date. The system automatically reconciles the payment within 30 seconds.",
-        rating: 4.8,
-        reviews: 450
+        id: "FAQ-101", category: "Billing", views: "1.2k", updated: "2 days ago",
+        question: "How do I handle M-Pesa STK Push timeouts?",
+        preview: "Steps to take when a customer does not receive the prompt.",
+        content: { 
+            answer: "If the STK push times out (approx 10s), do not immediately retry. First, verify the phone number format (must be 254...). If valid, check the transaction log. If the status is 'Failed', you may manually trigger a retry via the API.", 
+            code: "POST /api/v1/payments/retry \n{\n  \"transaction_id\": \"TX123\",\n  \"reason\": \"timeout\"\n}" 
+        }
     },
     {
-        id: "12345-02",
-        model: "LEG-DOC-23",
-        type: "legal",
-        question: "Is the digital lease legally binding in Kenya (Bill 2023)?",
-        shortDesc: "Compliance details regarding the Landlord & Tenant Bill 2023 and e-signatures.",
-        answer: "Yes. Our generated leases are compliant with Kenyan Law. They utilize digital signatures which are recognized under the Kenya Information and Communications Act. Ensure both parties upload ID copies for validation. The audit trail provided serves as evidence in rent tribunals.",
-        rating: 4.9,
-        reviews: 120
+        id: "FAQ-102", category: "Leases", views: "850", updated: "1 week ago",
+        question: "Digital Signature Validity",
+        preview: "Are the generated PDF signatures legally binding?",
+        content: { 
+            answer: "Yes. All leases generated by the platform adhere to the Kenya Information and Communications Act. The digital signature includes a timestamp and a unique hash that verifies the document integrity.", 
+            code: "// Verification Logic\nverifySignature(docHash, certificate);" 
+        }
     },
     {
-        id: "12345-03",
-        model: "OPS-VAC-99",
-        type: "tech",
-        question: "How long does it take for a property listing to syndicate?",
-        shortDesc: "Marketplace synchronization times for Jiji, Property24, and BuyRentKenya.",
-        answer: "Once you click 'Publish' on a unit, it undergoes a brief automated review (approx 10 minutes). After approval, it instantly appears on the Realtor Marketplace. External syndication to partners like Jiji or Property24 takes between 1 to 4 hours depending on their API status.",
-        rating: 4.5,
-        reviews: 89
+        id: "FAQ-103", category: "API", views: "2.4k", updated: "3 days ago",
+        question: "Rate Limiting on Public Endpoints",
+        preview: "Understanding 429 errors and headers.",
+        content: { 
+            answer: "The public API is rate-limited to 60 requests per minute. Look for the 'Retry-After' header in the 429 response to know when to send the next request.", 
+            code: "HTTP/1.1 429 Too Many Requests\nRetry-After: 30" 
+        }
     },
     {
-        id: "12345-04",
-        model: "MNT-REQ-01",
-        type: "maintenance",
-        question: "Assigning contractors to tenant maintenance tickets",
-        shortDesc: "Workflow for dispatching plumbers/electricians and tracking job completion.",
-        answer: "When a tenant submits a request, go to 'Maintenance Console'. Click 'Assign Pro'. You can select from your private rolodex or our vetted network. The contractor receives an SMS link to accept the job, upload before/after photos, and submit an invoice directly to you.",
-        rating: 4.7,
-        reviews: 215
+        id: "FAQ-104", category: "Tenants", views: "500", updated: "1 month ago",
+        question: "Resetting Tenant Portal Passwords",
+        preview: "Admin override for tenant credentials.",
+        content: { 
+            answer: "Admins cannot see tenant passwords. You can only trigger a password reset email. Go to Tenant Directory > Select Tenant > Actions > Send Reset Link.", 
+            code: null 
+        }
     },
     {
-        id: "12345-05",
-        model: "SEC-DEP-88",
-        type: "finance",
-        question: "Handling security deposit refunds and deductions",
-        shortDesc: "Best practices for move-out inspections and returning funds.",
-        answer: "Use the 'Move-Out Flow' wizard. Input repair costs based on the exit inspection. The system calculates the balance and generates a formatted PDF statement. You can then issue the refund via M-Pesa Bulk Payment or Bank Transfer directly from the platform.",
-        rating: 4.6,
-        reviews: 156
+        id: "FAQ-105", category: "Billing", views: "3.1k", updated: "5 hours ago",
+        question: "Reversing a Duplicate Payment",
+        preview: "How to process refunds for double charges.",
+        content: { 
+            answer: "Navigate to Finance > Transactions. Locate the duplicate ID. Click 'Reverse'. Note: M-Pesa reversals take up to 72 hours to reflect in the customer's wallet.", 
+            code: null 
+        }
+    },
+    {
+        id: "FAQ-106", category: "System", views: "120", updated: "2 weeks ago",
+        question: "Setting up Custom Domains",
+        preview: "Pointing your domain to our servers.",
+        content: { 
+            answer: "Create a CNAME record in your DNS provider settings pointing to 'custom.helphub.io'. SSL certificates are provisioned automatically within 24 hours.", 
+            code: "Type: CNAME\nName: portal\nValue: custom.helphub.io" 
+        }
+    },
+    {
+        id: "FAQ-107", category: "API", views: "200", updated: "4 days ago",
+        question: "Webhook Signatures",
+        preview: "Verifying the authenticity of incoming webhooks.",
+        content: {
+            answer: "All webhooks include an 'X-Hub-Signature' header. Calculate the HMAC SHA256 of the payload using your secret key and compare it to the header.",
+            code: "const hmac = crypto.createHmac('sha256', secret);\nconst digest = hmac.update(payload).digest('hex');"
+        }
     }
 ];
 
-// Helper to get colorful icons
-const getCategoryIcon = (type) => {
-    switch (type) {
-        case 'finance':
-            return <div className="bg-green-100 p-3 rounded-full"><CreditCard className="w-8 h-8 text-green-600" /></div>;
-        case 'legal':
-            return <div className="bg-blue-100 p-3 rounded-full"><FileSignature className="w-8 h-8 text-blue-600" /></div>;
-        case 'maintenance':
-            return <div className="bg-orange-100 p-3 rounded-full"><Wrench className="w-8 h-8 text-orange-600" /></div>;
-        case 'tech':
-            return <div className="bg-purple-100 p-3 rounded-full"><Smartphone className="w-8 h-8 text-purple-600" /></div>;
-        default:
-            return <div className="bg-gray-100 p-3 rounded-full"><ShieldCheck className="w-8 h-8 text-gray-600" /></div>;
-    }
+// ==========================================
+// 3. SUB-COMPONENTS
+// ==========================================
+
+const TagBadge = ({ label }) => {
+    const styles = {
+        "Billing": "bg-blue-50 text-blue-600 border-blue-100",
+        "Leases": "bg-purple-50 text-purple-600 border-purple-100",
+        "API": "bg-slate-100 text-slate-600 border-slate-200",
+        "Tenants": "bg-orange-50 text-orange-600 border-orange-100",
+        "System": "bg-emerald-50 text-emerald-600 border-emerald-100",
+    };
+    return (
+        <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider border ${styles[label] || "bg-gray-50 text-gray-600"}`}>
+            {label}
+        </span>
+    );
 };
 
-// ==========================================
-// 3. COMPONENTS
-// ==========================================
-
-const Breadcrumbs = () => (
-    <div className="flex items-center gap-1 text-[11px] text-[#333] mb-4 font-body">
-        <a href="#" className="hover:underline text-blue-600">Home</a>
-        <span className="text-gray-400">/</span>
-        <a href="#" className="hover:underline text-blue-600">Help Center</a>
-        <span className="text-gray-400">/</span>
-        <span className="font-bold text-gray-700">Section 12345: General Operations</span>
-    </div>
-);
-
-const Sidebar = () => (
-    <div className="w-full md:w-[260px] flex-shrink-0 pr-0 md:pr-6 border-r-0 md:border-r border-gray-200 mb-8 md:mb-0">
-        <h3 className="font-condensed font-bold text-xl mb-4 text-[#333]">Department</h3>
-        <ul className="space-y-1 mb-8">
-            {categories.map((cat, idx) => (
-                <li key={idx} className="flex items-center justify-between group cursor-pointer hover:bg-gray-100 p-2 rounded transition-colors">
-                    <span className="text-sm font-bold text-[#333] group-hover:text-hd-orange">{cat.name}</span>
-                    <span className="text-xs text-gray-500 font-medium">({cat.count})</span>
-                </li>
-            ))}
-        </ul>
-
-        <div className="border-t border-gray-200 pt-6">
-            <h3 className="font-condensed font-bold text-lg mb-4 text-[#333]">Filters</h3>
-            
-            <div className="mb-6">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">User Role</h4>
-                <div className="space-y-2">
-                    {["Landlord", "Property Manager", "Tenant", "Service Provider"].map((type) => (
-                        <label key={type} className="flex items-center gap-3 cursor-pointer group">
-                            <div className="relative flex items-center">
-                                <input type="checkbox" className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 shadow-sm checked:bg-hd-orange checked:border-hd-orange" />
-                                <svg className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <span className="text-sm text-gray-700 group-hover:text-hd-orange transition-colors">{type}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">Topic Type</h4>
-                <div className="flex flex-wrap gap-2">
-                    {["Billing", "Legal", "App API", "Repairs"].map(tag => (
-                        <span key={tag} className="text-xs border border-gray-300 px-2 py-1 rounded hover:border-hd-orange hover:text-hd-orange cursor-pointer transition-colors bg-white">
-                            {tag}
-                        </span>
-                    ))}
-                </div>
-            </div>
-        </div>
-    </div>
-);
-
-const FaqProductCard = ({ item }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
+const ExpandedPanel = ({ item }) => {
     return (
-        <div className="flex flex-col border-b border-gray-200 py-8 font-body group hover:bg-gray-50/50 transition-colors -mx-4 px-4 md:mx-0 md:px-0">
-            <div className="flex flex-col md:flex-row gap-6">
-                
-                {/* 1. Icon Area - Now with Colors */}
-                <div className="w-full md:w-[140px] flex-shrink-0 flex flex-col items-center">
-                    <div className="w-full h-[120px] border border-gray-200 rounded-lg flex items-center justify-center bg-white shadow-sm mb-2 group-hover:border-hd-orange transition-colors">
-                        {getCategoryIcon(item.type)}
-                    </div>
-                    <div className="flex gap-1 text-[10px] text-gray-400 items-center">
-                        <input type="checkbox" className="rounded-sm border-gray-300" />
-                        <span>Compare</span>
-                    </div>
+        <div className="bg-slate-50 border-t border-b border-slate-200 p-6 pl-14 shadow-inner">
+            <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                <div className="flex border-b border-slate-100 bg-slate-50/50 px-5 py-3">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Official Answer</span>
                 </div>
-
-                {/* 2. Details Area */}
-                <div className="flex-grow">
-                    <div className="flex flex-col h-full">
-                        <div className="flex justify-between items-start">
-                            <a 
-                                href="#" 
-                                onClick={(e) => { e.preventDefault(); setIsOpen(!isOpen); }}
-                                className="text-lg md:text-xl font-bold text-[#333] mb-2 hover:text-hd-orange transition-colors leading-tight"
-                            >
-                                {item.question}
-                            </a>
-                        </div>
-                        
-                        {/* SKU Lines */}
-                        <div className="text-[11px] text-gray-500 mb-3 flex flex-wrap gap-x-4 gap-y-1">
-                            <span>Model # <span className="font-bold text-[#333]">{item.model}</span></span>
-                            <span>Ref ID # <span className="font-bold text-[#333]">{item.id}</span></span>
-                            <span className="uppercase text-green-600 font-bold text-[10px] border border-green-200 px-1 bg-green-50 rounded">Verified Solution</span>
-                        </div>
-
-                        {/* Ratings */}
-                        <div className="flex items-center gap-1 mb-3">
-                            <div className="flex text-hd-orange text-sm">
-                                ★★★★★
-                            </div>
-                            <span className="text-xs text-gray-500 hover:underline cursor-pointer border-l border-gray-300 pl-2 ml-1">
-                                {item.reviews} Reviews
-                            </span>
-                        </div>
-
-                        <p className="text-sm text-gray-600 leading-relaxed mb-4 max-w-2xl">
-                            {item.shortDesc}
+                <div className="p-6 flex flex-col md:flex-row gap-8">
+                    <div className="flex-1">
+                        {/* Reduced from text-base to text-sm */}
+                        <p className="text-sm text-slate-700 leading-relaxed mb-5">
+                            {item.content.answer}
                         </p>
-
-                        {/* Quick Actions */}
-                        <div className="mt-auto flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                             <button className="flex items-center gap-1 text-xs text-[#666] hover:text-hd-orange hover:underline font-bold">
-                                <Share2 className="w-3 h-3" /> Share
+                        <div className="flex gap-3 mt-5">
+                            <button className="flex items-center gap-2 text-xs font-bold border border-slate-200 text-slate-600 px-4 py-2 rounded hover:bg-slate-50 hover:text-orange-600 transition-colors">
+                                <Check className="w-4 h-4" /> Mark as Helpful
                             </button>
-                            <button className="flex items-center gap-1 text-xs text-[#666] hover:text-hd-orange hover:underline font-bold">
-                                <Printer className="w-3 h-3" /> Print Guide
+                            <button className="flex items-center gap-2 text-xs font-bold border border-slate-200 text-slate-600 px-4 py-2 rounded hover:bg-slate-50 hover:text-blue-600 transition-colors">
+                                <Copy className="w-4 h-4" /> Copy Link
                             </button>
                         </div>
                     </div>
-                </div>
-
-                {/* 3. CTA Area */}
-                <div className="w-full md:w-[220px] flex-shrink-0 flex flex-col gap-3 pt-2">
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-500 font-bold uppercase">Access Level</span>
-                        <div className="text-2xl font-bold text-[#333]">
-                           Free
+                    {item.content.code && (
+                        <div className="flex-1 md:max-w-md">
+                            <div className="code-window p-4 relative group">
+                                <div className="absolute top-3 right-3 opacity-50 text-xs text-slate-400">SNIPPET</div>
+                                <pre className="overflow-x-auto text-slate-300 pt-2">{item.content.code}</pre>
+                            </div>
                         </div>
-                      </div>
-                      
-                      <button 
-                        onClick={() => setIsOpen(!isOpen)}
-                        className={`
-                            w-full py-3 px-4 rounded font-bold text-sm border shadow-sm transition-all relative overflow-hidden
-                            ${isOpen 
-                                ? 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50' 
-                                : 'bg-hd-orange border-hd-orange text-white hover:bg-[#d85502] hover:shadow-md'
-                            }
-                        `}
-                      >
-                         <div className="flex items-center justify-center gap-2">
-                             {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                             {isOpen ? "Close Solution" : "View Solution"}
-                         </div>
-                      </button>
-                      
-                      <div className="bg-green-50 border border-green-100 p-2 rounded text-center">
-                          <p className="text-[10px] text-green-800 font-medium flex items-center justify-center gap-1">
-                              <Users className="w-3 h-3" /> 12 people viewing this
-                          </p>
-                      </div>
+                    )}
                 </div>
             </div>
-
-            {/* Expanded Content - Drawer */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                    >
-                        <div className="mt-6 ml-0 md:ml-[164px] bg-white border border-gray-200 rounded-lg shadow-inner overflow-hidden relative">
-                            <div className="absolute top-0 left-0 w-1 h-full bg-hd-orange"></div>
-                            <div className="p-6 md:p-8">
-                                <h4 className="font-condensed font-bold text-[#333] text-lg mb-4 flex items-center gap-2">
-                                    <span className="w-6 h-6 rounded-full bg-[#333] text-white flex items-center justify-center text-xs">A</span>
-                                    Official Answer
-                                </h4>
-                                <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed mb-6">
-                                    {item.answer}
-                                </div>
-                                
-                                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between p-4 bg-gray-50 rounded border border-gray-200">
-                                    <div className="flex items-center gap-3">
-                                        <AlertCircle className="w-5 h-5 text-hd-orange" />
-                                        <div className="text-xs text-gray-600">
-                                            <span className="font-bold block text-gray-800">Was this helpful?</span>
-                                            Help us improve Section 12345 documentation.
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <button className="px-3 py-1 bg-white border border-gray-300 rounded text-xs font-bold hover:border-gray-800 transition-colors">Yes</button>
-                                        <button className="px-3 py-1 bg-white border border-gray-300 rounded text-xs font-bold hover:border-gray-800 transition-colors">No</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
-}
+};
 
 // ==========================================
 // 4. MAIN PAGE
 // ==========================================
-export default function HelpCenter() {
-  return (
-    <>
-    <GlobalStyles />
-    <div className="min-h-screen bg-white text-[#333] font-body pb-20">
-        
-        {/* --- HEADER --- */}
-        <div className="bg-white border-b border-gray-200 py-4 md:py-6 sticky top-0 z-30 shadow-md">
-            <div className="max-w-[1400px] mx-auto px-4 flex flex-col md:flex-row items-center gap-4">
-                
+
+export default function FAQConsole() {
+    const [activeCat, setActiveCat] = useState("All");
+    const [expandedId, setExpandedId] = useState(null);
+
+    // Filter Logic
+    const filteredData = useMemo(() => {
+        if (activeCat === "All") return RAW_FAQS;
+        return RAW_FAQS.filter(item => item.category === activeCat);
+    }, [activeCat]);
+
+    const handleCatClick = (id) => {
+        setActiveCat(id);
+        setExpandedId(null); 
+    };
+
+    return (
+        <>
+        <ConsoleStyles />
+        <div className="flex h-screen bg-[#0f172a] overflow-hidden">
+            
+            {/* --- SIDEBAR --- */}
+            <aside className="w-72 bg-[#0f172a] border-r border-slate-800 flex flex-col z-20 shadow-xl">
                 {/* Branding */}
-                <div className="flex-shrink-0 flex items-center gap-2">
-                    <div className="w-10 h-10 bg-hd-orange rounded flex items-center justify-center text-white font-bold text-2xl font-condensed">
-                        H
+                <div className="h-20 flex items-center px-6 border-b border-slate-800">
+                    <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-md flex items-center justify-center text-white shadow-lg mr-3">
+                        <BookOpen className="w-5 h-5" />
                     </div>
-                    <div className="leading-none">
-                        <h1 className="font-condensed font-bold text-2xl text-[#333] uppercase tracking-tight">
-                            Help Hub
-                        </h1>
-                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Enterprise Edition</span>
+                    <div>
+                        {/* Reduced from text-base to text-sm */}
+                        <h1 className="font-bold text-slate-100 text-sm tracking-tight">HelpHub</h1>
+                        <p className="text-xs text-slate-500 font-mono uppercase">Knowledge Console</p>
                     </div>
                 </div>
 
-                {/* Search Bar */}
-                <div className="flex-grow w-full md:max-w-4xl mx-auto">
-                    <div className="hd-search-container flex h-10 md:h-12 relative bg-white">
-                        <input 
-                            type="text" 
-                            defaultValue="Section 12345"
-                            className="flex-grow px-6 text-sm md:text-base outline-none text-[#333] placeholder-gray-400 font-medium"
-                        />
-                        <button className="w-12 md:w-14 bg-hd-orange flex items-center justify-center hover:bg-[#d85502] transition-colors rounded-r-full">
-                            <Search className="text-white w-5 h-5 md:w-6 md:h-6" />
+                {/* Nav */}
+                <div className="p-4 flex-1 overflow-y-auto">
+                    <div className="mb-8">
+                        <p className="px-4 text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Modules</p>
+                        <nav className="space-y-1.5">
+                            {CATEGORIES.map((cat) => {
+                                const isActive = activeCat === cat.id;
+                                const count = cat.id === "All" ? RAW_FAQS.length : RAW_FAQS.filter(i => i.category === cat.id).length;
+                                
+                                return (
+                                    <button 
+                                        key={cat.id} 
+                                        onClick={() => handleCatClick(cat.id)}
+                                        className={`w-full nav-item-hover flex items-center justify-between px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 group
+                                        ${isActive ? 'bg-slate-800/50 text-white' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'}`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <cat.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-orange-500' : 'text-slate-500 group-hover:text-orange-400'}`} />
+                                            {cat.label}
+                                        </div>
+                                        <span className={`text-xs px-2 py-0.5 rounded-full ${isActive ? 'bg-orange-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                                            {count}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </nav>
+                    </div>
+                </div>
+
+                <div className="p-5 border-t border-slate-800 bg-[#0b1120]">
+                    <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded border border-slate-700 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                        <MessageSquare className="w-4 h-4" /> Contact Support
+                    </button>
+                </div>
+            </aside>
+
+            {/* --- MAIN CONTENT --- */}
+            <main className="flex-1 flex flex-col min-w-0 bg-[#f1f5f9] relative">
+                
+                {/* Header Toolbar */}
+                <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10">
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 rounded text-sm font-bold text-slate-700">
+                             <Filter className="w-4 h-4 text-slate-400" />
+                             Current View: <span className="text-orange-600">{CATEGORIES.find(c => c.id === activeCat)?.label}</span>
+                        </div>
+                    </div>
+
+                    {/* Search */}
+                    <div className="flex items-center gap-6">
+                        <div className="relative group">
+                            <Search className="absolute left-3.5 top-3 w-5 h-5 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                            <input 
+                                type="text" 
+                                placeholder="Search repository..." 
+                                className="pl-10 pr-4 py-2.5 w-72 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 transition-all"
+                            />
+                        </div>
+                        <div className="h-8 w-px bg-slate-200"></div>
+                        <button className="relative p-2.5 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+                            <Bell className="w-5 h-5" />
                         </button>
                     </div>
-                </div>
+                </header>
 
-                {/* Utility Links */}
-                <div className="hidden md:flex items-center gap-6 text-xs font-bold text-[#333]">
-                    <a href="#" className="hover:text-hd-orange flex flex-col items-center gap-1 group">
-                        <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-hd-orange" />
-                        <span>Live Chat</span>
-                    </a>
-                    <a href="#" className="hover:text-hd-orange flex flex-col items-center gap-1 group">
-                        <Phone className="w-5 h-5 text-gray-600 group-hover:text-hd-orange" />
-                        <span>Pro Support</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        {/* --- MAIN CONTENT GRID --- */}
-        <div className="max-w-[1400px] mx-auto px-4 py-8">
-            <Breadcrumbs />
-
-            <div className="flex flex-col md:flex-row items-start">
-                
-                {/* LEFT COLUMN: FILTERS */}
-                <Sidebar />
-
-                {/* RIGHT COLUMN: RESULTS */}
-                <div className="flex-grow w-full pl-0 md:pl-8">
+                {/* Content Body */}
+                <div className="flex-1 overflow-y-auto p-8 scroll-panel">
                     
-                    {/* Results Header */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 pb-4 border-b border-gray-200">
-                        <div>
-                            <h2 className="font-condensed font-bold text-3xl text-[#333]">
-                                Section 12345: Operations & Finance
-                            </h2>
-                            <p className="text-sm text-gray-500 mt-1">Showing 1-5 of 124 documented solutions</p>
+                    {/* Main Table */}
+                    <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden mt-2">
+                        {/* Table Head */}
+                        <div className="grid grid-cols-12 gap-6 px-6 py-4 bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider backdrop-blur-sm sticky top-0">
+                            <div className="col-span-2">Reference ID</div>
+                            <div className="col-span-5">Question</div>
+                            <div className="col-span-2">Category</div>
+                            <div className="col-span-2">Popularity</div>
+                            <div className="col-span-1 text-right">Updated</div>
+                        </div>
+
+                        {/* Table Body */}
+                        <div className="divide-y divide-slate-100 bg-white">
+                            {filteredData.length > 0 ? (
+                                filteredData.map((faq) => {
+                                    const isOpen = expandedId === faq.id;
+                                    return (
+                                        <div key={faq.id} className="group">
+                                            <div 
+                                                onClick={() => setExpandedId(isOpen ? null : faq.id)}
+                                                className={`table-row-hover grid grid-cols-12 gap-6 px-6 py-4 items-center cursor-pointer 
+                                                ${isOpen ? 'bg-blue-50/30 border-l-orange-500' : 'bg-white hover:bg-slate-50'}`}
+                                            >
+                                                <div className="col-span-2 text-sm font-mono font-medium text-slate-500 group-hover:text-slate-800">
+                                                    {faq.id}
+                                                </div>
+                                                <div className="col-span-5">
+                                                    {/* Reduced from text-base to text-sm */}
+                                                    <div className={`text-sm font-semibold transition-colors ${isOpen ? 'text-blue-600' : 'text-slate-800'}`}>
+                                                        {faq.question}
+                                                    </div>
+                                                    <div className="text-xs text-slate-500 truncate mt-1">{faq.preview}</div>
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <TagBadge label={faq.category} />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden max-w-[100px]">
+                                                            <div className="h-full bg-slate-300" style={{ width: '70%' }}></div>
+                                                        </div>
+                                                        <span className="text-xs text-slate-400">{faq.views}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="col-span-1 text-right text-xs font-mono text-slate-400">
+                                                    {faq.updated}
+                                                </div>
+                                            </div>
+                                            
+                                            <AnimatePresence>
+                                                {isOpen && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: "auto", opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.2 }}
+                                                    >
+                                                        <ExpandedPanel item={faq} />
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="p-14 text-center">
+                                    <div className="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <Search className="w-7 h-7 text-slate-300" />
+                                    </div>
+                                    <h3 className="text-base font-bold text-slate-700">No results in this category</h3>
+                                    <p className="text-sm text-slate-400 mt-1">Try switching back to "All Topics"</p>
+                                </div>
+                            )}
                         </div>
                         
-                        <div className="mt-4 md:mt-0 flex items-center gap-3">
-                            <span className="text-sm font-bold text-gray-700">Sort:</span>
-                            <div className="relative border border-gray-300 rounded px-4 py-2 bg-white cursor-pointer hover:border-gray-400 flex items-center gap-8 min-w-[180px] justify-between">
-                                <span className="text-sm font-bold text-[#333]">Most Relevant</span>
-                                <ChevronDown className="w-3 h-3 text-gray-500" />
+                        {/* Table Footer */}
+                        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                            <span className="text-xs font-medium text-slate-500">
+                                Showing {filteredData.length} records
+                            </span>
+                            <div className="flex gap-2">
+                                <button className="p-1.5 rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition-all disabled:opacity-50">
+                                    <ChevronRight className="w-5 h-5 text-slate-400 rotate-180" />
+                                </button>
+                                <button className="p-1.5 rounded hover:bg-white hover:shadow-sm border border-transparent hover:border-slate-200 transition-all">
+                                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    {/* Sponsored / Featured Banner */}
-                    <div className="bg-gradient-to-r from-gray-900 to-gray-800 p-5 mb-8 rounded-lg shadow-lg flex flex-col md:flex-row items-center justify-between text-white relative overflow-hidden">
-                        <div className="relative z-10">
-                            <span className="text-[10px] font-bold text-hd-orange uppercase tracking-widest block mb-2">System Update</span>
-                            <h3 className="font-bold text-xl mb-1">New Feature: Auto-Reconciliation</h3>
-                            <p className="text-sm text-gray-300 max-w-lg">Section 12345 now supports direct bank feed integration. Learn how to connect your KCB or Equity account.</p>
-                        </div>
-                        <button className="mt-4 md:mt-0 text-xs font-bold uppercase bg-white text-black px-6 py-3 rounded hover:bg-gray-200 transition-colors z-10">
-                            Read Documentation
-                        </button>
-                        {/* Decorative Circle */}
-                        <div className="absolute -right-10 -bottom-20 w-64 h-64 bg-white opacity-5 rounded-full pointer-events-none"></div>
-                    </div>
-
-                    {/* The "Product" List */}
-                    <div className="space-y-2">
-                        {faqs.map((item) => (
-                            <FaqProductCard key={item.id} item={item} />
-                        ))}
-                    </div>
-
-                    {/* Pagination */}
-                    <div className="flex justify-center mt-12 gap-2">
-                        {[1, 2, 3, 4, 5].map((num) => (
-                            <button 
-                                key={num}
-                                className={`
-                                    w-10 h-10 flex items-center justify-center rounded-full text-sm font-bold transition-all
-                                    ${num === 1 
-                                        ? 'border-2 border-hd-orange text-hd-orange bg-white shadow-sm' 
-                                        : 'border border-transparent text-gray-600 hover:bg-gray-100'
-                                    }
-                                `}
-                            >
-                                {num}
-                            </button>
-                        ))}
-                        <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:bg-gray-100 shadow-sm">
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
-                    </div>
-
                 </div>
-            </div>
+            </main>
         </div>
-    </div>
-    </>
-  );
+        </>
+    );
 }
