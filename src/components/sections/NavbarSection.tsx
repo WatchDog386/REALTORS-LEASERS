@@ -5,8 +5,6 @@ import {
   FaUser,
   FaSearch,
   FaChevronDown,
-  FaHome,
-  FaKey,
   FaCity,
   FaPhoneAlt,
   FaMapMarkerAlt,
@@ -19,6 +17,7 @@ import {
   FaStar,
   FaHeadset,
   FaShoppingCart,
+  FaKey,
 } from "react-icons/fa";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
@@ -141,11 +140,39 @@ const Navbar = () => {
                   onClick={() => navigate("/")} 
                   className="shrink-0 cursor-pointer flex items-center gap-2.5"
                 >
-                  <img 
-                    src="/realtor.jpg" 
-                    alt="Kenyarealtors Logo" 
-                    className="h-9 md:h-11 w-auto object-contain rounded-md" 
-                  />
+                  {/* --- NEW SVG BRAND ICON --- */}
+                  <svg 
+                    viewBox="0 0 200 200" 
+                    className="h-10 md:h-12 w-auto drop-shadow-sm"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <linearGradient id="grad-front-nav" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#FFFFFF" />
+                        <stop offset="100%" stopColor="#E6DFD0" />
+                      </linearGradient>
+                      <linearGradient id="grad-side-nav" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#D4C596" />
+                        <stop offset="100%" stopColor="#8A7D55" />
+                      </linearGradient>
+                      <linearGradient id="grad-dark-nav" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#8A7D55" />
+                        <stop offset="100%" stopColor="#5C5035" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M110 90 V170 L160 150 V70 L110 90 Z" fill="url(#grad-front-nav)" stroke="#F3E7C9" strokeWidth="1" />
+                    <path d="M160 70 L180 80 V160 L160 150 Z" fill="url(#grad-dark-nav)" stroke="#F3E7C9" strokeWidth="1" />
+                    <path d="M30 150 V50 L80 20 V120 L30 150 Z" fill="url(#grad-front-nav)" stroke="#F3E7C9" strokeWidth="1" />
+                    <path d="M80 20 L130 40 V140 L80 120 Z" fill="url(#grad-side-nav)" stroke="#F3E7C9" strokeWidth="1" />
+                    <g>
+                      <path d="M85 50 L100 56 V86 L85 80 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
+                      <path d="M85 90 L100 96 V126 L85 120 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
+                      <path d="M45 60 L55 54 V124 L45 130 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
+                      <path d="M120 130 L140 122 V152 L120 160 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
+                    </g>
+                  </svg>
+                  {/* ------------------------- */}
+
                   <span className="font-black text-xl md:text-2xl tracking-tight risa-heading whitespace-nowrap">
                     <span className="text-[#0056A6]">Kenya</span>
                     <span className="text-[#222]">realtors</span>
