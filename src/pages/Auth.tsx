@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Battery, Wifi, Signal, Fingerprint, Lock, ChevronRight } from "lucide-react";
+import { Battery, Wifi, Signal, Fingerprint, Lock, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const AuthPage = () => {
@@ -53,7 +53,10 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] w-full h-full bg-[#F5F5F7] flex flex-col lg:flex-row items-center justify-center lg:gap-24 overflow-hidden font-ui">
+    // MAIN CONTAINER
+    // Mobile: h-[100dvh] centers it vertically between browser bars.
+    // Desktop: lg:flex-row puts them side-by-side.
+    <div className="fixed inset-0 z-[9999] w-full h-[100dvh] bg-[#F5F5F7] flex flex-col lg:flex-row items-center justify-center lg:gap-24 overflow-hidden font-ui">
       
       {/* ==============================================
           THE INTERACTIVE DEVICE
@@ -62,11 +65,16 @@ const AuthPage = () => {
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        className="relative z-20 flex-shrink-0 flex items-center justify-center"
+        // FIXED HERE: w-full on mobile to center it, but lg:w-auto on desktop so it doesn't push text away
+        className="relative z-20 flex-shrink-0 flex items-center justify-center w-full lg:w-auto"
       >
         <div 
-            className="pointer-events-auto relative bg-[#121212] shadow-2xl
-                       w-[85vw] h-[80vh] max-w-[400px] border-[10px] border-[#121212] rounded-[3rem] ring-1 ring-gray-300
+            // DEVICE DIMENSIONS
+            // Mobile: w-[90vw] and h-[85dvh] ensures it fits on small screens without scrolling.
+            // Desktop: Restored to fixed lg:w-[400px] lg:h-[800px].
+            className="pointer-events-auto relative bg-[#121212] shadow-2xl mx-auto
+                       w-[90vw] h-[85dvh] max-w-[400px] max-h-[850px]
+                       border-[10px] border-[#121212] rounded-[3rem] ring-1 ring-gray-300
                        lg:w-[400px] lg:h-[800px] lg:border-[12px] lg:rounded-[3.5rem]"
         >
             {/* Glossy Reflection */}
@@ -162,7 +170,7 @@ const AuthPage = () => {
                             transition={{ duration: 0.8 }}
                             className="flex-1 flex flex-col px-8 pt-32 bg-white h-full relative"
                         >
-                            <div className="mb-8 relative z-0">
+                            <div className="mb-6 relative z-0">
                                 <motion.h2 
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
@@ -181,9 +189,9 @@ const AuthPage = () => {
                                 </motion.p>
                             </div>
 
-                            <form onSubmit={handleLogin} className="space-y-8 relative z-0">
+                            <form onSubmit={handleLogin} className="space-y-6 relative z-0">
                                 
-                                {/* EMAIL FIELD: Sleek, Single Line, No Box */}
+                                {/* EMAIL FIELD */}
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                                     <div className="relative group">
                                         <Input 
@@ -205,7 +213,7 @@ const AuthPage = () => {
                                     </div>
                                 </motion.div>
                                 
-                                {/* PASSWORD FIELD: Sleek, Single Line, No Box */}
+                                {/* PASSWORD FIELD */}
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
                                     <div className="relative group">
                                         <Input 
@@ -227,7 +235,7 @@ const AuthPage = () => {
                                     </div>
                                 </motion.div>
 
-                                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }} className="space-y-4 pt-4">
+                                <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6 }} className="space-y-4 pt-2">
                                     <Button 
                                         disabled={loading}
                                         className="w-full h-12 bg-[#1a1a1a] hover:bg-black text-white font-medium text-xs tracking-[0.15em] uppercase rounded-full flex items-center justify-between px-6 transition-all duration-300 shadow-lg shadow-black/5"
@@ -236,7 +244,7 @@ const AuthPage = () => {
                                         {!loading && <ChevronRight size={16} />}
                                     </Button>
 
-                                    {/* Google Button: Sleek Outline */}
+                                    {/* Google Button */}
                                     <Button 
                                         type="button"
                                         variant="outline"
@@ -265,7 +273,7 @@ const AuthPage = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.8 }}
-                                className="mt-auto mb-8 text-center"
+                                className="mt-auto mb-6 text-center"
                             >
                                 <p className="text-[9px] text-gray-300 font-medium tracking-widest">AYDEN HOME TOWERS</p>
                             </motion.div>
