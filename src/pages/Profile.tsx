@@ -29,9 +29,9 @@ import {
   Check,
   CheckCircle,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-
 import { motion } from "framer-motion";
 
 // RISA Color Palette (from Index.tsx)
@@ -43,17 +43,33 @@ const RISA_LIGHT_GRAY = "#F5F7FA";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { profile, user, updateProfile } = useAuth();
+  const { profile, user, updateProfile, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [showAvatarUpload, setShowAvatarUpload] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: profile?.name || "",
-    phone: profile?.phone || "",
-    company: profile?.company || "",
-    location: profile?.location || "",
-    avatar_url: profile?.avatar_url || "",
+    name: "",
+    phone: "",
+    company: "",
+    location: "",
+    avatar_url: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Initialize form data when profile loads
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile?.name || "",
+        phone: profile?.phone || "",
+        company: profile?.company || "",
+        location: profile?.location || "",
+        avatar_url: profile?.avatar_url || "",
+      });
+      setLoading(false);
+    }
+  }, [profile]);
 
   useEffect(() => {
     if (profile?.avatar_url) {
@@ -69,18 +85,33 @@ const Profile = () => {
         setAvatarUrl(path);
         return;
       }
+      
+      // Check if the path exists in storage
+      const { data: listData } = await supabase.storage
+        .from("profile-photos")
+        .list();
+      
+      const fileExists = listData?.some(file => file.name === path);
+      
+      if (!fileExists) {
+        console.warn("Profile image not found in storage:", path);
+        setAvatarUrl(null);
+        return;
+      }
+
       const { data, error } = await supabase.storage
         .from("profile-photos")
         .download(path);
+      
       if (error) {
         throw error;
       }
+      
       const url = URL.createObjectURL(data);
       setAvatarUrl(url);
     } catch (error) {
-      if (path) {
-        setAvatarUrl(path);
-      }
+      console.error("Error downloading image:", error);
+      setAvatarUrl(null);
     }
   }
 
@@ -113,15 +144,54 @@ const Profile = () => {
     if (profile?.id) {
       fetchDashboardStats(profile.id).then(setStats);
     }
-  }, [user]);
+  }, [user, profile]);
 
   const fetchDashboardStats = async (userId: string) => {
-    const { data, error } = await supabase
-      .from("quotes")
-      .select("status, profit_amount")
-      .eq("user_id", userId);
-    if (error) {
-      console.error("Error fetching dashboard stats:", error);
+    try {
+      // First check if quotes table exists
+      const { error: tableCheckError } = await supabase
+        .from("quotes")
+        .select("id", { head: true, count: 'exact' });
+      
+      if (tableCheckError) {
+        console.log("Quotes table doesn't exist or no access, using profile stats");
+        return {
+          total_projects: profile?.total_projects || 0,
+          completed_projects: profile?.completed_projects || 0,
+          total_revenue: profile?.total_revenue || 0,
+          completionRate: profile?.total_projects ? 
+            ((profile?.completed_projects || 0) / profile.total_projects) * 100 : 0,
+        };
+      }
+
+      const { data, error } = await supabase
+        .from("quotes")
+        .select("status, profit_amount")
+        .eq("user_id", userId);
+      
+      if (error) {
+        console.error("Error fetching dashboard stats:", error);
+        return {
+          total_projects: profile?.total_projects || 0,
+          completed_projects: profile?.completed_projects || 0,
+          total_revenue: profile?.total_revenue || 0,
+          completionRate: 0,
+        };
+      }
+      
+      const total_projects = data.length;
+      const completed_projects = data.filter((q: any) => q.status === "completed").length;
+      const total_revenue = data.reduce((sum: number, q: any) => sum + (q.profit_amount || 0), 0);
+      const completionRate = total_projects > 0 ? (completed_projects / total_projects) * 100 : 0;
+      
+      return {
+        total_projects,
+        completed_projects,
+        total_revenue,
+        completionRate,
+      };
+    } catch (error) {
+      console.error("Error in fetchDashboardStats:", error);
       return {
         total_projects: 0,
         completed_projects: 0,
@@ -129,74 +199,104 @@ const Profile = () => {
         completionRate: 0,
       };
     }
-    const total_projects = data.length;
-    const completed_projects = data.filter((q) => q.status === "completed").length;
-    const total_revenue = data.reduce((sum, q) => sum + (q.profit_amount || 0), 0);
-    const completionRate = total_projects > 0 ? (completed_projects / total_projects) * 100 : 0;
-    return {
-      total_projects,
-      completed_projects,
-      total_revenue,
-      completionRate,
-    };
   };
 
   useEffect(() => {
     const fetchTiers = async () => {
-      const { data, error } = await supabase.from("tiers").select("*");
-      if (error) {
-        console.error("Failed to fetch tiers:", error);
-        return;
+      try {
+        // Check if tiers table exists
+        const { error: tableCheckError } = await supabase
+          .from("tiers")
+          .select("id", { head: true, count: 'exact' });
+        
+        if (tableCheckError) {
+          console.log("Tiers table doesn't exist, using default tiers");
+          // Set default tiers if table doesn't exist
+          setTierLimits({
+            "free": {
+              limit: 3,
+              price: 0,
+              features: ["Basic features", "3 quotes/month", "Email support"]
+            },
+            "intermediate": {
+              limit: 10,
+              price: 4900,
+              features: ["All basic features", "10 quotes/month", "Priority support", "Analytics"]
+            },
+            "professional": {
+              limit: 999999,
+              price: 14900,
+              features: ["Unlimited quotes", "24/7 support", "Advanced analytics", "Custom branding"]
+            }
+          });
+          return;
+        }
+
+        const { data, error } = await supabase.from("tiers").select("*");
+        if (error) {
+          console.error("Failed to fetch tiers:", error);
+          return;
+        }
+        
+        const limits = data.reduce((acc: any, tier: any) => {
+          acc[tier.name.toLowerCase()] = {
+            limit: tier.quotes_limit,
+            price: tier.price,
+            features: tier.features || [],
+          };
+          return acc;
+        }, {});
+        setTierLimits(limits);
+      } catch (error) {
+        console.error("Error fetching tiers:", error);
       }
-      const limits = data.reduce((acc: any, tier: any) => {
-        acc[tier.name] = {
-          limit: tier.quotes_limit,
-          price: tier.price,
-          features: tier.features || [],
-        };
-        return acc;
-      }, {});
-      setTierLimits(limits);
     };
     fetchTiers();
   }, [user]);
 
   const tierData = profile?.tier
-    ? tierLimits[profile.tier as keyof typeof tierLimits]
+    ? tierLimits[profile.tier.toLowerCase() as keyof typeof tierLimits]
     : null;
 
   const handleSave = async () => {
     try {
+      setError(null);
       await updateProfile(formData);
       setIsEditing(false);
-    } catch (error) {
+      await refreshProfile(); // Refresh the profile data
+    } catch (error: any) {
       console.error("Error updating profile:", error);
+      setError(error.message || "Failed to update profile. Please try again.");
     }
   };
 
   const handleAvatarUpload = async (url: string) => {
     try {
+      setError(null);
       await updateProfile({ ...formData, avatar_url: url });
       setShowAvatarUpload(false);
-    } catch (error) {
+      await refreshProfile(); // Refresh the profile data
+    } catch (error: any) {
       console.error("Error updating avatar:", error);
+      setError(error.message || "Failed to update avatar. Please try again.");
     }
   };
 
   if (!user) {
     navigate("/auth");
+    return null;
   }
 
-  if (!profile) {
+  if (loading || !profile) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="animate-spin rounded-full h-8 w-8" />
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          <Loader2 className="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
             Loading Profile...
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Please wait while we load your profile.
+            {!profile ? "Creating your profile..." : "Loading your profile..."}
           </p>
         </div>
       </div>
@@ -204,12 +304,12 @@ const Profile = () => {
   }
 
   const getTierImage = (tier: string) => {
-    switch (tier) {
-      case "Free":
+    switch (tier.toLowerCase()) {
+      case "free":
         return <Shell className="w-6 h-6" />;
-      case "Intermediate":
+      case "intermediate":
         return <Crown className="w-6 h-6" />;
-      case "Professional":
+      case "professional":
         return <Shield className="w-6 h-6" />;
       default:
         return <span className="text-sm font-medium">{tier}</span>;
@@ -217,12 +317,12 @@ const Profile = () => {
   };
 
   const getTierBadge = (tier: string) => {
-    switch (tier) {
-      case "Free":
+    switch (tier.toLowerCase()) {
+      case "free":
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Free</Badge>;
-      case "Intermediate":
+      case "intermediate":
         return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Intermediate</Badge>;
-      case "Professional":
+      case "professional":
         return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Professional</Badge>;
       default:
         return <Badge>{tier}</Badge>;
@@ -230,8 +330,8 @@ const Profile = () => {
   };
 
   const quotaUsagePercentage =
-    profile?.quotes_used && profile?.tier && tierLimits[profile.tier]
-      ? (profile.quotes_used / tierLimits[profile.tier].limit) * 100
+    profile?.quotes_used && profile?.tier && tierLimits[profile.tier.toLowerCase()]
+      ? (profile.quotes_used / tierLimits[profile.tier.toLowerCase()].limit) * 100
       : 0;
 
   const projectCompletionRate =
@@ -263,6 +363,20 @@ const Profile = () => {
             {isEditing ? "Save" : "Edit Profile"}
           </Button>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg"
+          >
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-red-600" />
+              <p className="text-red-600 text-sm">{error}</p>
+            </div>
+          </motion.div>
+        )}
 
         {/* Avatar Upload Modal */}
         {showAvatarUpload && (
@@ -318,14 +432,14 @@ const Profile = () => {
                     <Label htmlFor="name">Full Name</Label>
                     <Input
                       id="name"
-                      value={isEditing ? formData.name : profile.name}
+                      value={isEditing ? formData.name : profile.name || ""}
                       onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                       disabled={!isEditing}
                     />
                   </div>
                   <div>
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value={profile.email} disabled />
+                    <Input id="email" type="email" value={profile.email || user.email || ""} disabled />
                   </div>
                   <div>
                     <Label htmlFor="phone">Phone</Label>
@@ -430,10 +544,10 @@ const Profile = () => {
                           : "bg-purple-100 text-purple-700"
                       }`}
                     >
-                      {getTierImage(profile.tier)}
+                      {getTierImage(profile.tier || "free")}
                     </div>
                   </div>
-                  {profile.tier}
+                  {profile.tier || "Free"}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -450,7 +564,7 @@ const Profile = () => {
                       <div className="flex justify-between text-sm">
                         <span>Quotes Used</span>
                         <span>
-                          {profile?.quotes_used ?? 0}/{tierLimits[profile?.tier]?.limit ?? 0}
+                          {profile?.quotes_used ?? 0}/{tierLimits[profile?.tier?.toLowerCase()]?.limit ?? 0}
                         </span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-2.5 overflow-hidden">
@@ -458,7 +572,7 @@ const Profile = () => {
                           className={`h-full rounded-full transition-all duration-500 ${
                             quotaUsagePercentage >= 75 ? "bg-red-500" : quotaUsagePercentage >= 50 ? "bg-blue-500" : "bg-green-500"
                           }`}
-                          style={{ width: `${quotaUsagePercentage}%` }}
+                          style={{ width: `${Math.min(quotaUsagePercentage, 100)}%` }}
                         ></div>
                       </div>
                       {quotaUsagePercentage >= 75 && (
@@ -477,7 +591,11 @@ const Profile = () => {
                         </li>
                       ))
                     ) : (
-                      <p className="text-sm text-red-500">No features found</p>
+                      <div className="text-sm text-gray-500">
+                        <p>• Basic account access</p>
+                        <p>• Profile management</p>
+                        <p>• Email support</p>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -496,13 +614,13 @@ const Profile = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Member since:</span>
                   <span className="text-gray-900 dark:text-white">
-                    {new Date(profile.created_at).toLocaleDateString()}
+                    {profile.created_at ? new Date(profile.created_at).toLocaleDateString() : "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Last updated:</span>
                   <span className="text-gray-900 dark:text-white">
-                    {new Date(profile.updated_at).toLocaleDateString()}
+                    {profile.updated_at ? new Date(profile.updated_at).toLocaleDateString() : "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -511,7 +629,7 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Quotes used:</span>
-                  <span className="text-gray-900 dark:text-white">{profile.quotes_used}</span>
+                  <span className="text-gray-900 dark:text-white">{profile.quotes_used || 0}</span>
                 </div>
               </CardContent>
             </Card>
@@ -519,6 +637,107 @@ const Profile = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Simple ProfilePictureUpload component
+const ProfilePictureUpload: React.FC<{
+  currentAvatarUrl?: string;
+  onUploadComplete: (url: string) => void;
+  onCancel: () => void;
+}> = ({ currentAvatarUrl, onUploadComplete, onCancel }) => {
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      
+      if (!event.target.files || event.target.files.length === 0) {
+        throw new Error('You must select an image to upload.');
+      }
+
+      const file = event.target.files[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('profile-photos')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('profile-photos')
+        .getPublicUrl(filePath);
+
+      onUploadComplete(data.publicUrl);
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      alert('Error uploading avatar. Please try again.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Update Profile Picture</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex justify-center">
+          <Avatar className="h-32 w-32">
+            <AvatarImage src={currentAvatarUrl} />
+            <AvatarFallback className="text-3xl">
+              <User className="w-16 h-16" />
+            </AvatarFallback>
+          </Avatar>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="avatar-upload">Choose a new image</Label>
+          <Input
+            id="avatar-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleFileUpload}
+            disabled={uploading}
+          />
+          <p className="text-sm text-gray-500">
+            Recommended: Square image, max 2MB
+          </p>
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onCancel} disabled={uploading}>
+            Cancel
+          </Button>
+          <div className="relative">
+            <Input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={handleFileUpload}
+              disabled={uploading}
+            />
+            <Button disabled={uploading}>
+              {uploading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                'Upload Image'
+              )}
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

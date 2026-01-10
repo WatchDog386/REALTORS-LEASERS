@@ -137,14 +137,13 @@ const Navbar = () => {
                   <FaBars size={22} />
                 </button>
 
-                {/* LOGO - Original Geometric Style, Updated Text */}
+                {/* LOGO AREA */}
                 <div 
                   onClick={handleHomeClick} 
-                  className="shrink-0 cursor-pointer flex items-center gap-3"
+                  className="shrink-0 cursor-pointer flex items-center gap-2 md:gap-3"
                 >
                   <svg viewBox="0 0 200 200" className="h-14 md:h-16 w-auto drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                      {/* Richer Gradients for White Background Visibility */}
                       <linearGradient id="grad-front-nav" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor="#F9F1DC" />
                         <stop offset="100%" stopColor="#D4AF37" />
@@ -159,13 +158,13 @@ const Navbar = () => {
                       </linearGradient>
                     </defs>
 
-                    {/* Structure - Darker Stroke (#8A7D55) for definition on white */}
+                    {/* Structure */}
                     <path d="M110 90 V170 L160 150 V70 L110 90 Z" fill="url(#grad-front-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
                     <path d="M160 70 L180 80 V160 L160 150 Z" fill="url(#grad-dark-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
                     <path d="M30 150 V50 L80 20 V120 L30 150 Z" fill="url(#grad-front-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
                     <path d="M80 20 L130 40 V140 L80 120 Z" fill="url(#grad-side-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
                     
-                    {/* Windows - Original Dark Blue/Black fill */}
+                    {/* Windows */}
                     <g fill="#1a232e"> 
                       <path d="M85 50 L100 56 V86 L85 80 Z" />
                       <path d="M85 90 L100 96 V126 L85 120 Z" />
@@ -174,14 +173,25 @@ const Navbar = () => {
                     </g>
                   </svg>
 
-                  {/* Updated Brand Text: "Kenya Realtors" */}
-                  <div className="flex flex-col justify-center -space-y-1">
-                    <span className="font-light text-xl md:text-2xl tracking-tight text-[#222] risa-font">
-                      Kenya
+                  {/* UPDATED TEXT DESIGN: Architectural Stack */}
+                  <div className="flex flex-col justify-center select-none ml-1">
+                    {/* Top Line: Spaced out for elegance */}
+                    <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.35em] text-gray-500 leading-none ml-0.5 risa-uppercase">
+                        Kenya
                     </span>
-                    <span className="font-black text-2xl md:text-3xl tracking-tight text-[#0056A6] risa-heading uppercase">
-                      Realtors
-                    </span>
+                    
+                    {/* Bottom Line: Heavy and tight */}
+                    <div className="flex items-baseline -mt-1 relative">
+                        <span className="text-[24px] md:text-[30px] font-black tracking-tighter text-[#1a232e] risa-heading">
+                        REALTOR
+                        </span>
+                        {/* The 'S' in blue for subtle contrast */}
+                        <span className="text-[24px] md:text-[30px] font-black tracking-tighter text-[#0056A6] risa-heading">
+                        S
+                        </span>
+                        {/* Orange Dot Accent */}
+                        <div className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#F96302] rounded-full ml-1 mb-1.5 shadow-sm"></div>
+                    </div>
                   </div>
                 </div>
               </div>
