@@ -18,10 +18,13 @@ import {
   FaHeadset,
   FaShoppingCart,
   FaKey,
+  FaHome,
 } from "react-icons/fa";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 
+// Navigation Sections
 const SECTIONS = [
+  { name: "Home", id: "", icon: <FaHome size={16} className="text-[#0056A6]" /> }, 
   { name: "DIY Rental guides", id: "how-it-works", icon: <FaTools size={16} className="text-[#F96302]" /> },
   { name: "Apartments features", id: "features", icon: <FaList size={16} className="text-[#0056A6]" /> },
   { name: "Affordable Prices", id: "pricing", icon: <FaTags size={18} className="text-[#F96302]" />, highlight: true },
@@ -36,11 +39,13 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Cart logic
   const [cart, setCart] = useState(() => {
     const saved = localStorage.getItem("realtor_cart");
     return saved ? JSON.parse(saved) : { count: 0, total: 0 };
   });
 
+  // Inject Fonts and Styles
   useEffect(() => {
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
@@ -58,8 +63,8 @@ const Navbar = () => {
     document.head.appendChild(style);
 
     return () => {
-      document.head.removeChild(link);
-      document.head.removeChild(style);
+      if(document.head.contains(link)) document.head.removeChild(link);
+      if(document.head.contains(style)) document.head.removeChild(style);
     };
   }, []);
 
@@ -73,21 +78,13 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (id) => {
+  // ==============================
+  // NAVIGATION LOGIC
+  // ==============================
+    
+  const handleNavClick = (id: string) => {
     setMenuOpen(false);
-    if (location.pathname === "/") {
-      const el = document.getElementById(id);
-      if (el) {
-        const offset = el.offsetTop - 120;
-        window.scrollTo({ top: offset, behavior: "smooth" });
-      }
-    } else {
-      navigate("/");
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 150);
-    }
+    navigate(`/${id}`);
   };
 
   const handleLoginRedirect = () => {
@@ -95,9 +92,14 @@ const Navbar = () => {
     navigate("/auth");
   };
 
+  const handleHomeClick = () => {
+    setMenuOpen(false);
+    navigate("/");
+  };
+
   return (
     <div className={`fixed top-0 w-full z-50 bg-white transition-all duration-300 ${isScrolled ? "shadow-md" : ""} risa-font`}>
-      
+        
       {/* Top Utility Strip */}
       <div className="bg-gradient-to-r from-[#1a1a1a] via-[#003A75] to-[#1a1a1a] text-white text-xs hidden lg:block">
         <div className="max-w-[1440px] mx-auto px-4 flex items-center justify-between h-9">
@@ -110,8 +112,8 @@ const Navbar = () => {
             <div className="h-4 w-[1px] bg-gray-600"></div>
             <button className="flex items-center gap-1.5 hover:text-[#F96302]">
               <FaPhoneAlt size={12} className="text-[#F96302]" />
-              <span className="font-semibold risa-subheading">Leasing Office:</span>
-              <span className="font-normal">+254 711 493 222 or +254 734 712 578</span>
+              <span className="font-semibold risa-subheading">Leasing:</span>
+              <span className="font-normal">+254 711 493 222</span>
             </button>
           </div>
           <div className="flex items-center gap-5 risa-subheading">
@@ -122,7 +124,7 @@ const Navbar = () => {
       </div>
 
       {/* Main Nav Bar */}
-      <div className="bg-white border-b border-gray-100 py-3 lg:py-4">
+      <div className="bg-white border-b border-gray-100 py-3">
         <div className="max-w-[1440px] mx-auto px-4">
           <div className="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-6">
             
@@ -132,55 +134,60 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(true)} 
                   className="lg:hidden text-gray-700 hover:text-[#F96302] p-2 rounded-full hover:bg-gray-100"
                 >
-                  <FaBars size={24} />
+                  <FaBars size={22} />
                 </button>
 
-                {/* LOGO + STYLED "Kenyarealtors" TEXT */}
+                {/* LOGO - Original Geometric Style, Updated Text */}
                 <div 
-                  onClick={() => navigate("/")} 
-                  className="shrink-0 cursor-pointer flex items-center gap-2.5"
+                  onClick={handleHomeClick} 
+                  className="shrink-0 cursor-pointer flex items-center gap-3"
                 >
-                  {/* --- NEW SVG BRAND ICON --- */}
-                  <svg 
-                    viewBox="0 0 200 200" 
-                    className="h-10 md:h-12 w-auto drop-shadow-sm"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg viewBox="0 0 200 200" className="h-14 md:h-16 w-auto drop-shadow-sm" xmlns="http://www.w3.org/2000/svg">
                     <defs>
+                      {/* Richer Gradients for White Background Visibility */}
                       <linearGradient id="grad-front-nav" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#FFFFFF" />
-                        <stop offset="100%" stopColor="#E6DFD0" />
+                        <stop offset="0%" stopColor="#F9F1DC" />
+                        <stop offset="100%" stopColor="#D4AF37" />
                       </linearGradient>
                       <linearGradient id="grad-side-nav" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#D4C596" />
-                        <stop offset="100%" stopColor="#8A7D55" />
+                        <stop offset="0%" stopColor="#D4AF37" />
+                        <stop offset="100%" stopColor="#AA8C2C" />
                       </linearGradient>
                       <linearGradient id="grad-dark-nav" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#8A7D55" />
+                        <stop offset="0%" stopColor="#998A5E" />
                         <stop offset="100%" stopColor="#5C5035" />
                       </linearGradient>
                     </defs>
-                    <path d="M110 90 V170 L160 150 V70 L110 90 Z" fill="url(#grad-front-nav)" stroke="#F3E7C9" strokeWidth="1" />
-                    <path d="M160 70 L180 80 V160 L160 150 Z" fill="url(#grad-dark-nav)" stroke="#F3E7C9" strokeWidth="1" />
-                    <path d="M30 150 V50 L80 20 V120 L30 150 Z" fill="url(#grad-front-nav)" stroke="#F3E7C9" strokeWidth="1" />
-                    <path d="M80 20 L130 40 V140 L80 120 Z" fill="url(#grad-side-nav)" stroke="#F3E7C9" strokeWidth="1" />
-                    <g>
-                      <path d="M85 50 L100 56 V86 L85 80 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
-                      <path d="M85 90 L100 96 V126 L85 120 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
-                      <path d="M45 60 L55 54 V124 L45 130 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
-                      <path d="M120 130 L140 122 V152 L120 160 Z" fill="#232F3C" stroke="#F3E7C9" strokeWidth="0.5" />
+
+                    {/* Structure - Darker Stroke (#8A7D55) for definition on white */}
+                    <path d="M110 90 V170 L160 150 V70 L110 90 Z" fill="url(#grad-front-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
+                    <path d="M160 70 L180 80 V160 L160 150 Z" fill="url(#grad-dark-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
+                    <path d="M30 150 V50 L80 20 V120 L30 150 Z" fill="url(#grad-front-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
+                    <path d="M80 20 L130 40 V140 L80 120 Z" fill="url(#grad-side-nav)" stroke="#8A7D55" strokeWidth="2" strokeLinejoin="round"/>
+                    
+                    {/* Windows - Original Dark Blue/Black fill */}
+                    <g fill="#1a232e"> 
+                      <path d="M85 50 L100 56 V86 L85 80 Z" />
+                      <path d="M85 90 L100 96 V126 L85 120 Z" />
+                      <path d="M45 60 L55 54 V124 L45 130 Z" />
+                      <path d="M120 130 L140 122 V152 L120 160 Z" />
                     </g>
                   </svg>
-                  {/* ------------------------- */}
 
-                  <span className="font-black text-xl md:text-2xl tracking-tight risa-heading whitespace-nowrap">
-                    <span className="text-[#0056A6]">Kenya</span>
-                    <span className="text-[#222]">realtors</span>
-                  </span>
+                  {/* Updated Brand Text: "Kenya Realtors" */}
+                  <div className="flex flex-col justify-center -space-y-1">
+                    <span className="font-light text-xl md:text-2xl tracking-tight text-[#222] risa-font">
+                      Kenya
+                    </span>
+                    <span className="font-black text-2xl md:text-3xl tracking-tight text-[#0056A6] risa-heading uppercase">
+                      Realtors
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-5 lg:hidden">
+              {/* Mobile Icons */}
+              <div className="flex items-center gap-4 lg:hidden">
                 <button onClick={handleLoginRedirect} className="text-gray-700 hover:text-[#F96302]">
                   <FaUser size={22} />
                 </button>
@@ -195,14 +202,14 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Desktop Filter Button */}
+            {/* Desktop Filter */}
             <button 
               onClick={() => setMenuOpen(true)}
-              className="hidden lg:flex flex-col items-start justify-center px-5 h-12 border border-gray-200 hover:border-[#F96302] hover:shadow-sm transition-all bg-gray-50 rounded-2xl"
+              className="hidden lg:flex flex-col items-start justify-center px-4 h-11 border border-gray-200 hover:border-[#F96302] hover:shadow-sm transition-all bg-gray-50 rounded-xl"
             >
               <span className="text-[10px] text-gray-600 font-bold uppercase mb-0.5 risa-uppercase">Filter</span>
-              <span className="text-[15px] font-black text-[#222] flex items-center gap-2 risa-heading">
-                Unit Type <FaChevronDown size={12} className="text-[#0056A6]" />
+              <span className="text-[14px] font-black text-[#222] flex items-center gap-2 risa-heading">
+                Unit Type <FaChevronDown size={10} className="text-[#0056A6]" />
               </span>
             </button>
 
@@ -215,41 +222,41 @@ const Navbar = () => {
                   </div>
                   <input 
                     type="text" 
-                    placeholder="City, Zip, Building Name or Amenities..." 
-                    className="w-full h-10 pl-11 pr-4 border-none outline-none text-sm placeholder:text-gray-400 font-medium bg-transparent risa-body"
+                    placeholder="City, Zip, Building Name..." 
+                    className="w-full h-10 pl-11 pr-4 border-none outline-none text-base placeholder:text-gray-400 font-medium bg-transparent risa-body"
                   />
                 </div>
-                <button className="bg-[#F96302] hover:bg-[#d15200] text-white px-6 md:px-8 h-10 font-black uppercase tracking-tighter transition-all duration-300 rounded-full shadow-sm flex items-center gap-2 risa-heading risa-uppercase">
-                  <span className="hidden md:block">Search</span>
+                <button className="bg-[#F96302] hover:bg-[#d15200] text-white px-5 md:px-7 h-10 font-black uppercase tracking-tighter transition-all duration-300 rounded-full shadow-sm flex items-center gap-2 risa-heading risa-uppercase">
+                  <span className="hidden md:block text-xs">Search</span>
                   <FaSearch size={14} className="md:hidden" />
                 </button>
               </div>
             </div>
 
             {/* Desktop Account & Cart */}
-            <div className="hidden lg:flex items-center gap-8 shrink-0">
+            <div className="hidden lg:flex items-center gap-6 shrink-0">
               <button onClick={handleLoginRedirect} className="hidden xl:flex flex-col items-start group">
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-gray-500 font-bold uppercase risa-uppercase">Account</span>
-                  <FaChevronDown size={10} className="text-[#F96302]" />
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase risa-uppercase">Account</span>
+                  <FaChevronDown size={8} className="text-[#F96302]" />
                 </div>
-                <span className="text-[15px] font-black text-[#222] group-hover:text-[#0056A6] risa-heading">
+                <span className="text-[14px] font-black text-[#222] group-hover:text-[#0056A6] risa-heading">
                   Sign In
                 </span>
               </button>
 
               <button className="flex items-center gap-2 group relative">
                 <div className="relative">
-                  <FaShoppingCart size={28} className="text-gray-600 group-hover:text-[#F96302] transition-colors" />
+                  <FaShoppingCart size={26} className="text-gray-600 group-hover:text-[#F96302] transition-colors" />
                   {cart.count > 0 && (
-                    <span className="absolute -top-1.5 -right-2 bg-[#F96302] text-white text-[11px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm risa-subheading">
+                    <span className="absolute -top-1.5 -right-2 bg-[#F96302] text-white text-[10px] font-black w-4 h-4 flex items-center justify-center rounded-full border-2 border-white shadow-sm risa-subheading">
                       {cart.count}
                     </span>
                   )}
                 </div>
                 <div className="flex flex-col items-start">
-                  <span className="text-[11px] text-gray-500 font-bold uppercase risa-uppercase">Cart</span>
-                  <span className="text-[14px] font-black text-[#222] leading-tight risa-heading">Items</span>
+                  <span className="text-[10px] text-gray-500 font-bold uppercase risa-uppercase">Cart</span>
+                  <span className="text-[13px] font-black text-[#222] leading-tight risa-heading">Items</span>
                 </div>
               </button>
             </div>
@@ -266,15 +273,20 @@ const Navbar = () => {
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
                 className={`flex items-center gap-2.5 relative group py-3 transition-all duration-200 ${
-                  item.highlight ? 'text-[#222]' : 'text-gray-600 hover:text-[#0056A6]'
+                  (location.pathname === `/${item.id}` || (item.id === "" && location.pathname === "/"))
+                    ? 'text-[#222]' 
+                    : 'text-gray-600 hover:text-[#0056A6]'
                 }`}
               >
                 <span className="group-hover:scale-110 transition-transform">{item.icon}</span>
                 <span className={item.highlight ? 'text-[#F96302] font-black uppercase tracking-tight risa-heading risa-uppercase' : ''}>
                   {item.name}
                 </span>
+                {/* Active Indicator Line */}
                 <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[3px] rounded-t-full transition-all duration-300 ${
-                  item.highlight ? 'bg-[#F96302] w-full' : 'bg-[#0056A6] w-0 group-hover:w-full'
+                  (location.pathname === `/${item.id}` || (item.id === "" && location.pathname === "/") || item.highlight)
+                    ? 'bg-[#F96302] w-full' 
+                    : 'bg-[#0056A6] w-0 group-hover:w-full'
                 }`}></span>
               </button>
             ))}
@@ -282,7 +294,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Drawer */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetContent side="left" className="w-[85vw] max-w-[350px] p-0 border-r-0 z-[60] bg-gray-50 flex flex-col h-full">
           
@@ -308,6 +320,7 @@ const Navbar = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto">
+            {/* Quick Actions */}
             <div className="grid grid-cols-3 gap-2 p-4 border-b border-gray-200 bg-white">
               <button onClick={() => handleNavClick('how-it-works')} className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-blue-50 transition border border-transparent hover:border-blue-100">
                 <div className="bg-blue-100 p-2.5 rounded-full text-[#0056A6]"><FaSearch /></div>
@@ -323,8 +336,9 @@ const Navbar = () => {
               </button>
             </div>
 
+            {/* Mobile Menu Links */}
             <div className="py-2 bg-white">
-              <div className="px-6 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest risa-uppercase">Rental Categories</div>
+              <div className="px-6 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest risa-uppercase">Pages</div>
               {SECTIONS.map((item) => (
                 <button 
                   key={item.id} 
@@ -345,7 +359,7 @@ const Navbar = () => {
                 <div>
                   <span className="bg-[#F96302] text-[10px] font-bold px-2 py-0.5 rounded-full text-white risa-uppercase">PROMO</span>
                   <h3 className="font-bold text-lg mt-2 risa-heading">Move-in Special</h3>
-                  <p className="text-xs text-blue-100 mt-1 mb-3 risa-body">One month free on select 2-bedroom units.</p>
+                  <p className="text-xs text-blue-100 mt-1 mb-3 risa-body">One month free on select units.</p>
                   <button onClick={() => handleNavClick('testimonials')} className="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full transition-colors risa-subheading">
                     Check Availability
                   </button>

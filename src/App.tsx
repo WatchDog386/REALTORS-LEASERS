@@ -1,70 +1,108 @@
 // © 2025 Jeff. All rights reserved.
-// Unauthorized copying, distribution, or modification of this file is strictly prohibited.
 
+import { Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+
 import ProtectedRoute from "@/components/ProtectedRoute";
-import Navbar from "@/components/Navbar";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
 
-import AdminDashboard from "./pages/AdminDashboard";
+/* ======================
+   LAYOUTS
+====================== */
 
-import NotFound from "./pages/NotFound";
+// Public layout (This handles the Frontend NavbarSection + Leasing Modal)
+import PublicLayout from "@/components/PublicLayout";
 
-import Auth from "./pages/Auth";
+// Dashboard Navbar (This is the components/Navbar.tsx for the dashboard)
+import DashboardNavbar from "@/components/Navbar"; 
+
+/* ======================
+   FRONTEND (PUBLIC PAGES - CONTENT ONLY)
+====================== */
+
+// Home page: renders Hero + Features
+import HomePage from "@/pages/HomePage";
+
+// Marketing pages (content-only components)
+import Features from "@/pages/FeaturesSection";
+import Pricing from "@/pages/PricingSection";
+import HowItWorks from "@/pages/HowItWorks";
+import Testimonials from "@/pages/TestimonialsSection";
+import PaymentOptions from "@/pages/PaymentOptionsSection";
+import Faq from "@/pages/FaqSection";
+import Auth from "@/pages/Auth";
+
+/* ======================
+   BACKEND (PROTECTED)
+====================== */
+
+import Dashboard from "@/pages/Dashboard";
+import Profile from "@/pages/Profile";
+import AdminDashboard from "@/pages/AdminDashboard";
+
+/* ======================
+   SYSTEM
+====================== */
+
+import NotFound from "@/pages/NotFound";
+
 const queryClient = new QueryClient();
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
+
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
         <TooltipProvider>
+          {/* Global notifications */}
           <Toaster />
           <Sonner />
-          <div className="min-h-screen  scrollbar-hide bg-gradient-to-br from-blue-100 via-purple-100 to-gray-100 dark:from-background dark:via-background dark:to-background transition-colors duration-400">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Index />} />
+
+          <Routes>
+            {/* ======================
+                PUBLIC ROUTES 
+                (Wrapped in PublicLayout which contains NavbarSection)
+            ====================== */}
+            <Route element={<PublicLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/testimonials" element={<Testimonials />} />
+              <Route path="/payment-options" element={<PaymentOptions />} />
+              <Route path="/faq" element={<Faq />} />
               <Route path="/auth" element={<Auth />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-    
-             
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-              
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
+            </Route>
+
+            {/* ======================
+                PROTECTED DASHBOARD ROUTES
+                (Uses DashboardNavbar)
+            ====================== */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  {/* The Dashboard specific Navbar */}
+                  <DashboardNavbar />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
+
+            {/* ======================
+                404
+            ====================== */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </TooltipProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
+
 export default App;

@@ -1,7 +1,7 @@
+// src/pages/HomePage.tsx
 import React, { useState, useEffect } from "react";
 import {
   ChevronRight,
-  ChevronLeft,
   Star,
   MapPin,
   Bed,
@@ -30,8 +30,9 @@ import {
   ArrowRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
 // Keep your existing import
-import NavbarSection from "@/components/sections/NavbarSection";
+import NavbarSection from "@/pages/NavbarSection";
 
 // ==========================================
 // 1. DATA (same)
@@ -188,9 +189,9 @@ const LISTINGS_DATA = [
 ];
 
 // ==========================================
-// DETAIL MODAL (AYDEN DESIGN - Font size updated to match navbar)
+// DETAIL MODAL (AYDEN DESIGN)
 // ==========================================
-const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
+const DetailModal = ({ item, onClose }: { item: any; onClose: () => void }) => {
   if (!item) return null;
   return (
     <motion.div
@@ -359,7 +360,7 @@ const DetailModal = ({ item, onClose }: { item: any, onClose: () => void }) => {
 };
 
 // ==========================================
-// MAP COMPONENT (Font size updated to match navbar)
+// MAP COMPONENT
 // ==========================================
 const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
   const mapPins = [
@@ -568,7 +569,7 @@ const NeighborhoodMap = ({ activeSlideId }: { activeSlideId?: number }) => {
 };
 
 // ==========================================
-// UPDATED LISTING CARD (AYDEN DESIGN - Font size updated to match navbar)
+// UPDATED LISTING CARD (AYDEN DESIGN)
 // ==========================================
 const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => void; isActive?: boolean }) => {
   const [isSaved, setIsSaved] = useState(false);
@@ -649,7 +650,7 @@ const ListingCard = ({ data, onClick, isActive }: { data: any; onClick: () => vo
 };
 
 // ==========================================
-// CAROUSEL & CARD (UPDATED - arrows removed, polished)
+// CAROUSEL & CARD (UPDATED)
 // ==========================================
 const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: any) => void; onSlideChange: (slideId: number) => void }) => {
   const [[page, direction], setPage] = useState([0, 0]);
@@ -753,7 +754,6 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
           </div>
         </motion.div>
       </AnimatePresence>
-      {/* REMOVED: Navigation arrow buttons */}
       {/* Enhanced Indicators */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-30">
         {VACANCY_SLIDES.map((slide, idx) => (
@@ -773,9 +773,9 @@ const VacancyCarousel = ({ onCardClick, onSlideChange }: { onCardClick: (slide: 
 };
 
 // ==========================================
-// MAIN COMPONENT (UPDATED)
+// MAIN COMPONENT (UPDATED TO BE SELF-CONTAINED)
 // ==========================================
-const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
+const HomePage = () => {
   const [previewListing, setPreviewListing] = useState<any>(null);
   const [activeSlideId, setActiveSlideId] = useState<number>(104);
   const [activeListingId, setActiveListingId] = useState<number | null>(null);
@@ -805,24 +805,30 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
     link.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
+    
+    // Add the CSS classes for font weights and styles
+    const style = document.createElement('style');
+    style.textContent = `
+      .risa-font { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; letter-spacing: -0.015em; }
+      .risa-heading { font-weight: 800; letter-spacing: -0.03em; }
+      .risa-subheading { font-weight: 600; letter-spacing: -0.01em; }
+      .risa-body { font-weight: 400; letter-spacing: -0.01em; }
+      .risa-uppercase { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+    `;
+    document.head.appendChild(style);
+    
     return () => {
       document.head.removeChild(link);
+      document.head.removeChild(style);
     };
   }, []);
 
   return (
-    <div
-      className="antialiased min-h-screen bg-white risa-font"
-      style={{
-        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif",
-        WebkitFontSmoothing: "antialiased",
-        MozOsxFontSmoothing: "grayscale",
-        letterSpacing: "-0.015em",
-        fontSize: "14px"
-      }}
-    >
-      <NavbarSection scrollTo={scrollTo} setDemoOpen={setDemoOpen} />
-      <main className="max-w-[1440px] mx-auto px-4 lg:px-8 py-6 pt-[160px] lg:pt-[190px]">
+    <div className="antialiased min-h-screen bg-white risa-font">
+      <NavbarSection />
+
+      {/* FIXED: Reduced top padding to eliminate large gap */}
+      <main className="max-w-[1440px] mx-auto px-4 lg:px-8 py-4 pt-20">
         {/* Breadcrumb */}
         <div className="text-xs text-gray-500 mb-4 flex items-center gap-1 font-medium risa-subheading">
           <span className="hover:underline cursor-pointer">Realtor</span>
@@ -833,14 +839,14 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
         </div>
         <div className="flex-1">
           {/* Carousel */}
-          <div className="mb-8">
+          <div className="mb-6">
             <VacancyCarousel
               onCardClick={openPreview}
               onSlideChange={handleSlideChange}
             />
           </div>
           {/* Trending Rentals */}
-          <div className="mb-8">
+          <div className="mb-6">
             <div className="flex items-center justify-between mb-4 border-b border-gray-200 pb-2">
               <h2 className="text-base font-bold text-[#333] flex items-center gap-2 uppercase tracking-tight risa-heading">
                 <MapPin className="text-[#F96302]" size={18} />
@@ -883,4 +889,4 @@ const HomeContent = ({ scrollTo, demoOpen, setDemoOpen }: any) => {
   );
 };
 
-export default HomeContent;
+export default HomePage;
